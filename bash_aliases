@@ -63,6 +63,12 @@ alias ....='cd ../../..'
 alias .....='cd ../../../..'
 alias -- -='cd -'
 
+# create a folder and go inside it
+cf() {
+	mkdir -p "$1"
+	cd "$1"
+}
+
 # Vim <3 Neovim <3 <3
 # alias v="if [ -e .vimrc ]; then; vim -u .vimrc; else; vim; fi"
 alias v=nvim
@@ -97,6 +103,12 @@ alias alert='notify-send --urgency=low -i '\
 
 # geekiest thing ever
 alias weather='curl wttr.in/Grenoble'
+
+# Blender shortcut:
+alias blender="snap run blender"
+
+# wifi aliases:
+alias wifi-mobile='nmcli con up Connard-wifi passwd-file ~/Code/dotFiles/config/other/4g_password'
 
 # OSX style
 alias open=xdg-open

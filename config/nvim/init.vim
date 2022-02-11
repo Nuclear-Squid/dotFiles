@@ -24,7 +24,8 @@ set wildmode=longest,full
 " options honteuses (pour les faibles)
 set clipboard=unnamedplus
 set mouse=a
-"set autowrite		" Automatically save before commands like :next and :make
+set rtp^="/home/leo/.opam/default/share/ocp-indent/vim" "setup ocamlformat
+" set autowrite		" Automatically save before commands like :next and :make
 "set hidden		" Hide buffers when they are abandoned
 
 " un peu de cohérence dans un monde de brutes
@@ -45,6 +46,8 @@ Plug 'fabi1cazenave/suckless.vim' " window management that sucks less
 Plug 'fabi1cazenave/termopen.vim'
 Plug 'machakann/vim-highlightedyank'
 let g:highlightedyank_highlight_duration = 250
+let g:markdown_fenced_Languages = ['html', 'css', 'bash=sh', 'ocaml', 'c']
+Plug 'plasticboy/vim-markdown'
 call plug#end()
 
 " coloration syntaxique
@@ -60,7 +63,20 @@ nmap <silent><F12> :let &bg = (&bg == 'light' ? 'dark' : 'light')<CR>
 set splitbelow
 set splitright
 let g:suckless_tmap = 1
-let g:suckless_mappings = {
+let g:suckless_mappings_ergol = {
+\        '<M-[srt]>'      :   'SetTilingMode("[sdf]")'    ,
+\        '<M-[hnei]>'     :    'SelectWindow("[hjkl]")'   ,
+\        '<M-[HNEI]>'     :      'MoveWindow("[hjkl]")'   ,
+\      '<C-M-[hnei]>'     :    'ResizeWindow("[hjkl]")'   ,
+\        '<M-[pP]>'       :    'CreateWindow("[sv]")'     ,
+\        '<M-o>'          :     'CloseWindow()'           ,
+\        '<M-Return>'     :        'TermOpen()'           ,
+\        '<M-Backspace>'  :  'TermOpenRanger()'           ,
+\        '<M-[123456789]>':       'SelectTab([123456789])',
+\        '<M-[!@#$%^&*(]>': 'MoveWindowToTab([123456789])',
+\      '<C-M-[123456789]>': 'CopyWindowToTab([123456789])',
+\}
+let g:suckless_mappings_qwerty = {
 \        '<M-[sdf]>'      :   'SetTilingMode("[sdf]")'    ,
 \        '<M-[hjkl]>'     :    'SelectWindow("[hjkl]")'   ,
 \        '<M-[HJKL]>'     :      'MoveWindow("[hjkl]")'   ,
@@ -73,6 +89,8 @@ let g:suckless_mappings = {
 \        '<M-[!@#$%^&*(]>': 'MoveWindowToTab([123456789])',
 \      '<C-M-[123456789]>': 'CopyWindowToTab([123456789])',
 \}
+" let g:suckless_mappings = g:suckless_mappings_qwerty
+let g:suckless_mappings = g:suckless_mappings_ergol
 
 " code folding
 set foldmethod=indent
@@ -93,6 +111,27 @@ nmap <silent> z7 :set fdl=7<CR>
 nmap <silent> z8 :set fdl=8<CR>
 nmap <silent> z9 :set fdl=9<CR>
 
+map <C-u> gUiw
+imap <C-u> <Left><C-o>gUiw<C-o>e<Right>
+
 let mapleader = "\<Space>"
+
 nmap <leader>w :w<CR>
 nmap <leader>e :e<CR>
+nmap <leader>q :q<CR>
+nmap <leader>x :x<CR>
+
+" nmap <M-Left>  :call SelectWindow("h")<CR>
+" nmap <M-Up>    :call SelectWindow("k")<CR>
+" nmap <M-Down>  :call SelectWindow("j")<CR>
+" nmap <M-Right> :call SelectWindow("l")<CR>
+
+" nmap <M-S-Left>  :call MoveWindow("h")<CR>
+" nmap <M-S-Up>    :call MoveWindow("k")<CR>
+" nmap <M-S-Down>  :call MoveWindow("j")<CR>
+" nmap <M-S-Right> :call MoveWindow("l")<CR>
+
+" nmap <M-C-Left>  :call ResizeWindow("h")<CR>
+" nmap <M-C-Up>    :call ResizeWindow("k")<CR>
+" nmap <M-C-Down>  :call ResizeWindow("j")<CR>
+" nmap <M-C-Right> :call ResizeWindow("l")<CR>
