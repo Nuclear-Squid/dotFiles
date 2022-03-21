@@ -1,21 +1,32 @@
-#! /bin/bash
+#! /bin/env bash
 
 # Créé des fichiers vides executables avec les noms passé en argument (avec le shebang qui va bien)
-for arg in $@
+noExtention=0
+for FILE in "$@"
 do
-	if [ "$arg" = "-e" ]
+	if [ "$FILE" = "-n" ]
 	then
-		# remplacer 'nvim' et '-O' par $EDITOR pour un code moins bourrin.
-		nvim ${@:1:$#-1} -O
+		noExtention=1
 	else
-		touch "$arg"
-		chmod +x "$arg"
-		extention=$(echo "$arg" | cut -d '.' -f 2)
+		extention=$(echo "$FILE" | cut -d '.' -f 2)
+
+		if [ $noExtention -eq 1 ]
+		then
+			fileName=$(echo "$FILE" | cut -d '.' -f 1)
+			noExtention=0
+		else
+			fileName="$FILE"
+		fi
+		touch "$fileName"
+		chmod +x "$fileName"
 
 		case $extention in
-			"sh") echo "#! /bin/env bash" > $arg;;
-			"py") echo "#! /bin/env python3" > $arg;;
-			"ml") echo "#! /bin/env ocaml" > $arg;;
+			"sh") echo "#! /bin/env bash" > "$fileName";;
+			"py") echo "#! /bin/env python3" > "$fileName";;
+			"ml") echo "#! /bin/env ocaml" > "$fileName";;
+			"c") echo "#include <stdio.h>" > "$fileName";;
 		esac
+
+		echo "$fileName"
 	fi
 done

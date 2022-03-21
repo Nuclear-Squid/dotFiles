@@ -40,6 +40,7 @@ Plug 'w0rp/ale'
 " Plug 'SirVer/ultisnips'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-repeat'
 Plug 'ervandew/supertab'
 Plug 'fabi1cazenave/kalahari.vim'
 Plug 'fabi1cazenave/suckless.vim' " window management that sucks less

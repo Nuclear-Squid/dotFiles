@@ -1,4 +1,5 @@
 #|
+
 #| File    : ~/.bash_aliases
 #| Author  : Léo Cazenave
 #| Source  : https://github.com/Leo-Caz/dotFiles
@@ -63,9 +64,20 @@ alias ....='cd ../../..'
 alias .....='cd ../../../..'
 alias -- -='cd -'
 
+# cd, but better (what do you mean "that's stupid"?)
+function cd() {
+	if [ "$1" = "" ]
+	then
+		builtin cd "$HOME"
+	else
+		builtin cd "$1"
+	fi
+	ls -lhH
+}
+
 # create a folder and go inside it
 cf() {
-	mkdir -p "$1"
+	mkdir -p "$@"
 	cd "$1"
 }
 
@@ -112,6 +124,10 @@ alias wifi-mobile='nmcli con up Connard-wifi passwd-file ~/Code/dotFiles/config/
 
 # OSX style
 alias open=xdg-open
+
+pdfConvert() {
+	pandoc "$1" -o "$2" && open "$2" &
+}
 
 # trick to define default arguments
 # (only works when commands are typed manually in a shell)
