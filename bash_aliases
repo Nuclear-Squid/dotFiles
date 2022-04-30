@@ -1,5 +1,4 @@
 #|
-
 #| File    : ~/.bash_aliases
 #| Author  : Léo Cazenave
 #| Source  : https://github.com/Leo-Caz/dotFiles
@@ -37,8 +36,8 @@ if command -v exa >/dev/null 2>&1; then
   # super-fancy variants, powered by `exa` (rust)
   alias l='exa --group-directories-first'
   alias la='l -a'
-  alias ll='l -l --git'
-  alias lla='l -la --git'
+  alias ll='l -l --git --time-style long-iso'
+  alias lla='l -la --git --time-style long-iso'
 else
   # good old stuff, works everywhere
   alias l='ls -C'
@@ -47,6 +46,14 @@ else
   alias lla='ls -alhH'
 fi
 
+lt() {
+  if command -v exa >/dev/null 2>&1; then
+    exa --long --git --time-style long-iso --tree --level="$1"
+  else
+	echo "'exa' not active rn, dunno why"
+  fi
+}
+
 # man pages look better in `most` than in `less`
 if command -v most >/dev/null 2>&1; then
   alias man='man -P most'
@@ -54,7 +61,7 @@ fi
 
 # list files modified today
 lmru() {
-  find $1 -mtime -1 -print
+  find "$1" -mtime -1 -print
 }
 
 # basic directory operations
@@ -65,14 +72,14 @@ alias .....='cd ../../../..'
 alias -- -='cd -'
 
 # cd, but better (what do you mean "that's stupid"?)
-function cd() {
+cl() {
 	if [ "$1" = "" ]
 	then
-		builtin cd "$HOME"
+		cd "$HOME" || exit 1 # cd ... || exit incase cd fails
 	else
-		builtin cd "$1"
+		cd "$1" || exit 1
 	fi
-	ls -lhH
+	ll # Shows what's inside the folder
 }
 
 # create a folder and go inside it
@@ -100,6 +107,9 @@ alias ducksay="cowsay -f duck"
 alias coin='echo "\_o<"'
 alias pan='echo "\_x<"'
 
+# Choo Choo mother fucker !!
+alias choochoo="while [ 1 -eq 1 ]; do sl; done"
+
 # smart SSH agent: http://beyond-syntax.com/blog/2012/01/on-demand-ssh-add/
 #       (see also: https://gist.github.com/1998129)
 alias ssh='( ssh-add -l > /dev/null || ssh-add ) && ssh'
@@ -125,8 +135,35 @@ alias wifi-mobile='nmcli con up Connard-wifi passwd-file ~/Code/dotFiles/config/
 # OSX style
 alias open=xdg-open
 
+# Convert a markdown file to pdf and opens it
 pdfConvert() {
-	pandoc "$1" -o "$2" && open "$2" &
+	if [ "$3" = "-N" ]
+	then
+		echo bite
+		pandoc "$1" -N -o "$2" && open "$2" &
+	else
+		pandoc "$1" -o "$2" && open "$2" &
+	fi
+}
+
+# Compiles C program and executes it
+cexec() {
+	[ ! -d Exec ] && mkdir Exec        # Create "Exec" folder for executable files
+	execName=$(basename "$1" ".c")     # Remove file extention from executable file
+	if clang "$1" -o Exec/"$execName"  # Compile program with correct path + check errors
+	then
+		./Exec/"$execName" "${@:2}"    # Execute script with every args (execpt $1)
+	fi
+}
+
+# Compiles Rust (<3 <3 <3) program and executes it
+rexec() {
+	[ ! -d Exec ] && mkdir Exec        # Create "Exec" folder for executable files
+	execName=$(basename "$1" ".rs")     # Remove file extention from executable file
+	if rustc "$1" -o Exec/"$execName"  # Compile program with correct path + check errors
+	then
+		./Exec/"$execName" "${@:2}"    # Execute script with every args (execpt $1)
+	fi
 }
 
 # trick to define default arguments

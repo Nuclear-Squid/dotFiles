@@ -24,7 +24,6 @@ do
 			"sh") echo "#! /bin/env bash" > "$fileName";;
 			"py") echo "#! /bin/env python3" > "$fileName";;
 			"ml") echo "#! /bin/env ocaml" > "$fileName";;
-			"c") echo "#include <stdio.h>" > "$fileName";;
 		esac
 
 		echo "$fileName"

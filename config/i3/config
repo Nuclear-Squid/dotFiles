@@ -110,7 +110,7 @@ client.focused_inactive   #333333 #444444 #ffffff
 set $w01  1: tmp
 set $w02  2: test
 set $w03  3: media
-set $w04  4
+set $w04  4: hacking
 set $w05  5
 set $w06  6: mail
 set $w07  7: www
@@ -149,7 +149,7 @@ assign [class="^Hotot"]                → $w10
 assign [title="Firefox Developer"]     → $w09
 assign [title="Firefox WebIDE"]        → $w09
 assign [instance="Devtools"]           → $w09
-assign [class="Firefox"]               → $w07
+assign [class="firefox"]               → $w07
 assign [class="bugzilla"]              → $w08
 assign [class="webdev"]                → $w09
 assign [class="social"]                → $w11
