@@ -7,12 +7,7 @@
 --     \_/_______________________________________/
 -- 
 
-vim.cmd("autocmd! BufWritePost plugins.lua source %")
-vim.cmd [[
-	source ~/.config/nvim/plugins.vim " Ancienne config
-	source ~/.config/nvim/md_to_pdf.lua " md <3 <3 <3
-]]
-
+-- source ~/.config/nvim/md_to_pdf.lua " md <3 <3 <3
+require("plugins")
 require("options")
 require("mappings")
-require("plugins")

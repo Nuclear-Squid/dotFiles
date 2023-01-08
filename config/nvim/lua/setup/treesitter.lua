@@ -1,4 +1,4 @@
-vim.cmd("autocmd! BufWritePost telescope.lua source %")
+vim.cmd("autocmd! BufWritePost treesitter.lua source %")
 
 local treesitter_dir = "/home/leo/.local/share/nvim/site/pack/packer/start/nvim-treesitter"
 require('nvim-treesitter.configs').setup {

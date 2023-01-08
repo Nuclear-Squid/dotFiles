@@ -1,9 +1,8 @@
 vim.cmd("autocmd! BufWritePost suckless.lua source %")
 
-local set = vim.opt
+vim.g.suckless_tmap = 1
 
 vim.cmd [[
-	let g:suckless_tmap = 1
 	let g:suckless_mappings_ergol = {
 	\        '<M-[snt]>'      :   'SetTilingMode("[sdf]")'    ,
 	\        '<M-[hreo]>'     :    'SelectWindow("[hjkl]")'   ,
@@ -43,8 +42,9 @@ vim.cmd [[
 	\        '<M-[!@#$%^&*(]>': 'MoveWindowToTab([123456789])',
 	\      '<C-M-[123456789]>': 'CopyWindowToTab([123456789])',
 	\}
-
-	let g:suckless_mappings = g:suckless_mappings_ergol
-	" let g:suckless_mappings = g:suckless_mappings_azerty
-	" let g:suckless_mappings = g:suckless_mappings_qwerty
 ]]
+
+vim.g.suckless_mappings = vim.g.suckless_mappings_ergol
+-- vim.g.suckless_mappings = vim.g.suckless_mappings_azerty
+-- vim.g.suckless_mappings = vim.g.suckless_mappings_qwerty
+
