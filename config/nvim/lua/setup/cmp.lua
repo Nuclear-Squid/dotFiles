@@ -1,7 +1,6 @@
 --------------------------------
 -- auto-completion (nvim-cmp) --
 --------------------------------
---<<{
 local cmp = require('cmp')
 local has_words_before = function()
 	local line, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -47,18 +46,16 @@ cmp.setup({
 		--   ['<CR>']      = cmp.mapping.confirm({ select = true }),
 	},
 })
---}>>
 
 ------------------------------------------------------------------------------------------
 -- LSP activation: call 'setup' on multiple servers                                     --
 -- and add local keybindings and snippet capabilities when the language server attaches --
-----------------------------------------------------------------------------------------<<{
+------------------------------------------------------------------------------------------
 local lsp_servers = { 'clangd', 'pylsp' } -- see also: null-ls
 local nvim_lsp = require('lspconfig')
 local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 local mappings = require("mappings")
 for _, lsp in ipairs(lsp_servers) do
-	-- vim.cmd("echo 'prout'")
 	nvim_lsp[lsp].setup({
 		on_attach = mappings.set_lsp_keymaps,
 		flags = {
@@ -67,4 +64,3 @@ for _, lsp in ipairs(lsp_servers) do
 		capabilities = capabilities,
 	})
 end
---}>>

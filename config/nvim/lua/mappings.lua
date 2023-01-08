@@ -86,24 +86,22 @@ map 'n' ('<leader>m', telescope.keymaps)
 
 -- LSP buffer-specific options and keymaps --
 local set_lsp_keymaps = function(_client, bufnr)
-	vim.cmd("echo 'prout'")
 	local telescope = require('telescope.builtin')
-	local map = vim.keymap.set
 	local opts = { buffer=bufnr, noremap=true, silent=true }
-	map( 'n',       'K',        vim.lsp.buf.hover,          opts)
-	map( 'n',       '<C-k>',    vim.lsp.buf.signature_help, opts)
-	map( 'n',       'gA',       vim.lsp.buf.code_action,    opts) -- {apply=true}
-	map( 'n',       'gR',       vim.lsp.buf.rename,         opts)
-	map({'n', 'v'}, 'g=',       vim.lsp.buf.format,         opts)
-	map( 'n',       'gi',       vim.lsp.buf.implementation, opts)
-	map( 'n',       '[<Enter>', vim.diagnostic.goto_prev,   opts)
-	map( 'n',       ']<Enter>', vim.diagnostic.goto_next,   opts)
+	map  'n'       ('K',        vim.lsp.buf.hover,          opts)
+	map  'n'       ('<C-k>',    vim.lsp.buf.signature_help, opts)
+	map  'n'       ('gA',       vim.lsp.buf.code_action,    opts) -- {apply=true}
+	map  'n'       ('gR',       vim.lsp.buf.rename,         opts)
+	map {'n', 'v'} ('g=',       vim.lsp.buf.format,         opts)
+	map  'n'       ('gi',       vim.lsp.buf.implementation, opts)
+	map  'n'       ('[<Enter>', vim.diagnostic.goto_prev,   opts)
+	map  'n'       (']<Enter>', vim.diagnostic.goto_next,   opts)
 	-- SP referenceLs, definitions and diagnostics are handled by Telescope
-	map( 'n',       'gr',       telescope.lsp_references,   opts)
-	map( 'n',       'gd',       telescope.lsp_definitions,  opts)
-	map( 'n',       'gD',       telescope.diagnostics,      opts)
+	map  'n'       ('gr',       telescope.lsp_references,   opts)
+	map  'n'       ('gd',       telescope.lsp_definitions,  opts)
+	map  'n'       ('gD',       telescope.diagnostics,      opts)
 	-- source/header switch (should be restricted to clangd)
-	map( 'n', 'gh', ':ClangdSwitchSourceHeader<CR>', opts)
+	map  'n'       ('gh', ':ClangdSwitchSourceHeader<CR>',  opts)
 	-- enable completion triggered by <c-x><c-o> (and nvim-cmp)
 	vim.bo.omnifunc = 'v:lua.vim.lsp.omnifunc'
 end
