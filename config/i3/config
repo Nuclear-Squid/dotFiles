@@ -76,28 +76,23 @@ workspace_layout tabbed
 new_window 1pixel
 new_float normal
 
-# Statusline (i3bar)
-bar {
-	  status_command i3status
-	    position bottom
-		  # mode hide
-		    mode dock
-}
+exec --no-startup-id polybar
 
-# Default color theme:
-#   class                 border  backgr. text
-# client.focused          #4c7899 #285577 #ffffff
-# client.focused_inactive #333333 #5f676a #ffffff
-# client.unfocused        #333333 #222222 #888888
-# client.urgent           #2f343a #900000 #ffffff
+# # Statusline (i3bar)
+# bar {
+# 	  status_command i3status
+# 	    position bottom
+# 		  # mode hide
+# 		    mode dock
+# }
 
-# Custom color theme:
-#   class                 border  backgr. text
-# client.focused          #2f343a #904040 #ffffff
-# client.focused          #2f343a #602020 #ffffff
-# client.focused          #2f343a #501010 #ffffff
-# client.focused          #2f343a #900000 #ffffff
-client.focused_inactive   #333333 #444444 #ffffff
+## ColorScheme
+# class                 border  backgr. text    indicator child_border
+client.focused          #4c7899 #285577 #ffffff #2e9ef4   #285577
+client.focused_inactive #333333 #5f676a #ffffff #484e50   #5f676a
+client.unfocused        #333333 #221F28 #888888 #292d2e   #222222
+client.urgent           #2f343a #900000 #ffffff #900000   #900000
+client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
 
 # }}}
 
@@ -107,15 +102,15 @@ client.focused_inactive   #333333 #444444 #ffffff
 # Workspace names:
 # the default modifier being Super_L, workspaces 6 to 12 are preferred
 # (=> left thumb + right hand to select a workspace)
-set $w01  1: tmp
-set $w02  2: test
+set $w01  1: dump
+set $w02  2: docs
 set $w03  3: media
-set $w04  4: hacking
-set $w05  5
-set $w06  6: mail
+set $w04  4: mail
+set $w05  5: gayming
+set $w06  6: art
 set $w07  7: www
-set $w08  8: work
-set $w09  9: art
+set $w08  8: work1
+set $w09  9: work2
 set $w10 10: im
 set $w11 11
 set $w12 12
@@ -213,10 +208,10 @@ bind $mod+41 fullscreen
 bind $mod+Shift+41 fg
 
 # Switch between tiling/floating layers                            ($mod+Space)
-bind $mod+65 focus mode_toggle
+bind $mod+36 focus mode_toggle
 
 # Send client to tiling/floating layer                       ($mod+Shift+Space)
-bind $mod+Shift+65 floating toggle
+bind $mod+Shift+36 floating toggle
 
 # Kill current window                                                  ($mod+w)
 bind $mod+25 kill
@@ -343,7 +338,7 @@ bind $mod+Shift+61 move scratchpad
 bind $mod+Shift+27 reload
 
 # Restart i3 inplace                                     ($mod+Shift+BackSpace)
-bind $mod+Shift+22 restart
+bind $mod+Control+27 restart
 
 # Exit i3                                                 ($mod+Ctrl+BackSpace)
 bind $mod+Control+22 exit
@@ -375,25 +370,24 @@ bind $mod+Shift+26 exec $(setxkbmap fr -variant ergol42 -option "caps:swapescape
 #|-----------------------------------------------------------------------------
 
 # Start a new terminal                                             ($mod+Enter)
-# bind $mod+36 exec roxterm
-# bind $mod+36 exec $(urxvt -e tmux)
-bind $mod+36 exec xfce4-terminal
+# bind $mod+36 exec xfce4-terminal
+bind $mod+65 exec kitty
 
 # Start a new file browser                                   ($mod+Shift+Enter)
-# bind $mod+Shift+36 exec $(nautilus --no-desktop)
-# bind $mod+Shift+36 exec $(urxvt -e ranger)
-bind $mod+Shift+36 exec $(xfce4-terminal -e ranger)
+# bind $mod+Shift+36 exec $(xfce4-terminal -e ranger)
+bind $mod+Shift+65 exec $(kitty -e ranger)
 
 # Application launcher                                                 ($mod+p)
 # beware of gnome-settings-daemon:
 # http://askubuntu.com/questions/68463/how-to-disable-global-super-p-shortcut
 # http://askubuntu.com/questions/20113/how-to-stop-mod4-p-from-switching-the-display
 # bind $mod+33 exec $(dmenu_path | sort -u | dmenu -fn '-*-fixed-*-r-normal-*-*-120-*-*-*-*-iso8859-*' -nb '#000000' -nf '#FFFFFF' -sb '#1793d1')
-bind $mod+33 exec --no-startup-id $(dmenu_run -fn '-*-fixed-*-r-normal-*-*-120-*-*-*-*-iso8859-*' -nb '#000000' -nf '#FFFFFF' -sb '#1793d1')
+# bind $mod+22 exec --no-startup-id $(dmenu_run -fn '-*-fixed-*-r-normal-*-*-120-*-*-*-*-iso8859-*' -nb '#000000' -nf '#FFFFFF' -sb '#1793d1')
+bind $mod+22 exec --no-startup-id $(rofi -show run)
 
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file.
-bind $mod+Shift+33 exec --no-startup-id i3-dmenu-desktop
+bind $mod+Shift+22 exec --no-startup-id i3-dmenu-desktop
 
 # Autostart (= personal startup script)
 # exec $(autostart gtk)

@@ -73,6 +73,8 @@ use 'dracula/vim'
 use 'morhetz/gruvbox'
 use 'joshdick/onedark.vim'
 use 'fabi1cazenave/kalahari.vim'
+use 'arturgoms/moonbow.nvim'
+use '~/Code/projets_persos/photon.nvim'
 --}>>
 
 -----------
@@ -98,6 +100,8 @@ vim.g.highlightedyank_highlight_duration = 250
 
 use 'plasticboy/vim-markdown'
 vim.g.markdown_fenced_Languages = { 'html', 'css', 'bash=sh', 'ocaml', 'c', 'python' }
+
+use 'ARM9/arm-syntax-vim'
 --}>>
 
 end)

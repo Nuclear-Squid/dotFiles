@@ -48,9 +48,10 @@ set.background = 'dark'   -- L'ilusion du choix
 
 -- thème de couleur :
 ---------------------
-vim.cmd("colorscheme gruvbox")
+-- vim.cmd("colorscheme gruvbox")
+-- vim.cmd("colorscheme kanagawa")
 -- vim.cmd("colorscheme dracula")
--- vim.cmd("colorscheme photon")
+vim.cmd("colorscheme photon")
 
 -- FLASHBANG !!!!
 map('n', '<F12>', ":let &bg = (&bg == 'light' ? 'dark' : 'light')<CR>")
@@ -83,14 +84,16 @@ end
 ------------------
 -- Code folding --
 ------------------
-set.foldmethod = 'indent'  -- Genère les folds à partir de l'indentation
+set.foldmethod  = 'indent' -- Genère les folds à partir de l'indentation
 set.smartindent = true     -- Auto-indentation quand on retourne à la ligne
-set.shiftwidth = 4         -- ???
+set.shiftwidth  = 4        -- ???
 set.softtabstop = 4        -- Nombre d'espaces quand on fait tab
-set.tabstop = 4            -- Nombre d'espaces, mais pas pareil ??
+set.tabstop     = 4        -- Nombre d'espaces, mais pas pareil ??
+set.expandtab   = true     -- Transforme les tabs en espaces
 map('n', '<Tab>', 'za')
 map('n', '<S-Tab>', 'zA')
 
+-- Je suis pas sûr que ça réponde exactement à ta question, mais ça marcherai pas ça ? `set.clipboard = 'unnamedplus'  -- Registre par defaut : '+'` (Ça permet d’utiliser le clipboard global par défaut)
 ------------------------------------------
 -- Options honteuses (pour les faibles) --
 ------------------------------------------

@@ -86,15 +86,15 @@ bindkey ' ' magic-space    # also do history expansion on space
 # version control
 autoload -Uz vcs_info
 zstyle ':vcs_info:*' enable git hg svn
-zstyle ':vcs_info:*'    formats $PS_vcsinfo" [‡ %b]"
-zstyle ':vcs_info:hg*'  formats $PS_vcsinfo" [☿ %b]"
-zstyle ':vcs_info:git*' formats $PS_vcsinfo" [± %b]"
+zstyle ':vcs_info:*'    formats $PS_vcsinfo"‡ %b"
+zstyle ':vcs_info:hg*'  formats $PS_vcsinfo"☿ %b"
+zstyle ':vcs_info:git*' formats $PS_vcsinfo"± %b"
 precmd() {
   vcs_info
 }
 
 # prompt parts
-local PS_prompt="%# "
+local PS_prompt="|>"
 local PS_time="%D{%H:%M:%S}" # like "%* but uses a leading zero when needed
 local PS_host="@$(hostname)"
 local PS_user="%n$PS_host"
@@ -111,8 +111,8 @@ if [ "$color_prompt" ]; then
   # time: color coded by last return code
   PS_time="%(?.%{$fg[green]%}.%{$fg[red]%})$PS_time%{$reset_color%}"
   # user: color coded by privileges
-  PS_user="%(!.%{$fg_bold[red]%}.%{$fg_bold[green]%})$PS_user%{$reset_color%}"
-  PS_cwd="%{$fg_bold[blue]%}$PS_cwd%{$reset_color%}"
+  PS_user="%(!.%{$fg_bold[red]%}.%{$fg_bold[yellow]%})$PS_user%{$reset_color%}"
+  PS_cwd="%{$fg_bold[magenta]%}$PS_cwd%{$reset_color%}"
   PS_vcsinfo="%{$fg[blue]%}$PS_vcsinfo%{$reset_color%}"
 fi
 unset color_prompt
@@ -122,7 +122,10 @@ unset color_prompt
 setopt prompt_subst
 # RPROMPT="$(__vcs_info)" # defined in ~/.bash_aliases
 RPROMPT='${vcs_info_msg_0_}'
-PROMPT="${PS_time} ${PS_user}:${PS_cwd}
+
+# [${PS_time}] ${PS_user}:${PS_cwd}
+PROMPT="\\_o<____________________________________
+[${vcs_info_msg_0_}] ${PS_user}:${PS_cwd}
 ${PS_prompt}"
 
 # >>>
@@ -246,7 +249,11 @@ fi
 
 # >>>
 
+echo -e "$(cat ~/Code/dotFiles/asciiArts/startup_term) \e[A"
+
 # FZF is pure happiness -- try Ctrl-R and Ctrl-T, enjoy.
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # vim: set fdm=marker fmr=<<<,>>> fdl=0 ft=zsh:
+
+[ -f "/home/leo/.ghcup/env" ] && source "/home/leo/.ghcup/env" # ghcup-env

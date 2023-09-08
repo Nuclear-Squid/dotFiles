@@ -71,15 +71,22 @@ alias ....='cd ../../..'
 alias .....='cd ../../../..'
 alias -- -='cd -'
 
-# cd, but better (what do you mean "that's stupid"?)
+# cd, but better (what exactly do you mean by "just use `ls` you lazy fuck"?)
 cl() {
-	if [ "$1" = "" ]
-	then
-		cd "$HOME" || exit 1 # cd ... || exit incase cd fails
+	if [ "$#" = 0 ]
+	then cd "$HOME" || return
 	else
-		cd "$1" || exit 1
+		cd "$1" || return
+		# Only one thing in current dir and it’s another dir
+		while [ "$(find ./ -mindepth 1 -maxdepth 1 | wc -l)" = 1 ] &&
+		      [ "$(find ./ -mindepth 1 -maxdepth 1 -type d | wc -l)" = 1 ]
+		do
+			next_dir=$(ls -A)
+			printf "Auto-jumped inside of \`%s\`\n" "$next_dir"
+			cd "$next_dir" || return
+		done
 	fi
-	ll # Shows what's inside the folder
+	ll
 }
 
 # create a folder and go inside it
@@ -91,12 +98,14 @@ cf() {
 # Vim <3 Neovim <3 <3
 # alias v="if [ -e .vimrc ]; then; vim -u .vimrc; else; vim; fi"
 alias v=nvim
-alias vi="vim -u NONE"
+alias vi="neovide"  # The future is now, old man
 alias nvi="nvim -u NONE"
 alias vimrc="vim ~/.vimrc"
 alias nvimrc="nvim ~/.config/nvim/init.vim"
 alias lr="[ $RANGER_LEVEL ] && exit || ranger"
 alias :q=exit
+
+alias dual-screen="xrandr --auto --output HDMI-2 --mode 1920x1080 --right-of eDP-1"
 
 # ring a bell to the window manager
 # (requires `urgentOnBell` to be set to true for urxvt)

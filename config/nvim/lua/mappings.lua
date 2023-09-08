@@ -20,6 +20,7 @@ end
 -- Un peu de cohérence dans un monde de brutes
 map 'n' ('Y', 'y$')
 map 'n' ('U', '<C-r>')
+map 'i' ('<C-BS>', '<C-w>')
 
 -- Déplacements plus intuitif quand on utilise f ou t
 map { 'n', 'v', 'o' } (',', ';')
@@ -28,6 +29,8 @@ map { 'n', 'v', 'o' } (';', ',')
 -- Plus intuitif quand une ligne est cassée en deux
 map { 'n', 'v' } ('j', 'gj')
 map { 'n', 'v' } ('k', 'gk')
+map { 'n', 'v' } ('<Down>', 'gj')
+map { 'n', 'v' } ('<Up>', 'gk')
 
 -- Garder la selection
 map 'v' ('<'     ,      '<gv')
@@ -40,9 +43,22 @@ map 'v' ('g<C-x>', 'g<C-x>gv')
 -- Fuck capslock
 map 'n' ('<C-u>', 'gUiw')
 map 'i' ('<C-u>', '<Left><C-o>gUiw<C-o>e<Right>')
+--}>>
 
+
+-------------
+-- Aliases --
+-------------
+--<<{
 -- Quand Ergo-L me casse les couilles
 map 'i' ('fnt', 'function')
+
+-- Insérer un bloc d’accolades
+-- map 'i' ('{(', '{<CR>.<CR><BS><BS>}<UP><RIGHT><RIGHT><RIGHT><RIGHT><BS>')
+map 'i' ('{(', '{<CR><BS>}<UP><END><CR>')
+
+map 'i' ('<C-CR>', '<UP><END><CR>')
+map 'i' ('[[', '[0]')
 --}>>
 
 ------------
