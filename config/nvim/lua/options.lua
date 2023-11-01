@@ -21,22 +21,27 @@ set.wildmode = 'longest,full'
 -----------------------------
 -- Recherche incrémentale --
 -----------------------------
-set.hlsearch = true         -- Surligne les patterns trouvés pendant les recherches
-set.ignorecase = true		-- Les recherches ne sont de base pas case sensitives
-set.smartcase = true		-- Recherches case sensitives si il y a une maj dans le pattern
-set.incsearch = true		-- Sauter au match suivant / précédant avec n / N
-set.inccommand = 'split'    -- Affiche le résultat de :s en temps réel
+set.hlsearch   = true     -- Surligne les patterns trouvés pendant les recherches
+set.ignorecase = true     -- Les recherches ne sont de base pas case sensitives
+set.smartcase  = true     -- Recherches case sensitives si il y a une maj dans le pattern
+set.incsearch  = true     -- Sauter au match suivant / précédant avec n / N
+set.inccommand = 'split'  -- Affiche le résultat de :s en temps réel
 
 ---------------------
 -- aides visuelles --
 ---------------------
-set.scrolloff = 5          -- Garder au moins 5 lignes au dessus / dessous le curseur
-set.number = true          -- Afficher les numéros de lignes à gauche
--- set.relativenumber = true  -- Numéros de ligne relatif à la position du curseur
-set.ruler = true           -- Affiche la position du curseur en bas du buffer
-set.showcmd	= true	       -- Montre la commande dans la ligne de statuts
-set.showmatch = true       -- Surligne la parenthèse associée a celle survolée
-set.linebreak = true       -- Pas couper les mots en cas de retrour à la ligne
+set.scrolloff = 5         -- Garder au moins 5 lignes au dessus / dessous le curseur
+set.number    = true      -- Afficher les numéros de lignes à gauche
+set.ruler     = true      -- Affiche la position du curseur en bas du buffer
+set.showcmd   = true      -- Montre la commande dans la ligne de statuts
+set.showmatch = true      -- Surligne la parenthèse associée a celle survolée
+set.linebreak = true      -- Pas couper les mots en cas de retrour à la ligne
+set.list      = true      -- Afficher des symboles sur certains caractères.
+set.listchars = {         -- La liste de caractères et leur symboles
+    nbsp  = '¤',          -- no-break-space
+    tab   = '··',         -- tabs
+    trail = '¤',          -- trailing white spaces
+}
 
 --------------------------
 -- Options pour du joli --
@@ -49,9 +54,9 @@ set.background = 'dark'   -- L'ilusion du choix
 -- thème de couleur :
 ---------------------
 -- vim.cmd("colorscheme gruvbox")
--- vim.cmd("colorscheme kanagawa")
+vim.cmd("colorscheme kanagawa")
 -- vim.cmd("colorscheme dracula")
-vim.cmd("colorscheme photon")
+-- vim.cmd("colorscheme photon")
 
 -- FLASHBANG !!!!
 map('n', '<F12>', ":let &bg = (&bg == 'light' ? 'dark' : 'light')<CR>")
@@ -70,7 +75,8 @@ if (vim.g.neovide) then
 	vim.g.neovide_floating_blur_amount_y = 2.0
 	vim.g.neovide_scroll_animation_length = 0.3
 	vim.g.neovide_cursor_animation_length = 0.075
-	vim.g.neovide_cursor_vfx_mode = 'ripple'
+	-- vim.g.neovide_cursor_vfx_mode = "railgun"
+	vim.g.neovide_cursor_vfx_mode = "ripple"
 
 	-- Changer la taille de police à la volée (Mud <3 <3 <3)
 	-- https://stackoverflow.com/questions/73572079/neovim-lua-how-to-use-mutable-variables-in-keymappings/73574837#73574837

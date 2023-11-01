@@ -7,7 +7,6 @@
 --     \_/_______________________________________/
 -- 
 
--- source ~/.config/nvim/md_to_pdf.lua " md <3 <3 <3
 require("plugins")
 require("options")
 require("mappings")
