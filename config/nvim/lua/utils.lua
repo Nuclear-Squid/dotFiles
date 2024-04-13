@@ -41,8 +41,15 @@ return {
         return string.sub(str, 1, str_end)
     end,
 
-    str_at = function(str, index)
+    str_at = function (str, index)
         if index > string.len(str) then return nil end
         return string.sub(str, index, index)
+    end,
+
+    contains = function (list, value)
+        for _, v in pairs(list) do
+            if v == value then return true end
+        end
+        return false
     end,
 }

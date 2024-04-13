@@ -1,19 +1,21 @@
 -- vim: set fdm=marker fmr=<<{,}>> fdl=0 ft=lua:
-vim.cmd("autocmd! BufWritePost plugins.lua source %")
+vim.cmd("autocmd! BufWritePost init.lua source %")
 
 require('packer').startup(function(use)
 use 'wbthomason/packer.nvim'  -- Packer can manage itself.
 
----------
--- LSP --
----------
+-- ╭─────────────────────────────────────────────────────────╮
+-- │                           LSP                           │
+-- ╰─────────────────────────────────────────────────────────╯
 --<<{
 use 'w0rp/ale'  -- linter, not lsp but kinda related
 
 use 'neovim/nvim-lspconfig'   -- Language Server Protocol
+require 'plugins.setup.lspconfig'
+
 use 'williamboman/mason.nvim' -- LSP/DAP package manager
 use 'williamboman/mason-lspconfig'
-require("plugins.setup.mason")
+require 'plugins.setup.mason'
 -- require("plugins.setup.mason-lspconfig")
 
 -- Auto-Completion 
@@ -25,12 +27,16 @@ use 'hrsh7th/nvim-cmp'
 -- For vsnip users.
 use 'hrsh7th/cmp-vsnip'
 use 'hrsh7th/vim-vsnip'
+use 'hrsh7th/vim-vsnip-integ'
 require("plugins.setup.cmp")
+
+use 'vigoux/ltex-ls.nvim'
+require 'ltex-ls'.setup {}
 --}>>
 
----------------
--- Telescope --
----------------
+-- ╭─────────────────────────────────────────────────────────╮
+-- │                        Telescope                        │
+-- ╰─────────────────────────────────────────────────────────╯
 --<<{
 use { 'nvim-telescope/telescope.nvim', branch = '0.1.x',
     requires = {
@@ -39,12 +45,12 @@ use { 'nvim-telescope/telescope.nvim', branch = '0.1.x',
         { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
     }
 }
-require('telescope').setup { defaults = { winblend = 20 } }
+require 'plugins.setup.telescope'
 --}>>
 
-----------------
--- TreeSitter --
-----------------
+-- ╭─────────────────────────────────────────────────────────╮
+-- │                       TreeSitter                        │
+-- ╰─────────────────────────────────────────────────────────╯
 --<<{
 use 'nvim-treesitter/nvim-treesitter'
 use { 'nvim-treesitter/nvim-treesitter-context',
@@ -56,32 +62,46 @@ use { 'nvim-treesitter/playground',
 require("plugins.setup.treesitter")
 --}>>
 
---------------------
--- Tiling Manager --
---------------------
+-- ╭─────────────────────────────────────────────────────────╮
+-- │                     Tiling Manager                      │
+-- ╰─────────────────────────────────────────────────────────╯
 --<<{
 use 'fabi1cazenave/termopen.vim'
 use 'fabi1cazenave/suckless.vim'
 require("plugins.setup.suckless")
 --}>>
 
-------------------
--- Color Themes --
-------------------
+-- ╭─────────────────────────────────────────────────────────╮
+-- │                      Color Themes                       │
+-- ╰─────────────────────────────────────────────────────────╯
 --<<{
-use 'rebelot/kanagawa.nvim'
-use 'folke/tokyonight.nvim'
-use 'dracula/vim'
+-- My current theme, oneokai with a lot of tinkering.
+-- Custom treesitter queries are specified at `/after/queries`
+use 'AxelGard/oneokai.nvim'
+require 'plugins.setup.oneokai'
+
+-- Other themes I may come back to
 use 'morhetz/gruvbox'
-use 'joshdick/onedark.vim'
-use 'fabi1cazenave/kalahari.vim'
-use 'arturgoms/moonbow.nvim'
-use '~/Code/projets_persos/photon.nvim'
+use 'rebelot/kanagawa.nvim'
+use 'EdenEast/nightfox.nvim'
+use 'folke/tokyonight.nvim'
+use 'sainnhe/everforest'
+
+-- Meh, not bad, not good either
+-- use 'dracula/vim'
+-- use 'joshdick/onedark.vim'
+-- use 'arturgoms/moonbow.nvim'
+-- use '~/Code/projets_persos/photon.nvim'
+-- use 'fabi1cazenave/kalahari.vim'
+-- use 'Shatur/neovim-ayu'
+-- use 'JoosepAlviste/palenightfall.nvim'
+-- use 'lucastrvsn/kikwis'
+-- use 'catppuccin/nvim'
 --}>>
 
------------
--- Misc. --
------------
+-- ╭─────────────────────────────────────────────────────────╮
+-- │                          Misc.                          │
+-- ╰─────────────────────────────────────────────────────────╯
 --<<{
 use {
     'nvim-neorg/neorg',
@@ -97,9 +117,28 @@ use 'tpope/vim-repeat'
 use 'ervandew/supertab'
 use 'jeetsukumaran/vim-indentwise'
 
+use 'wellle/targets.vim'  -- supercharge your text objects
+use 'justinmk/vim-ipmotion'  -- ignore folds when jumping to next paragraphe
+vim.g.ip_skipfold = 1
+
+use 'LudoPinelli/comment-box.nvim'
+
+use '~/Code/projets_persos/just-code'
+require('just-code').setup()
+
+use {
+    "folke/noice.nvim",
+    requires = {
+        "MunifTanjim/nui.nvim",
+        "rcarriga/nvim-notify",
+    },
+}
+require 'plugins.setup.noice'
+
 -- snippets, doesn't seem to work with lsp
 -- use 'SirVer/ultisnips'
 -- use 'honza/vim-snippets'
+-- require 'mappings.ultisnips'
 
 use 'nvim-lualine/lualine.nvim'  -- fancy buffer separators
 require("plugins.setup.lualine")
@@ -112,6 +151,7 @@ use 'plasticboy/vim-markdown'
 vim.g.markdown_fenced_Languages = { 'html', 'css', 'bash=sh', 'ocaml', 'c', 'python' }
 
 use 'ARM9/arm-syntax-vim'
+vim.cmd('au BufNewFile,BufRead *.s,*.S set filetype=arm " arm = armv7')
 --}>>
 
 end)

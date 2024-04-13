@@ -38,6 +38,7 @@ if command -v exa >/dev/null 2>&1; then
   alias la='l -a'
   alias ll='l -l --git --time-style long-iso'
   alias lla='l -la --git --time-style long-iso'
+  export EXA_COLORS="ur=33:uw=33:gr=33:gw=33:tr=33:tw=33:sn=35:sb=35;2:da=34;3:di=35;3:xa=1;31"
 else
   # good old stuff, works everywhere
   alias l='ls -C'
@@ -65,29 +66,57 @@ lmru() {
 }
 
 # basic directory operations
-alias ..='cd ..'
-alias ...='cd ../..'
+alias ..='builtin cd ..'
+alias ...='builtin cd ../..'
 alias ....='cd ../../..'
 alias .....='cd ../../../..'
 alias -- -='cd -'
 
 # cd, but better (what exactly do you mean by "just use `ls` you lazy fuck"?)
-cl() {
-	if [ "$#" = 0 ]
-	then cd "$HOME" || return
-	else
-		cd "$1" || return
-		# Only one thing in current dir and it’s another dir
-		while [ "$(find ./ -mindepth 1 -maxdepth 1 | wc -l)" = 1 ] &&
-		      [ "$(find ./ -mindepth 1 -maxdepth 1 -type d | wc -l)" = 1 ]
-		do
-			next_dir=$(ls -A)
-			printf "Auto-jumped inside of \`%s\`\n" "$next_dir"
-			cd "$next_dir" || return
-		done
-	fi
-	ll
+cd() {
+    local previous_git_repo="$(git rev-parse --show-toplevel 2>/dev/null)"
+    local auto_jumped_path=""
+    builtin cd "${1:-$HOME}" || return
+    # Only one thing in current dir and it’s another dir
+    while [ "$(find ./ -mindepth 1 -maxdepth 1 | wc -l)" = 1 ] &&
+          [ "$(find ./ -mindepth 1 -maxdepth 1 -type d | wc -l)" = 1 ]
+    do
+        next_dir=$(ls -A)
+        auto_jumped_path="$auto_jumped_path$next_dir/"
+        builtin cd "$next_dir" || return
+    done
+    local current_git_dir="$(git rev-parse --show-toplevel 2>/dev/null)"
+    if [ "$current_git_dir" != "" ] && [ "$current_git_dir" != "$previous_git_repo" ]; then
+        onefetch
+    fi
+    ll
+    if [ $auto_jumped_path ]; then
+        echo -e "\x1b[1;35mAuto-jumped\x1b[0m inside of \x1b[3;33m$auto_jumped_path\x1b[0m"
+    fi
 }
+
+cl() {
+    echo "Use \`cd\` dumb arse"
+}
+
+# # cd, but better (what exactly do you mean by "just use `ls` you lazy fuck"?)
+# # Is just a backup, use `cd`
+# cl() {
+# 	if [ "$#" = 0 ]
+# 	then cd "$HOME" || return
+# 	else
+# 		cd "$1" || return
+# 		# Only one thing in current dir and it’s another dir
+# 		while [ "$(find ./ -mindepth 1 -maxdepth 1 | wc -l)" = 1 ] &&
+# 		      [ "$(find ./ -mindepth 1 -maxdepth 1 -type d | wc -l)" = 1 ]
+# 		do
+# 			next_dir=$(ls -A)
+# 			printf "Auto-jumped inside of \`%s\`\n" "$next_dir"
+# 			cd "$next_dir" || return
+# 		done
+# 	fi
+# 	ll
+# }
 
 # create a folder and go inside it
 cf() {

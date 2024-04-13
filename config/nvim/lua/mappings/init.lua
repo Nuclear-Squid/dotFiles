@@ -1,79 +1,144 @@
 -- vim: set fdm=marker fmr=<<{,}>> fdl=0 ft=lua:
 vim.cmd("autocmd! BufWritePost init.lua source %")
 
-local utils = require "utils"
+-- ╭─────────────────────────────────────────────────────────╮
+-- │               Imports et sucre syntaxique               │
+-- ╰─────────────────────────────────────────────────────────╯
+--<<{
+local utils    = require "utils"
 local  map     = utils. map
 local nmap     = utils.nmap
 local imap     = utils.imap
 local vmap     = utils.vmap
 local  map_opt = utils. map_opt
 
-----------------------
--- General Mappings --
-----------------------
+function bracket_group(opening_delim, closing_delim)
+    return function()
+        local current_line = vim.api.nvim_get_current_line()
+        local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+
+        local left_of_cursor  = ""
+        local right_of_cursor = ""
+
+        local left_no_space_chars  = "({["
+        local right_no_space_chars = ")}];,"
+
+        function no_space_char_at_pos(no_space_chars, str, pos)
+            if math.abs(pos) > str:len() then return false end
+            return no_space_chars:find('['..utils.str_at(str, pos)..']')
+        end
+
+        if col == current_line:len() then
+            local index_last_space = current_line:find(' [^ ]*$')
+
+            -- Motherfucking arrays start at 1
+            left_of_cursor  = current_line:sub(1, index_last_space)
+            right_of_cursor = current_line:sub(index_last_space)
+
+            if no_space_char_at_pos(left_no_space_chars, left_of_cursor, -2) then
+                left_of_cursor = left_of_cursor:sub(1, -2)
+            end
+
+            if no_space_char_at_pos(right_no_space_chars, right_of_cursor, -2) then
+                right_of_cursor = right_of_cursor:sub(2)
+            end
+
+            dbg = right_of_cursor
+            left_of_cursor  = left_of_cursor .. opening_delim
+            right_of_cursor = closing_delim  .. utils.str_trim_right(right_of_cursor)
+        else
+            left_of_cursor  = current_line:sub(1, col) .. opening_delim
+            right_of_cursor = closing_delim .. current_line:sub(col + 1)
+        end
+
+        local indentation = string.rep(' ', current_line:len() -
+                utils.str_trim_left(current_line):len())
+
+        local indentation_nouvelle_ligne = indentation .. string.rep(' ', vim.o.tabstop)
+
+        vim.api.nvim_buf_set_lines(0, row - 1, row, true, {
+            left_of_cursor,
+            indentation_nouvelle_ligne,
+            indentation .. utils.str_trim_right(right_of_cursor),
+        })
+
+        vim.api.nvim_win_set_cursor(0, { row + 1, indentation_nouvelle_ligne:len() })
+    end
+end
+
+function replace_on_range()
+    local start_line  = unpack(vim.api.nvim_buf_get_mark(0, '['))
+    local finish_line = unpack(vim.api.nvim_buf_get_mark(0, ']'))
+    vim.api.nvim_feedkeys(string.format(":%d,%ds/", start_line, finish_line), 'n', false)
+end
+
+-- « Atta je réessaye »
+function duplicate_and_comment(start_line, finish_line, cursor_line, cursor_col)
+    local new_cursor_line = cursor_line + finish_line - start_line + 1
+    local range = string.format("%d,%d ", start_line, finish_line)
+
+    vim.cmd(range .. 'yank')
+    vim.cmd(range .. 'Commentary')
+
+    vim.api.nvim_win_set_cursor(0, { finish_line, 0 })
+    vim.cmd('put')
+    vim.api.nvim_win_set_cursor(0, { new_cursor_line, cursor_col })
+end
+
+-- La position du curseur est stoquée dans le marqueur '`'
+function duplicate_and_comment_normal()
+    local start_line  = vim.api.nvim_buf_get_mark(0, '[')[1]
+    local finish_line = vim.api.nvim_buf_get_mark(0, ']')[1]
+    local cursor_line, cursor_col = unpack(vim.api.nvim_buf_get_mark(0, '`'))
+    duplicate_and_comment(start_line, finish_line, cursor_line, cursor_col)
+end
+
+function duplicate_and_comment_visual()
+    local cursor_line, cursor_col = unpack(vim.api.nvim_win_get_cursor(0))
+    local visual_line = vim.fn.getpos('v')[2]
+    if cursor_line < visual_line then
+        duplicate_and_comment(cursor_line, visual_line, cursor_line, cursor_col)
+    else
+        duplicate_and_comment(visual_line, cursor_line, cursor_line, cursor_col)
+    end
+end
+--}>>
+
+
+-- ╭─────────────────────────────────────────────────────────╮
+-- │                    General Mappings                     │
+-- ╰─────────────────────────────────────────────────────────╯
 --<<{
 -- Un peu de cohérence dans un monde de brutes
 nmap 'Y' 'y$'
 nmap 'U' '<C-r>'
 imap '<C-BS>' '<C-w>'
+imap '<S-CR>' '<UP><END><CR>'
 
 -- En vrai `s` ça sert à quoi ?
 nmap 's' '<Plug>Csurround'
-vmap 's' ':s/'
+
+vmap 's' '<Plug>VSurround'
+vmap 'S' ':s/'
 
 -- Déplacements plus intuitif quand on utilise f ou t
 map { 'n', 'v', 'o' } ',' ';'
 map { 'n', 'v', 'o' } ';' ','
+vmap '$' '$h'
 
 -- Plus intuitif quand une ligne est cassée en deux
-map { 'n', 'v' } 'j' 'gj'
-map { 'n', 'v' } 'k' 'gk'
+map { 'n', 'v' } 'j'      'gj'
 map { 'n', 'v' } '<Down>' 'gj'
-map { 'n', 'v' } '<Up>' 'gk'
+map { 'n', 'v' } '+'      'gj'
 
--- Parce que Ergo-L
-map { 'n', 'v' } '+' 'gj'
-map { 'n', 'v' } '-' 'gk'
+map { 'n', 'v' } 'k'      'gk'
+map { 'n', 'v' } '<Up>'   'gk'
+map { 'n', 'v' } '-'      'gk'
 
 -- Parce que flemme
 nmap 'dm' '"Qd'
 nmap 'yg' '"Qy'
 nmap 'qq' '"qpqqq'
-
--- « Atta je réessaye »
-function duplicate_and_comment_inner(start_line, finish_line)
-    local range = string.format("%d,%d ", start_line, finish_line)
-    vim.cmd(range .. 'yank')
-    vim.cmd(range .. 'Commentary')
-    vim.api.nvim_win_set_cursor(0, { finish_line, 0 })
-    vim.cmd('put')
-end
-
-function duplicate_and_comment_normal()
-    local start_line  = unpack(vim.api.nvim_buf_get_mark(0, '['))
-    local finish_line = unpack(vim.api.nvim_buf_get_mark(0, ']'))
-
-    -- Allow `h` as movement option for single line duplication
-    if finish_line < start_line then finish_line = start_line end
-    duplicate_and_comment_inner(start_line, finish_line)
-end
-
-function duplicate_and_comment_visual()
-    local start_line  = vim.fn.getpos '.'[2]
-    local finish_line = vim.fn.getpos 'v'[2]
-
-    -- Prevent backward ranges
-    if finish_line < start_line then
-        local tmp = finish_line
-        finish_line = start_line
-        start_line = tmp
-    end
-
-    duplicate_and_comment_inner(start_line, finish_line)
-end
-
-nmap 'gh' ':set opfunc=v:lua.duplicate_and_comment_normal<CR>g@'
-vmap 'gh' (duplicate_and_comment_visual)
 
 -- Garder la selection
 vmap '<'           '<gv'
@@ -88,82 +153,54 @@ nmap '<C-u>' 'gUiw'
 imap '<C-u>' '<Left><C-o>gUiw<C-o>e<Right>'
 --}>>
 
-
--------------
--- Aliases --
--------------
+-- ╭─────────────────────────────────────────────────────────╮
+-- │                         Aliases                         │
+-- ╰─────────────────────────────────────────────────────────╯
 --<<{
+-- Ergo-L Dead Key Mappings
+imap 'µ' '<C-o>db'
+
 -- Quand Ergo-L me casse les couilles
 imap 'fnt' 'function'
 
--- Insérer un bloc d’accolades
-function bracket_group(opening_delim, closing_delim)
-    return function()
-        local current_line = vim.api.nvim_get_current_line()
-        local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+imap '-+' '0'
+imap '+-' '1'
+imap '+/' '-1'
+imap ';!' '0;'
+imap '!;' '1;'
 
-        local left_of_cursor  = ""
-        local right_of_cursor = ""
 
-        if col == string.len(current_line) then
-            local index_last_space = string.find(current_line, ' [^ ]*$')
-
-            if utils.str_at(current_line, index_last_space - 1) == '(' then
-                left_of_cursor = string.sub(current_line, 1, index_last_space - 1) .. opening_delim
-            else
-                left_of_cursor = string.sub(current_line, 1, index_last_space) .. opening_delim
-            end
-
-            if string.find(string.sub(current_line, index_last_space + 1), '[^]});,]') then
-                right_of_cursor = closing_delim .. string.sub(current_line, index_last_space)
-            else
-                right_of_cursor = closing_delim .. string.sub(current_line, index_last_space + 1)
-            end
-        else
-            left_of_cursor  = string.sub(current_line, 1, col) .. opening_delim
-            right_of_cursor = closing_delim .. string.sub(current_line, col + 1)
-        end
-
-        local nb_espaces_indentation = math.floor(
-            (string.len(current_line) - string.len(utils.str_trim_left(current_line)))
-            / vim.o.tabstop
-        )
-
-        local nb_espaces_nouvelle_ligne = nb_espaces_indentation + vim.o.tabstop
-
-        vim.api.nvim_buf_set_lines(0, row - 1, row, true, {
-            left_of_cursor,
-            string.rep(" ", nb_espaces_nouvelle_ligne),
-            utils.str_trim_right(right_of_cursor),
-        })
-
-        vim.api.nvim_win_set_cursor(0, { row + 1, nb_espaces_nouvelle_ligne })
-    end
-end
 imap '{(' (bracket_group('{', '}'))
-imap '@[' (bracket_group('[', ']'))
+imap '~[' (bracket_group('[', ']'))
 
-imap '<C-CR>' '<UP><END><CR>'
 imap '[[' '[0]'
 --}>>
 
-------------
--- Leader --
-------------
+-- ╭─────────────────────────────────────────────────────────╮
+-- │                         Leader                          │
+-- ╰─────────────────────────────────────────────────────────╯
 --<<{
 vim.g.mapleader = " "
+vim.cmd [[
+    nmap <BackSpace> <Nop>
+    let maplocalleader = "\<BackSpace>"
+]]
+
 nmap '<leader>w' ':w<CR>'
 nmap '<leader>q' ':q<CR>'
 nmap '<leader>x' ':x<CR>'
 nmap '<leader>h' ':nohl<CR>'
 nmap '<leader> ' ':%s/ / /g<CR>``'  -- leader -> shift + espace, supprime tous les shift + espaces.
+nmap '<leader>r' 'zR'
+nmap '<leader>s' ':set opfunc=v:lua.replace_on_range<CR>g@'
+nmap '<leader>d' "m`:set opfunc=v:lua.duplicate_and_comment_normal<CR>g@"
+vmap '<leader>d' (duplicate_and_comment_visual)
 
-vim.g.maplocalleader = " l"
 --}>>
 
-------------
--- Editor --
-------------
+-- ╭─────────────────────────────────────────────────────────╮
+-- │                         Editor                          │
+-- ╰─────────────────────────────────────────────────────────╯
 --<<{
 -- Fold mappings
 nmap 'z0' ':set fdl=0<CR>'

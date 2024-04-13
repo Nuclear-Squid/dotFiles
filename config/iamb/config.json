@@ -1,0 +1,9 @@
+{
+    "profiles": {
+        "user": {
+            "user_id": "Nuclear Squid",
+            "url": "https://chat.ahur.ac"
+        } ,
+        "defailt_profile": "user"
+    } ,
+}

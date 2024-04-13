@@ -5,8 +5,8 @@
 --    |  que je suis parfaitement objectif).   |
 --    |   _____________________________________|_
 --     \_/_______________________________________/
--- 
+--
 
+require("mappings")
 require("plugins")
 require("options")
-require("mappings")

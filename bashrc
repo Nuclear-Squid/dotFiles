@@ -6,6 +6,8 @@ export EDITOR=nvim
 export PATH=~/Code/dotFiles/bin:$PATH
 export PATH=~/.cargo/bin:$PATH
 
+source ~/Code/dotFiles/bash_aliases
+
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;

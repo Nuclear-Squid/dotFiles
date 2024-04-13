@@ -109,10 +109,20 @@ _G.packer_plugins = {
     path = "/home/nuclearsquid/.local/share/nvim/site/pack/packer/start/cmp-vsnip",
     url = "https://github.com/hrsh7th/cmp-vsnip"
   },
+  everforest = {
+    loaded = true,
+    path = "/home/nuclearsquid/.local/share/nvim/site/pack/packer/start/everforest",
+    url = "https://github.com/sainnhe/everforest"
+  },
   gruvbox = {
     loaded = true,
     path = "/home/nuclearsquid/.local/share/nvim/site/pack/packer/start/gruvbox",
     url = "https://github.com/morhetz/gruvbox"
+  },
+  ["just-code"] = {
+    loaded = true,
+    path = "/home/nuclearsquid/.local/share/nvim/site/pack/packer/start/just-code",
+    url = "https://github.com//home/nuclearsquid/Code/projets_perso/just-code"
   },
   ["kalahari.vim"] = {
     loaded = true,
@@ -123,6 +133,11 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/nuclearsquid/.local/share/nvim/site/pack/packer/start/kanagawa.nvim",
     url = "https://github.com/rebelot/kanagawa.nvim"
+  },
+  kikwis = {
+    loaded = true,
+    path = "/home/nuclearsquid/.local/share/nvim/site/pack/packer/start/kikwis",
+    url = "https://github.com/lucastrvsn/kikwis"
   },
   ["lualine.nvim"] = {
     loaded = true,
@@ -149,6 +164,21 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/nuclearsquid/.local/share/nvim/site/pack/packer/start/neorg",
     url = "https://github.com/nvim-neorg/neorg"
+  },
+  ["neovim-ayu"] = {
+    loaded = true,
+    path = "/home/nuclearsquid/.local/share/nvim/site/pack/packer/start/neovim-ayu",
+    url = "https://github.com/Shatur/neovim-ayu"
+  },
+  ["nightfox.nvim"] = {
+    loaded = true,
+    path = "/home/nuclearsquid/.local/share/nvim/site/pack/packer/start/nightfox.nvim",
+    url = "https://github.com/EdenEast/nightfox.nvim"
+  },
+  nvim = {
+    loaded = true,
+    path = "/home/nuclearsquid/.local/share/nvim/site/pack/packer/start/nvim",
+    url = "https://github.com/catppuccin/nvim"
   },
   ["nvim-cmp"] = {
     loaded = true,
@@ -180,10 +210,20 @@ _G.packer_plugins = {
     path = "/home/nuclearsquid/.local/share/nvim/site/pack/packer/start/onedark.vim",
     url = "https://github.com/joshdick/onedark.vim"
   },
+  ["oneokai.nvim"] = {
+    loaded = true,
+    path = "/home/nuclearsquid/.local/share/nvim/site/pack/packer/start/oneokai.nvim",
+    url = "https://github.com/AxelGard/oneokai.nvim"
+  },
   ["packer.nvim"] = {
     loaded = true,
     path = "/home/nuclearsquid/.local/share/nvim/site/pack/packer/start/packer.nvim",
     url = "https://github.com/wbthomason/packer.nvim"
+  },
+  ["palenightfall.nvim"] = {
+    loaded = true,
+    path = "/home/nuclearsquid/.local/share/nvim/site/pack/packer/start/palenightfall.nvim",
+    url = "https://github.com/JoosepAlviste/palenightfall.nvim"
   },
   ["photon.nvim"] = {
     loaded = true,

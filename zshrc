@@ -7,9 +7,17 @@
 #| Warning: this file expects ~/.bash_aliases to define $COLOR_TERM.
 #|
 
+tmux source ~/.tmux.conf
 
 #|    Personal settings (mostly shared with ~/.bashrc)                      <<<
 #|=============================================================================
+
+export EDITOR=nvim
+export PATH=~/.local/bin:$PATH
+export PATH=~/Code/dotFiles/bin:$PATH
+export PATH=~/.cargo/bin:$PATH
+
+source ~/Code/dotFiles/bash_aliases
 
 # Load bash alias definitions
 if [ -f ~/.bash_aliases ]; then
@@ -83,50 +91,55 @@ bindkey ' ' magic-space    # also do history expansion on space
 #|    Prompt                                                                <<<
 #|=============================================================================
 
-# version control
-autoload -Uz vcs_info
-zstyle ':vcs_info:*' enable git hg svn
-zstyle ':vcs_info:*'    formats $PS_vcsinfo"‡ %b"
-zstyle ':vcs_info:hg*'  formats $PS_vcsinfo"☿ %b"
-zstyle ':vcs_info:git*' formats $PS_vcsinfo"± %b"
-precmd() {
-  vcs_info
-}
+# fancy starship prompt, powered by Rust
+if [ 0 -eq 0 ]; then
+    eval "$(starship init zsh)"
+else  # Backup prompt
+    # version control
+    autoload -Uz vcs_info
+    zstyle ':vcs_info:*' enable git hg svn
+    zstyle ':vcs_info:*'    formats $PS_vcsinfo"‡ %b"
+    zstyle ':vcs_info:hg*'  formats $PS_vcsinfo"☿ %b"
+    zstyle ':vcs_info:git*' formats $PS_vcsinfo"± %b"
+    precmd() {
+      vcs_info
+    }
 
-# prompt parts
-local PS_prompt="|>"
-local PS_time="%D{%H:%M:%S}" # like "%* but uses a leading zero when needed
-local PS_host="@$(hostname)"
-local PS_user="%n$PS_host"
-local PS_cwd="%~"
-local PS_vcsinfo="%r/%S"
+    # prompt parts
+    local PS_prompt="|>"
+    local PS_time="%D{%H:%M:%S}" # like "%* but uses a leading zero when needed
+    local PS_host="@$(hostname)"
+    local PS_user="%n$PS_host"
+    local PS_cwd="%~"
+    local PS_vcsinfo="%r/%S"
 
-# comment this line for a distraction-free prompt <<<
-# -- warning: $COLOR_TERM is defined in ~/.bash_aliases
-local color_prompt=$COLOR_TERM
-if [ "$color_prompt" ]; then
-  autoload colors && colors
-  PS_prompt="%{$fg_bold[white]%}$PS_prompt%{$reset_color%}"
-  PS_host="%{$fg_bold[green]%}$PS_host%{$reset_color%}"
-  # time: color coded by last return code
-  PS_time="%(?.%{$fg[green]%}.%{$fg[red]%})$PS_time%{$reset_color%}"
-  # user: color coded by privileges
-  PS_user="%(!.%{$fg_bold[red]%}.%{$fg_bold[yellow]%})$PS_user%{$reset_color%}"
-  PS_cwd="%{$fg_bold[magenta]%}$PS_cwd%{$reset_color%}"
-  PS_vcsinfo="%{$fg[blue]%}$PS_vcsinfo%{$reset_color%}"
+    # comment this line for a distraction-free prompt <<<
+    # -- warning: $COLOR_TERM is defined in ~/.bash_aliases
+    local color_prompt=$COLOR_TERM
+    if [ "$color_prompt" ]; then
+      autoload colors && colors
+      PS_prompt="%{$fg_bold[white]%}$PS_prompt%{$reset_color%}"
+      PS_host="%{$fg_bold[green]%}$PS_host%{$reset_color%}"
+      # time: color coded by last return code
+      PS_time="%(?.%{$fg[green]%}.%{$fg[red]%})$PS_time%{$reset_color%}"
+      # user: color coded by privileges
+      PS_user="%(!.%{$fg_bold[red]%}.%{$fg_bold[yellow]%})$PS_user%{$reset_color%}"
+      PS_cwd="%{$fg_bold[magenta]%}$PS_cwd%{$reset_color%}"
+      PS_vcsinfo="%{$fg[blue]%}$PS_vcsinfo%{$reset_color%}"
+    fi
+    unset color_prompt
+    # >>>
+
+    # two-line prompt with time + current vcs branch on the right
+    setopt prompt_subst
+    # RPROMPT="$(__vcs_info)" # defined in ~/.bash_aliases
+    RPROMPT='${vcs_info_msg_0_}'
+
+    # [${PS_time}] ${PS_user}:${PS_cwd}
+    PROMPT="\\_o<____________________________________
+    [${vcs_info_msg_0_}] ${PS_user}:${PS_cwd}
+    ${PS_prompt}"
 fi
-unset color_prompt
-# >>>
-
-# two-line prompt with time + current vcs branch on the right
-setopt prompt_subst
-# RPROMPT="$(__vcs_info)" # defined in ~/.bash_aliases
-RPROMPT='${vcs_info_msg_0_}'
-
-# [${PS_time}] ${PS_user}:${PS_cwd}
-PROMPT="\\_o<____________________________________
-[${vcs_info_msg_0_}] ${PS_user}:${PS_cwd}
-${PS_prompt}"
 
 # >>>
 
@@ -252,8 +265,18 @@ fi
 echo -e "$(cat ~/Code/dotFiles/asciiArts/startup_term) \e[A"
 
 # FZF is pure happiness -- try Ctrl-R and Ctrl-T, enjoy.
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+export FZF_PATH="$HOME/.fzf"
+export FZF_DEFAULT_COMMAND="fd --type f --strip-cwd-prefix"
+
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_CTRL_T_OPTS="--preview 'bat --color=always --style=plain -r :200 {}'"
+
+source ~/.fzf.zsh
+source ~/.fzf/shell/fzf-git.sh
+
+# Zoxide <3 <3
+eval "$(zoxide init zsh)"
+
+# [ -f "/home/leo/.ghcup/env" ] && source "/home/leo/.ghcup/env" # ghcup-env
 
 # vim: set fdm=marker fmr=<<<,>>> fdl=0 ft=zsh:
-
-[ -f "/home/leo/.ghcup/env" ] && source "/home/leo/.ghcup/env" # ghcup-env
