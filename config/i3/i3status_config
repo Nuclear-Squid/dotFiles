@@ -1,0 +1,43 @@
+general {
+    output_format = "i3bar"
+    interval = 5
+}
+
+order += "cpu_usage"
+order += "memory"
+order += "battery 1"
+order += "time"
+order += "wireless wlp3s0"
+
+wireless wlp3s0 {
+    format_up = "⛧"
+    format_down = "!!"
+}
+
+time {
+    format = "%m-%d %H:%M"
+}
+
+battery 1 {
+        format = "%status%percentage %remaining"
+        format_down = "No battery"
+        last_full_capacity = true
+        status_chr = "⚡"
+        status_bat = "🔋"
+        status_unk = "??"
+        status_full = ""
+        path = "/sys/class/power_supply/BAT%d/uevent"
+        low_threshold = 10
+}
+
+memory {
+    format = "%used"
+    threshold_degraded = 30%
+    threshold_critical = 15%
+}
+
+cpu_usage {
+    format = "%usage"
+    degraded_threshold = 50
+    max_threshold = 75
+}
