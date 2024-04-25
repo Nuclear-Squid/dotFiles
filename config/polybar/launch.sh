@@ -8,7 +8,5 @@ while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
 
 # Launch Polybar
 for m in $(polybar --list-monitors | cut -d':' -f1); do
-    MONITOR=$m polybar left &
-    MONITOR=$m polybar center &
-    MONITOR=$m polybar right &
+    MONITOR=$m polybar &
 done

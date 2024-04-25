@@ -182,7 +182,6 @@ mode "resize" {
 bindcode $mod+52 "resize"
 
 gaps inner 10px
-gaps bottom 25px
 default_border none
 title_align center
 
