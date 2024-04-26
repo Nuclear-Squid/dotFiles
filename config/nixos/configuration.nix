@@ -118,6 +118,7 @@
         variables.EXA_COLORS = "di=01;35:uu=03;33:ur=33:uw=33:gw=33:gx=01;32:tw=33:tx=01;32:sn=35";
         systemPackages = with pkgs; [
             neovim
+            wget
             gnumake
             firefox
             pulseaudio
@@ -127,7 +128,7 @@
             killall
             discord
             home-manager
-            rustup
+            rustc
             cargo
             xfce.xfce4-screenshooter
             thunderbird
@@ -137,7 +138,13 @@
             feh
             kanata
             ranger
-        ];
+            ripgrep
+            unzip
+            gcc
+            go
+            nodejs_21
+            tree-sitter
+      ];
     };
 
     # Some programs need SUID wrappers, can be configured further or are

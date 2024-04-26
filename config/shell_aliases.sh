@@ -4,6 +4,7 @@ alias l="$cd_ls_alias"
 alias ll="eza -l"
 alias la="eza -la"
 alias cat="bat"
+alias chux="chmod u+x"
 alias ggez="sudo nixos-rebuild switch --show-trace"
 
 if [ $(echo "$SHELL" | rev | cut -d '/' -f 1 | rev) = "zsh" ]; then
