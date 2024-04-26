@@ -7,6 +7,11 @@ in {
         (import "${home-manager}/nixos")
     ];
 
+    nix = {
+        package = pkgs.nix;
+        settings.experimental-features = [ "nix-command" "flakes" ];
+    };
+
     home-manager.users.nuclearsquid = {
         home.stateVersion = home-manager-version;
         programs.git = {
