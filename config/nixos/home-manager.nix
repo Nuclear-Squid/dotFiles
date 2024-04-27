@@ -84,7 +84,9 @@ in {
 
             # I know there’s a 'shellAliases' property here, but this
             # file also has functions I want syntax highlighting for.
-            initExtra = builtins.readFile ../shell_aliases.sh;
+            initExtra = ''
+                zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+            '' + builtins.readFile ../shell_aliases.sh;
         };
 
         programs.thefuck = {

@@ -1,20 +1,27 @@
-cd_ls_alias="eza -l --git-ignore"
-
-alias l="$cd_ls_alias"
-alias ll="eza -l"
+alias l="eza -l"
 alias la="eza -la"
 alias cat="bat"
 alias chux="chmod u+x"
 alias ggez="sudo nixos-rebuild switch --show-trace"
 
-if [ $(echo "$SHELL" | rev | cut -d '/' -f 1 | rev) = "zsh" ]; then
-    zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
-fi
-
-cf() {
-    mkdir -p $1
-    builtin cd $1
+default_ls_command() {
+    eza -l --git-ignore
 }
+
+magic-enter() {
+    if [ -z $BUFFER ]; then
+        echo
+        default_ls_command
+        echo -ne "\x1b[A"
+    fi
+    zle accept-line
+}
+
+zle -N magic-enter
+bindkey "^M" magic-enter
+
+
+cf() { mkdir -p $1 && builtin cd $1 }
 
 # cd, but better (what exactly do you mean by "just use `ls` you lazy fuck"?)
 cd() {
@@ -31,7 +38,7 @@ cd() {
     done
     local current_git_dir="$(git rev-parse --show-toplevel 2>/dev/null)"
     [ "$current_git_dir" != "" ] && [ "$current_git_dir" != "$previous_git_repo" ] && onefetch
-    eval $cd_ls_alias
+    default_ls_command
     if [ $auto_jumped_path ]; then
         echo -e "\x1b[1;35mAuto-jumped\x1b[0m inside of \x1b[3;33m$auto_jumped_path\x1b[0m"
     fi

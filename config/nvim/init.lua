@@ -213,6 +213,7 @@ require('lazy').setup({
       { 'folke/neodev.nvim', opts = {} },
     },
     config = function()
+      --[[
       -- Fix MasonInstall on nixos
       local mason_registry = require("mason-registry")
       mason_registry:on("package:install:success", function(pkg)
@@ -240,6 +241,7 @@ require('lazy').setup({
               end
           end)
       end)
+      --]]
 
       vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
