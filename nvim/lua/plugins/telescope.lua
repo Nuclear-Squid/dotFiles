@@ -38,15 +38,14 @@ return { -- Fuzzy Finder (files, lsp, etc)
 
     -- See `:help telescope.builtin`
     local builtin = require 'telescope.builtin'
-    vim.keymap.set('n', '<leader>H', builtin.help_tags, { desc = 'search [H]elp' })
+    vim.keymap.set('n', '<leader>h', builtin.help_tags, { desc = 'search [H]elp' })
     vim.keymap.set('n', '<leader>m', builtin.keymaps, { desc = 'search [M]appings' })
     vim.keymap.set('n', '<leader>g', builtin.live_grep, { desc = 'live [G]rep' })
     vim.keymap.set('n', '<leader>l', builtin.diagnostics, { desc = '[L]sp diagnostics' })
     vim.keymap.set('n', '<leader>tb', builtin.builtin, { desc = '[T]elescope [B]uiltin' })
     vim.keymap.set('n', '<leader>tr', builtin.resume, { desc = '[T]elescope [R]esume' })
-    vim.keymap.set('n', '<leader>oo', builtin.oldfiles, { desc = '[O]pen [O]ld files' })
-    vim.keymap.set('n', '<leader>of', builtin.find_files, { desc = '[O]pen [F]ile' })
-    vim.keymap.set('n', '<leader>og', builtin.git_files, { desc = '[O]pen [G]it file' })
+    vim.keymap.set('n', '<leader>o', builtin.oldfiles, { desc = '[O]pen [O]ld files' })
+    vim.keymap.set('n', '<leader>G', builtin.git_files, { desc = '[O]pen [G]it file' })
     vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = 'search buffers' })
 
     -- Slightly advanced example of overriding default behavior and theme
@@ -60,7 +59,7 @@ return { -- Fuzzy Finder (files, lsp, etc)
 
     -- It's also possible to pass additional configuration options.
     --  See `:help telescope.builtin.live_grep()` for information about particular keys
-    vim.keymap.set('n', '<leader>s/', function()
+    vim.keymap.set('n', '<leader>?', function()
       builtin.live_grep {
         grep_open_files = true,
         prompt_title = 'Live Grep in Open Files',

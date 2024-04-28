@@ -233,9 +233,9 @@ require('lazy').setup {
 
   --  ────────────────────< More complex plugin setups >─────────────────
   require 'plugins.cmp',
-  require 'plugins.conform',
+  -- require 'plugins.conform',
   require 'plugins.debug',
-  require 'plugins.gitsigns',
+  -- require 'plugins.gitsigns',
   require 'plugins.lint',
   require 'plugins.lspconfig',
   require 'plugins.lualine',
