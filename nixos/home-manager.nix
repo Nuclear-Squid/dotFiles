@@ -86,25 +86,14 @@ in {
             # file also has functions I want syntax highlighting for.
             initExtra = ''
                 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+
+                fastfetch
             '' + builtins.readFile ../shell_aliases.sh;
         };
 
         programs.thefuck = {
             enable = true;
             enableZshIntegration = true;
-        };
-
-        programs.tmux = {
-            enable = true;
-            shell = "${pkgs.zsh}/bin/zsh";
-            mouse = true;
-            shortcut = "a";
-            terminal = "tmux-256color";
-            extraConfig = "set -g status off";
-
-            plugins = with pkgs.tmuxPlugins; [
-                sensible
-            ];
         };
 
         programs.starship = {
