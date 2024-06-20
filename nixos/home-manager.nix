@@ -1,6 +1,6 @@
 { config, pkgs, ... }:
 let
-home-manager-version = "23.11";
+home-manager-version = "24.05";
 home-manager = builtins.fetchTarball"https://github.com/nix-community/home-manager/archive/release-${home-manager-version}.tar.gz";
 in {
     imports = [
@@ -23,7 +23,8 @@ in {
                 cv = "commit -v";
                 cb = "checkout -b";
                 st = "status";
-                log = "log --graph --oneline";
+                lo = "log --graph --oneline";
+                pf = "push --force-with-lease";
             };
             extraConfig = {
                 push = { autoSetupRemote = true; };
@@ -126,8 +127,6 @@ in {
         programs.fzf = rec {
             enable = true;
             enableZshIntegration = true;
-            tmux.enableShellIntegration = true;
-            tmux.shellIntegrationOptions = [ "-p 80%,80%" ];
             defaultCommand = "fd --type f --strip-cwd-prefix";
 
             # ctrl-t
@@ -139,6 +138,16 @@ in {
         programs.rofi = {
             enable = true;
             theme = ../rofi_theme.rasi;
+        };
+
+        programs.librewolf = {
+            enable = true;
+            settings = {
+                "webgl.disabled" = false;
+                "privacy.resistFingerprinting" = true;
+                "privacy.clearOnShutdown.history" = true;
+                "privacy.clearOnShutdown.cookies" = true;
+            };
         };
 
         services.polybar = {

@@ -3,6 +3,7 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
 { config, pkgs, callPackage, ... }:
+let unstable = import <nixos-unstable> {}; in
 {
     # Allow unfree packages
     nixpkgs.config = {
@@ -14,6 +15,8 @@
         /etc/nixos/hardware-configuration.nix
         ./home-manager.nix
     ];
+
+    nix.optimise.automatic = true; # Optimise storage space of NixOS
 
     # Bootloader.
     boot.loader.systemd-boot.enable = true;
@@ -49,18 +52,19 @@
 
     # Configure keymap in X11
     services = {
+        # Auto maunt usb devices
+        udisks2.enable = true;
+        devmon.enable = true;
+        gvfs.enable = true;
+
+        displayManager.defaultSession = "none+i3";
+
         xserver = {
             enable = true;
-            layout = "us";
-            xkbVariant = "";
+            xkb.layout = "us";
+            xkb.variant = "";
 
-            desktopManager = {
-                xterm.enable = false;
-            };
-
-            displayManager = {
-                defaultSession = "none+i3";
-            };
+            desktopManager.xterm.enable = false;
 
             windowManager.i3 = {
                 enable = true;
@@ -74,18 +78,8 @@
         picom = {
             enable = true;
             settings.animations = true;
-            # package = pkgs.picom-allusive;
-            # package = pkgs.picom-jonaburg.overrideAttrs (oldAttrs: {
-            #     inherit oldAttrs;
-            #     meta.mainProgram = "picom";
-            # });
-            # package = pkgs.picom-jonaburg // {
-            #     meta.mainProgram = "picom";
-            # };
-            # settings.experimentalBackend = true;
             settings.corner-radius = 10;
             settings.roundBorder = 1;
-            # settings.inactive-opacity = 0;
         };
 
         kanata = {
@@ -95,6 +89,8 @@
                 config = builtins.readFile ../kanata.kbd;
             };
         };
+
+        udev.packages = with pkgs; [ via ];
     };
 
     programs.zsh.enable = true;
@@ -110,7 +106,11 @@
 
 
     programs.nix-ld.enable = true;
-
+    programs.steam = {
+        enable = true;
+        remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
+        dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+    };
     environment = {
         pathsToLink = [
             "/libexec"    # Needed by i3
@@ -123,7 +123,8 @@
         };
 
         systemPackages = with pkgs; [
-            neovim
+            unstable.neovim
+            unstable.neovide
             wget
             gnumake
             firefox
@@ -134,12 +135,11 @@
             killall
             discord
             home-manager
-            rustc
-            cargo
+            unstable.rustc
+            unstable.cargo
             xfce.xfce4-screenshooter
             thunderbird
             fd
-            neofetch
             onefetch
             feh
             kanata
@@ -147,9 +147,30 @@
             ripgrep
             unzip
             gcc
-            go
-            nodejs_21
-      ];
+            telegram-desktop
+            libreoffice-qt
+            hunspell # Libs for libreoffice
+            hunspellDicts.uk_UA
+            hunspellDicts.th_TH
+            mupdf
+            tor-browser
+            signaldctl
+            unstable.hugo
+            unstable.pandoc
+            meson
+            ninja
+            pkg-config
+            libiconv
+            blender
+            unstable.arduino-ide
+            unstable.arduino-cli
+            unstable.fastfetch
+            stlink
+            zip
+            unstable.qmk
+            via
+            alsa-lib
+        ];  ## PACKAGES ##  (handy tag to jump back here quickly)
     };
 
     # Some programs need SUID wrappers, can be configured further or are
