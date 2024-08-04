@@ -97,7 +97,7 @@ let unstable = import <nixos-unstable> {}; in
     users.defaultUserShell = pkgs.zsh;
 
     # Define a user account. Don't forget to set a password with ‘passwd’.
-    users.users.nuclearsquid = {
+    users.users.nuclear-squid = {
         isNormalUser = true;
         description = "Nuclear Squid";
         extraGroups = [ "networkmanager" "wheel" "audio" ];
@@ -127,13 +127,13 @@ let unstable = import <nixos-unstable> {}; in
             unstable.neovide
             wget
             gnumake
-            firefox
             pulseaudio
+            brightnessctl
             xorg.xkbcomp
             xclip
             xdotool
             killall
-            discord
+            armcord
             home-manager
             unstable.rustc
             unstable.cargo
