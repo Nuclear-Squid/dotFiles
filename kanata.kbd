@@ -1,3 +1,9 @@
+(defvar
+  tap-timeout      120
+  hold-timeout     200
+  one-shot-timeout 1000
+)
+
 (defsrc
     q    w    e    r    t         u    i    o    p    [
     a    s    d    f    g         j    k    l    ;    '
@@ -6,21 +12,21 @@
 )
 
 (deflayer qwerty
-    q    w   @ee   r    t         y    u   @ii   o    p
+    q    w    e    r    t         y    u    i    o    p
     a   @ss  @dd  @ff   g         h   @jj  @kk  @ll   ;
     z    x    c    v    b   cmp   n    m    ,    .    /
-                  @num @ctl      @alt @nav
+                  @sup @nav    @alt @num
 )
 
 (deflayer vimnav
     C-q  @stp @vup @vdn _         home pgdn pgup end  _
     C-a  C-s S-tab tab  @gam      lft  down up   rght _
     C-z  C-x  C-w  C-v  @std _    bldn brdn brup blup _
-              ret  _                   _    _
+              _   ret                   ret  _
 )
 
-(deflayer numlayer
-    S-1  S-2  S-3  S-4  S-5       S-6  S-7  S-8  S-9  S-0
+(deflayer numrow
+    S-1  S-2  S-3  _    _         _    _    _    _    _
     1    2    3    4    5         6    7    8    9    0
     _    _    _    _    _    _    _    _    _    _    _
                    _    _         _    _
@@ -33,36 +39,28 @@
                   @num  spc       spc @nav
 )
 
+(deftemplate mt (keycode modifier)
+    (tap-hold $tap-timeout $hold-timeout $keycode $modifier)
+)
+
+(deftemplate lt (keycode layer)
+    (tap-hold $tap-timeout $hold-timeout $keycode (layer-toggle $layer))
+)
+
 (defalias
-    num (tap-hold-press 200 200
-        (fork esc ret (ralt))
-        (layer-toggle numlayer)
-    )
+    ots (tap-dance $tap-timeout ((one-shot-press $one-shot-timeout lsft) caps))
 
-    ctl (tap-hold 200 200
-        (fork
-            (tap-dance 200 (
-                (one-shot-press 2000 lsft)
-                caps
-            ))
-            spc
-            (ralt)
-        )
-        lctl
-    )
+    sup (t! mt esc lmet)
+    nav (t! lt (fork @ots spc (ralt)) vimnav)
+    alt (t! mt spc (fork ralt (multi (release-key lmet) (layer-toggle vimnav)) (lmet)))
+    num (t! lt bspc numrow)
 
-    alt (tap-hold 200 200 spc ralt)
-    nav (tap-hold-press 200 200 bspc (layer-toggle vimnav))
-
-    ss (tap-hold 200 200 (chord combos s) lsft)
-    dd (tap-hold 200 200 (chord combos d) lmet)
-    ff (tap-hold 200 200 (chord combos f) lalt)
-    jj (tap-hold 200 200 (chord combos j) lalt)
-    kk (tap-hold 200 200 (chord combos k) lmet)
-    ll (tap-hold 200 200 (chord combos l) lsft)
-
-    ii (tap-hold 200 200 i M-i)
-    ee (tap-hold 200 200 e M-e)
+    ss (t! mt s lsft)
+    dd (t! mt (chord combos d) lctl)
+    ff (t! mt (chord combos f) lalt)
+    jj (t! mt (chord combos j) lalt)
+    kk (t! mt (chord combos k) lctl)
+    ll (t! mt l lsft)
 
     stp (fork VolumeMute MediaPlayPause     (lsft))
     vup (fork VolumeUp   MediaTrackPrevious (lsft))
@@ -70,23 +68,18 @@
 
     gam (layer-switch gaming)
     std (layer-switch qwerty)
-
 )
 
 (defchords combos 15
     ;; Keep standard tap actions
-    (s    ) s
-    (  d  ) d
-    (    f) f
-    (    j) j
-    (  k  ) k
-    (l    ) l
+    (d  ) d
+    (  f) f
+    (  j) j
+    (k  ) k
 
     ;; Actual combos
-    (s d  ) C-bspc
-    (  d f) esc
-    (  k j) ret
-    (l k  ) tab
+    (d f) C-bspc
+    (k j) ret
 )
 
 ;; vim: set ft=lisp
