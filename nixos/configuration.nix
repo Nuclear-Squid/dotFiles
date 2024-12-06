@@ -3,7 +3,16 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
 { config, pkgs, callPackage, ... }:
-let unstable = import <nixos-unstable> {}; in
+let
+    # Opt-in nixos channels
+    unstable   = import <nixos-unstable> { config = config.nixpkgs.config; };
+    old-stable = import <nixos-old-stable> { config = config.nixpkgs.config; };
+in
+#     let global-packages = with pkgs; {
+#         dev-stuff = [
+#         ];
+#     };
+# in
 {
     # Allow unfree packages
     nixpkgs.config = {
@@ -19,8 +28,19 @@ let unstable = import <nixos-unstable> {}; in
     nix.optimise.automatic = true; # Optimise storage space of NixOS
 
     # Bootloader.
-    boot.loader.systemd-boot.enable = true;
-    boot.loader.efi.canTouchEfiVariables = true;
+    # boot.loader.systemd-boot.enable = true;
+    # boot.loader.efi.canTouchEfiVariables = true;
+    boot = {
+        loader = {
+            systemd-boot.enable = true;
+            efi.canTouchEfiVariables = true;
+        };
+
+        # kernel.sysctl = {
+        #   "kernel.unprivileged_userns_clone" = 1; # for steam
+        # };
+    };
+
 
     networking.hostName = "nixos"; # Define your hostname.
     # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -50,6 +70,11 @@ let unstable = import <nixos-unstable> {}; in
         LC_TIME = "fr_FR.UTF-8";
     };
 
+    xdg.portal = {
+        enable = true;
+        extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
+    };
+
     # Configure keymap in X11
     services = {
         # Auto maunt usb devices
@@ -57,17 +82,19 @@ let unstable = import <nixos-unstable> {}; in
         devmon.enable = true;
         gvfs.enable = true;
 
+        flatpak.enable = true;
         displayManager.defaultSession = "none+i3";
 
         xserver = {
             enable = true;
-            xkb.layout = "us";
-            xkb.variant = "";
+            xkb.layout = "fr";
+            xkb.variant = "ergol";
 
             desktopManager.xterm.enable = false;
 
             windowManager.i3 = {
                 enable = true;
+                package = unstable.i3;
                 extraPackages = with pkgs; [
                     i3status
                     i3lock
@@ -77,13 +104,17 @@ let unstable = import <nixos-unstable> {}; in
 
         picom = {
             enable = true;
-            settings.animations = true;
-            settings.corner-radius = 10;
-            settings.roundBorder = 1;
+            settings = {
+                corner-radius = 10;
+                roundBorder = 1;
+                fading = true;
+                fade-delta = 3;
+            };
         };
 
         kanata = {
             enable = true;
+            package = unstable.kanata;
             keyboards.laptop = {
                 devices = [ "/dev/input/event0" ];
                 config = builtins.readFile ../kanata.kbd;
@@ -104,13 +135,15 @@ let unstable = import <nixos-unstable> {}; in
         packages = with pkgs; [];
     };
 
-
     programs.nix-ld.enable = true;
+
     programs.steam = {
         enable = true;
+        # package = unstable.steam;
         remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
         dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
     };
+
     environment = {
         pathsToLink = [
             "/libexec"    # Needed by i3
@@ -133,7 +166,8 @@ let unstable = import <nixos-unstable> {}; in
             xclip
             xdotool
             killall
-            armcord
+            # unstable.armcord
+            discord
             home-manager
             unstable.rustc
             unstable.cargo
@@ -142,7 +176,7 @@ let unstable = import <nixos-unstable> {}; in
             fd
             onefetch
             feh
-            kanata
+            unstable.kanata
             ranger
             ripgrep
             unzip
@@ -163,13 +197,28 @@ let unstable = import <nixos-unstable> {}; in
             libiconv
             blender
             unstable.arduino-ide
-            unstable.arduino-cli
+            # unstable.arduino-cli
             unstable.fastfetch
             stlink
             zip
             unstable.qmk
             via
             alsa-lib
+            kdePackages.kdenlive
+            cbonsai
+            cmatrix
+            unstable.prismlauncher
+            unstable.inkscape
+            zoom-us
+            python3
+            clang
+            nodejs_22
+            unstable.picom
+            cmake
+            appimage-run
+            love
+            valgrind
+            xfce.thunar
         ];  ## PACKAGES ##  (handy tag to jump back here quickly)
     };
 
