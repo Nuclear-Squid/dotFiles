@@ -1,18 +1,99 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
-
-{ config, pkgs, callPackage, ... }:
+{ config, pkgs, ... }:
 let
-    # Opt-in nixos channels
-    unstable   = import <nixos-unstable> { config = config.nixpkgs.config; };
+    unstable   = import <nixos-unstable>   { config = config.nixpkgs.config; };
     old-stable = import <nixos-old-stable> { config = config.nixpkgs.config; };
+in let
+    global-system-packages = with pkgs; {
+
+        code-editors = [
+            unstable.neovim
+            unstable.neovide
+            arduino-ide
+        ];
+
+        dev-tools = [
+            valgrind
+            gnumake
+            stlink
+            cmake
+            meson
+            ninja
+            # those should go in Ergo‑L’s repo
+            unstable.hugo
+            unstable.pandoc
+        ];
+
+        languages-and-compilers = [
+            unstable.rustc
+            unstable.cargo
+            arduino-cli
+            nodejs_22
+            python3
+            clang
+            gcc
+        ];
+
+        rice-and-cli-tools = [
+            fastfetch
+            onefetch
+            ripgrep
+            ranger
+            mupdf
+            feh
+            fd
+        ];
+
+        gui-apps = [
+            telegram-desktop
+            tor-browser
+            thunderbird
+            xfce.thunar
+            discord
+            zoom-us
+            libreoffice-qt
+            hunspell # Libs for libreoffice
+            hunspellDicts.uk_UA
+            hunspellDicts.th_TH
+        ];
+
+        art-apps = [
+            kdePackages.kdenlive
+            inkscape
+            blender
+        ];
+
+        keyboard-stuff = [
+            unstable.kanata
+            xorg.xkbcomp
+            unstable.qmk
+            via
+        ];
+
+        lower-level-system = [
+            brightnessctl
+            appimage-run
+            pulseaudio
+            signaldctl
+            pkg-config
+            alsa-lib
+            libiconv
+            xdotool
+            killall
+            xclip
+            unzip
+            wget
+            zip
+        ];
+
+        miscellaneous = [
+            home-manager
+            xfce.xfce4-screenshooter
+            unstable.prismlauncher  # Minecraft launcher
+            love  # 2d lua game engine, for olympus (celeste mod installer)
+        ];
+
+    };
 in
-#     let global-packages = with pkgs; {
-#         dev-stuff = [
-#         ];
-#     };
-# in
 {
     # Allow unfree packages
     nixpkgs.config = {
@@ -28,19 +109,8 @@ in
     nix.optimise.automatic = true; # Optimise storage space of NixOS
 
     # Bootloader.
-    # boot.loader.systemd-boot.enable = true;
-    # boot.loader.efi.canTouchEfiVariables = true;
-    boot = {
-        loader = {
-            systemd-boot.enable = true;
-            efi.canTouchEfiVariables = true;
-        };
-
-        # kernel.sysctl = {
-        #   "kernel.unprivileged_userns_clone" = 1; # for steam
-        # };
-    };
-
+    boot.loader.systemd-boot.enable = true;
+    boot.loader.efi.canTouchEfiVariables = true;
 
     networking.hostName = "nixos"; # Define your hostname.
     # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -73,6 +143,9 @@ in
     xdg.portal = {
         enable = true;
         extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
+        config.common.default = "*";  # XXX: keep xdg-portal behaviour in <1.17.
+                                      # May break stuff, honnestly I have no
+                                      # idea what it means
     };
 
     # Configure keymap in X11
@@ -139,7 +212,6 @@ in
 
     programs.steam = {
         enable = true;
-        # package = unstable.steam;
         remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
         dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
     };
@@ -155,71 +227,7 @@ in
             EXA_COLORS = "di=01;35:uu=03;33:ur=33:uw=33:gw=33:gx=01;32:tw=33:tx=01;32:sn=35";
         };
 
-        systemPackages = with pkgs; [
-            unstable.neovim
-            unstable.neovide
-            wget
-            gnumake
-            pulseaudio
-            brightnessctl
-            xorg.xkbcomp
-            xclip
-            xdotool
-            killall
-            # unstable.armcord
-            discord
-            home-manager
-            unstable.rustc
-            unstable.cargo
-            xfce.xfce4-screenshooter
-            thunderbird
-            fd
-            onefetch
-            feh
-            unstable.kanata
-            ranger
-            ripgrep
-            unzip
-            gcc
-            telegram-desktop
-            libreoffice-qt
-            hunspell # Libs for libreoffice
-            hunspellDicts.uk_UA
-            hunspellDicts.th_TH
-            mupdf
-            tor-browser
-            signaldctl
-            unstable.hugo
-            unstable.pandoc
-            meson
-            ninja
-            pkg-config
-            libiconv
-            blender
-            unstable.arduino-ide
-            # unstable.arduino-cli
-            unstable.fastfetch
-            stlink
-            zip
-            unstable.qmk
-            via
-            alsa-lib
-            kdePackages.kdenlive
-            cbonsai
-            cmatrix
-            unstable.prismlauncher
-            unstable.inkscape
-            zoom-us
-            python3
-            clang
-            nodejs_22
-            unstable.picom
-            cmake
-            appimage-run
-            love
-            valgrind
-            xfce.thunar
-        ];  ## PACKAGES ##  (handy tag to jump back here quickly)
+        systemPackages = builtins.concatLists (builtins.attrValues global-system-packages);
     };
 
     # Some programs need SUID wrappers, can be configured further or are
