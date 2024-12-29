@@ -80,10 +80,10 @@ bindsym $mod+space exec kitty
 bindsym $mod+BackSpace exec --no-startup-id rofi -show drun -show-icons
 
 # change focus, then reload i3status
-bindcode $mod+$kc_h focus left;  exec $refresh_i3status
-bindcode $mod+$kc_j focus down;  exec $refresh_i3status
-bindcode $mod+$kc_k focus up;    exec $refresh_i3status
-bindcode $mod+$kc_l focus right; exec $refresh_i3status
+bindcode $mod+$kc_h; focus child; focus left;  exec $refresh_i3status
+bindcode $mod+$kc_j; focus child; focus down;  exec $refresh_i3status
+bindcode $mod+$kc_k; focus child; focus up;    exec $refresh_i3status
+bindcode $mod+$kc_l; focus child; focus right; exec $refresh_i3status
 
 # move focused window
 bindcode $mod+Shift+$kc_h move left
@@ -95,18 +95,19 @@ bindcode $mod+Shift+$kc_l move right
 bindcode $mod+$kc_a focus parent
 
 # change container layout
-bindcode $mod+$kc_s layout stacking
-bindcode $mod+$kc_d layout tabbed
-bindcode $mod+$kc_c layout default
+bindcode $mod+$kc_d layout toggle tabbed splith
+bindcode $mod+shift+$kc_d split h
+bindcode $mod+$kc_s layout toggle stacking splitv
+bindcode $mod+shift+$kc_s split v
+
 bindcode $mod+$kc_f fullscreen toggle
-bindcode $mod+$kc_g floating toggle
-bindcode $mod+$kc_v splitv
-bindcode $mod+Shift+$kc_v splith
+bindcode $mod+shift+$kc_f sticky toggle
+
+bindcode $mod+$kc_g focus floating
+bindcode $mod+shift+$kc_g floating toggle
+
 bindcode $mod+$kc_m scratchpad show
 bindcode $mod+shift+$kc_m move scratchpad
-
-# focus the child container
-#bindcode $mod+d focus child
 
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
@@ -130,8 +131,12 @@ bindcode $mod+$kc_t workspace number $ws5; exec $refresh_i3status
 bindcode $mod+$kc_y workspace number $ws6; exec $refresh_i3status
 bindcode $mod+$kc_u workspace number $ws7; exec $refresh_i3status
 bindcode $mod+$kc_i workspace number $ws8; exec $refresh_i3status
-bindcode $mod+$kc_o workspace number $ws9; exec --no-startup-id xdotool key ISO_Level5_Latch; exec $refresh_i3status
+# bindcode $mod+$kc_o workspace number $ws9; exec --no-startup-id xdotool key ISO_Level5_Latch; exec $refresh_i3status
+bindcode $mod+$kc_o workspace number $ws9; exec $refresh_i3status
+# bindcode $mod+$kc_o workspace number $ws9; exec --no-startup-id xdotool key Escape; exec $refresh_i3status
 bindcode $mod+$kc_p workspace number $ws10; exec $refresh_i3status
+
+bindcode --release $mod+$kc_o exec screenshot
 
 # move focused container to workspace
 bindcode $mod+Shift+$kc_q move container to workspace number $ws1
