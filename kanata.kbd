@@ -1,7 +1,13 @@
+;; (defcfg
+;;     sequence-input-mode hidden-delay-type
+;;     process-unmapped-keys yes
+;; )
+
 (defvar
-  tap-timeout      120
-  hold-timeout     200
-  one-shot-timeout 1000
+    tap-timeout      175
+    hold-timeout     200
+    one-shot-timeout 500
+    combo-timeout    12
 )
 
 (defsrc
@@ -18,11 +24,25 @@
                   @sup @nav    @alt @num
 )
 
+(deflayer hypergol
+   @yo  @u   @o   @g   @w        @.   @p   @m   @l   @odk
+   @d   @hii @haa @htt @'        @b   @hnn @hss @hrr @c
+   XX   @,   @é   @qu  XX  C-w   XX   @h   @f   @v   XX
+                 @hots @he     @spc  @magic
+)
+
+(deflayer hypergol_odk
+   @y   @û   @ô   @œ   XX        XX   @j   @x   @k   @dead-diaresis
+   @ù   @î   @â   @à   XX        XX   @ç   @z   XX   XX
+   XX   XX   @ê   @q   XX   _    XX   XX   XX   XX   XX
+                  XX   @è        @_   XX
+)
+
 (deflayer vimnav
-    C-q  @stp @vup @vdn _         home pgdn pgup end  _
-    C-a  C-s S-tab tab  @gam      lft  down up   rght _
-    C-z  C-x  C-w  C-v  @std _    bldn brdn brup blup _
-              _   ret                   ret  _
+    C-q  @stp @vup @vdn @hyp      home pgdn pgup end  _
+    C-a  C-s S-tab tab  @std      lft  down up   rght _
+    C-z  C-x  C-w  C-v  @gam _    bldn brdn brup blup _
+              XX ret                   ret XX
 )
 
 (deflayer numrow
@@ -47,39 +67,181 @@
     (tap-hold $tap-timeout $hold-timeout $keycode (layer-toggle $layer))
 )
 
+(deftemplate bmt (keycode modifier)
+    (tap-hold $tap-timeout $hold-timeout $keycode (multi (layer-toggle qwerty) $modifier))
+)
+
+;; Common aliases
 (defalias
-    ots (tap-dance $tap-timeout ((one-shot-press $one-shot-timeout lsft) caps))
+    ;; Thumb key shorthands
+    ots-caps (tap-dance $tap-timeout ((one-shot-press $one-shot-timeout lsft) caps))
+    space-nav (multi (release-key lmet) (layer-toggle vimnav))
 
-    sup (t! mt esc lmet)
-    nav (t! lt (fork @ots spc (ralt)) vimnav)
-    alt (t! mt spc (fork ralt (multi (release-key lmet) (layer-toggle vimnav)) (lmet)))
-    num (t! lt bspc numrow)
-
-    ss (t! mt s lsft)
-    dd (t! mt (chord combos d) lctl)
-    ff (t! mt (chord combos f) lalt)
-    jj (t! mt (chord combos j) lalt)
-    kk (t! mt (chord combos k) lctl)
-    ll (t! mt l lsft)
-
+    ;; Generic shorthands
     stp (fork VolumeMute MediaPlayPause     (lsft))
     vup (fork VolumeUp   MediaTrackPrevious (lsft))
     vdn (fork VolumeDown MediaTrackNext     (lsft))
 
-    gam (layer-switch gaming)
+    hyp (layer-switch hypergol)
     std (layer-switch qwerty)
+    gam (layer-switch gaming)
 )
 
-(defchords combos 15
+;; Ergo‑L aliases
+(defalias
+    ;; Thumb keys
+    sup (t! mt esc lmet)
+    nav (t! lt (fork @ots-caps spc (ralt)) vimnav)
+    alt (t! mt spc (fork ralt @space-nav (lmet)))
+    num (t! lt bspc numrow)
+
+    ;; Home-row-mods
+    ss (t! mt s lsft)
+    dd (t! mt d lctl)
+    ff (t! mt f lalt)
+    jj (t! mt (chord ergol-combos j) lalt)
+    kk (t! mt (chord ergol-combos k) lctl)
+    ll (t! mt l lsft)
+)
+
+;; Ergo‑L combos
+(defchords ergol-combos $combo-timeout
     ;; Keep standard tap actions
-    (d  ) d
-    (  f) f
-    (  j) j
-    (k  ) k
+    (j) j
+    (k) k
 
     ;; Actual combos
-    (d f) C-bspc
     (k j) ret
 )
+
+;; Hypergol aliases
+(defalias
+    ;; Keycodes for Hypergol over Ergo‑L
+    a    a
+    b    b
+    c    w
+    d    i
+    e    d
+    f    g
+    g    ,
+    h    m
+    i    l
+    j    y
+    k    /
+    l    h
+    m    u
+    n    f
+    o    e
+    p    r
+    q    q
+    r    j
+    s    s
+    t    k
+    u    ;
+    v    v
+    w    t
+    x    x
+    y    p
+    z    z
+    ,    .
+    .    n
+    '    (macro o spc)
+    odk (one-shot 1000 (layer-while-held hypergol_odk))
+
+    qu   (macro q sldr nop1)
+    yo   (macro p sldr nop2)
+
+    é (macro o s)
+    è (macro o d)
+    ê (macro o f)
+    à (macro o a)
+    â (macro o q)
+    œ (macro o e)
+    ô (macro o r)
+    û (macro o p)
+    ù (macro o ;)
+    î (macro o k)
+    ç (macro o w)
+    _ (macro o i)
+    dead-diaresis (macro o o)
+
+    hots (t! bmt (fork @ots-caps ret (ralt)) lmet)
+    he (t! lt (fork @e spc (ralt)) vimnav)
+
+    ;; test test
+
+    magic-key (switch
+        ((or (key-history lmet 1) (key-history lalt 1) (key-history lctl 1))) bspc break
+        ((key-timing 1 greater-than $one-shot-timeout)) bspc break
+
+        ((key-history a    1)) @o   break
+        ((key-history w    1)) @odk break
+        ((key-history i    1)) @y   break
+        ((key-history ,    1)) @t   break
+        ((key-history m    1)) @.   break
+        ((key-history l    1)) @,   break
+        ((key-history q    1)) (macro @u o spc) break
+        ((key-history ;    1)) @i   break
+        ((key-history v    1)) @r   break
+        ((key-history nop1 1)) @q   break
+        ((key-history nop2 1)) @d   break
+        ((key-history spc  1)) @e   break
+        ((and (key-history o 2) (key-history s 1))) @a break
+        ((and (key-history o 2) (key-history spc 1))) @t break
+        () rpt break
+    )
+
+    spc (t! bmt spc (fork ralt @space-nav (lmet)))
+    magic (t! lt @magic-key numrow)
+
+    hii (t! mt (chord hypergol-combos s) lsft)
+    haa (t! mt (chord hypergol-combos d) lctl)
+    htt (t! mt (chord hypergol-combos f) lalt)
+    hnn (t! mt (chord hypergol-combos j) lalt)
+    hss (t! mt (chord hypergol-combos k) lctl)
+    hrr (t! mt @r lsft)
+)
+
+(defchords hypergol-combos $combo-timeout
+    ;; Keep standard tap actions
+    (s    ) @i
+    (  d  ) @a
+    (    f) @t
+    (    j) @n
+    (  k  ) @s
+
+    ;; Actual combos
+    (s   f) (macro @t @h @e sldr nop3)
+    (  d f) esc
+    (  k j) ret
+)
+
+(deftemplate auto-fill (vk-name leader filler input-keys)
+    (defvirtualkeys $vk-name (macro $filler $input-keys))
+    (defseq $vk-name ($leader $input-keys))
+)
+
+;; Aliases are not allowed in virtualkeys, so the syntax here is pretty hard to
+;; parse. Name of the virtualkey (first argument of auto-fill template) is the
+;; final result of that auto-fill.
+(t! auto-fill qua nop1 ; a)
+(t! auto-fill que nop1 ; d)
+(t! auto-fill qui nop1 ; l)
+(t! auto-fill quo nop1 ; e)
+(t! auto-fill qu' nop1 ; (o spc))
+(t! auto-fill qué nop1 ; (o s))
+(t! auto-fill you nop2 e ;)
+
+
+(deftemplate combo-ext (vk-name input-keys output-keys)
+    (defvirtualkeys $vk-name (macro $output-keys))
+    (defseq $vk-name $input-keys)
+)
+
+(t! combo-ext they    (nop3 g) (p spc))
+(t! combo-ext there   (nop3 f) (j d spc))
+(t! combo-ext their   (nop3 s) (l j spc))
+(t! combo-ext they’re (nop3 j) (p o spc j d spc))
+(t! combo-ext they’ll (nop3 h) (p o spc h h spc))
 
 ;; vim: set ft=lisp
