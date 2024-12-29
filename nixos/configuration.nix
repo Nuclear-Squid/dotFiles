@@ -4,27 +4,21 @@ let
     old-stable = import <nixos-old-stable> { config = config.nixpkgs.config; };
 in let
     global-system-packages = with pkgs; {
-
         code-editors = [
             unstable.neovim
             unstable.neovide
-            arduino-ide
         ];
 
         dev-tools = [
             valgrind
             gnumake
-            stlink
             cmake
-            meson
-            ninja
             # those should go in Ergo‑L’s repo
             unstable.hugo
             unstable.pandoc
         ];
 
         languages-and-compilers = [
-            unstable.rustc
             unstable.cargo
             arduino-cli
             nodejs_22
@@ -85,6 +79,12 @@ in let
             zip
         ];
 
+        wayland-specific-stuff = [
+            wl-clipboard  # copy/paste to&from stdin/stdout
+            slurp  # Screenshot system
+            mako  # Notification system
+        ];
+
         miscellaneous = [
             home-manager
             xfce.xfce4-screenshooter
@@ -103,7 +103,7 @@ in
 
     imports = [ # Include the results of the hardware scan.
         /etc/nixos/hardware-configuration.nix
-        ./home-manager.nix
+        ./home.nix
     ];
 
     nix.optimise.automatic = true; # Optimise storage space of NixOS
@@ -175,6 +175,8 @@ in
             };
         };
 
+        gnome.gnome-keyring.enable = true;  # For Sway
+
         picom = {
             enable = true;
             settings = {
@@ -191,10 +193,19 @@ in
             keyboards.laptop = {
                 devices = [ "/dev/input/event0" ];
                 config = builtins.readFile ../kanata.kbd;
+                extraDefCfg = ''
+                    sequence-input-mode hidden-delay-type
+                    process-unmapped-keys yes
+                '';
             };
         };
 
         udev.packages = with pkgs; [ via ];
+    };
+
+    programs.sway = {
+        enable = true;
+        wrapperFeatures.gtk = true;
     };
 
     programs.zsh.enable = true;
