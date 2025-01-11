@@ -2,11 +2,11 @@
 let
     unstable   = import <nixos-unstable>   { config = config.nixpkgs.config; };
     old-stable = import <nixos-old-stable> { config = config.nixpkgs.config; };
-in let
-    global-system-packages = with pkgs; {
+in let global-system-packages = with pkgs; {
         code-editors = [
             unstable.neovim
             unstable.neovide
+            lazygit
         ];
 
         dev-tools = [
@@ -30,6 +30,7 @@ in let
         rice-and-cli-tools = [
             fastfetch
             onefetch
+            tealdeer
             ripgrep
             ranger
             mupdf
@@ -42,6 +43,7 @@ in let
             tor-browser
             thunderbird
             xfce.thunar
+            spotify
             discord
             zoom-us
             libreoffice-qt
@@ -66,6 +68,7 @@ in let
         lower-level-system = [
             brightnessctl
             appimage-run
+            xorg.xmodmap
             pulseaudio
             signaldctl
             pkg-config
@@ -103,7 +106,7 @@ in
 
     imports = [ # Include the results of the hardware scan.
         /etc/nixos/hardware-configuration.nix
-        ./home.nix
+        # ./home.nix
     ];
 
     nix.optimise.automatic = true; # Optimise storage space of NixOS
@@ -173,6 +176,11 @@ in
                     i3lock
                 ];
             };
+
+            displayManager.sessionCommands = ''
+                ${pkgs.xorg.xmodmap}/bin/xmodmap -e "remove mod3 = Hyper_L"
+                ${pkgs.xorg.xmodmap}/bin/xmodmap -e "add mod4 = Hyper_L"
+            '';
         };
 
         gnome.gnome-keyring.enable = true;  # For Sway
@@ -202,6 +210,7 @@ in
 
         udev.packages = with pkgs; [ via ];
     };
+
 
     programs.sway = {
         enable = true;

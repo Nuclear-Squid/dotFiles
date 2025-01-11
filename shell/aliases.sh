@@ -1,3 +1,5 @@
+# My shell aliases and commands, that can be used in pretty much any of shell
+
 eza_extra_options=(--group-directories-first --git --icons --no-quotes)
 
 alias l="eza -l $eza_extra_options"
@@ -7,6 +9,7 @@ alias cat="bat"
 alias chux="chmod u+x"
 alias ggez="sudo nixos-rebuild switch --show-trace"
 alias vi="neovide --fork --"
+alias lg="lazygit"
 
 default_ls_command() {
     eza -l --git-ignore $eza_extra_options $@
@@ -15,46 +18,6 @@ default_ls_command() {
 get_git_repo_path() {
     echo "$(git rev-parse --show-toplevel 2>/dev/null)"
 }
-
-magic-enter() {
-    if [ -z $BUFFER ]; then
-        echo
-        if [ $(get_git_repo_path) != "" ]; then
-            paste <(default_ls_command --color=always) <(git -c color.ui=always st | sed 's/\t/        /g') | column -s $'\t' -t
-        else
-            default_ls_command
-        fi
-        echo -ne "\x1b[A"
-    fi
-    zle .accept-line
-}
-
-# Fixes problems with zsh-autocompletion. I have *absolutely no idea*
-# how **any** of this works
-# https://github.com/zsh-users/zsh-autosuggestions/issues/525#issuecomment-932393117
-
-# Wrapper for the accept-line zle widget (run when pressing Enter)
-
-# If the wrapper already exists don't redefine it
-(( ! ${+functions[_magic-enter_accept-line]} )) || return 0
-
-case "$widgets[accept-line]" in
-  # Override the current accept-line widget, calling the old one
-  user:*) zle -N _magic-enter_orig_accept-line "${widgets[accept-line]#user:}"
-    function _magic-enter_accept-line() {
-      magic-enter
-      zle _magic-enter_orig_accept-line -- "$@"
-    } ;;
-  # If no user widget defined, call the original accept-line widget
-  builtin) function _magic-enter_accept-line() {
-      magic-enter
-      zle .accept-line
-    } ;;
-esac
-
-zle -N accept-line _magic-enter_accept-line
-
-
 
 cf() { mkdir -p $1 && builtin cd $1 }
 

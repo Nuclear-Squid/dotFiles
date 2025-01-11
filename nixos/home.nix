@@ -10,6 +10,8 @@ in {
 
     programs.home-manager.enable = true;
 
+    programs.ncspot.enable = true;
+
     programs.git = {
         enable = true;
         lfs.enable = true;
@@ -82,13 +84,12 @@ in {
             path = "/home/nuclear-squid/.zsh_history";
         } ;
 
-        # I know there’s a 'shellAliases' property here, but this
-        # file also has functions I want syntax highlighting for.
-        initExtra = ''
-            zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+        initExtraFirst = builtins.readFile ../shell/dumb_autorun.sh;
 
-            fastfetch
-        '' + builtins.readFile ../shell_aliases.sh;
+        initExtra =
+            builtins.readFile ../shell/aliases.sh
+            + builtins.readFile ../shell/zsh_config.sh
+            ;
     };
 
     programs.thefuck = {
@@ -130,6 +131,7 @@ in {
         defaultCommand = "fd --type f --strip-cwd-prefix";
 
         # ctrl-t
+        fileWidgetCommand = "fd --type f --type d --strip-cwd-prefix";
         fileWidgetOptions = [
             "--preview 'bat --color=always --style=plain -r :200 {}'"
         ];
@@ -160,4 +162,6 @@ in {
         package = pkgs.polybar.override { i3Support = true; };
         script = "";
     };
+
+    services.dunst.enable = true;
 }
