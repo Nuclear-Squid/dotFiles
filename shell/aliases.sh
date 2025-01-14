@@ -9,6 +9,7 @@ alias cat="bat"
 alias chux="chmod u+x"
 alias ggez="sudo nixos-rebuild switch --show-trace"
 alias vi="neovide --fork --"
+alias v="nvim"
 alias lg="lazygit"
 
 default_ls_command() {
