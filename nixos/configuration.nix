@@ -28,18 +28,15 @@ in let global-system-packages = with pkgs; {
         ];
 
         rice-and-cli-tools = [
-            fastfetch
             onefetch
             tealdeer
             ripgrep
-            ranger
             mupdf
             feh
             fd
         ];
 
         gui-apps = [
-            telegram-desktop
             tor-browser
             thunderbird
             xfce.thunar
@@ -67,7 +64,6 @@ in let global-system-packages = with pkgs; {
 
         lower-level-system = [
             brightnessctl
-            appimage-run
             xorg.xmodmap
             pulseaudio
             signaldctl
@@ -80,12 +76,6 @@ in let global-system-packages = with pkgs; {
             unzip
             wget
             zip
-        ];
-
-        wayland-specific-stuff = [
-            wl-clipboard  # copy/paste to&from stdin/stdout
-            slurp  # Screenshot system
-            mako  # Notification system
         ];
 
         miscellaneous = [
@@ -143,21 +133,16 @@ in
         LC_TIME = "fr_FR.UTF-8";
     };
 
-    xdg.portal = {
-        enable = true;
-        extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
-        config.common.default = "*";  # XXX: keep xdg-portal behaviour in <1.17.
-                                      # May break stuff, honnestly I have no
-                                      # idea what it means
+    users.defaultUserShell = pkgs.zsh;
+    users.users.nuclear-squid = {
+        isNormalUser = true;
+        description = "Nuclear Squid";
+        extraGroups = [ "networkmanager" "wheel" "audio" ];
+        packages = with pkgs; [];
     };
 
     # Configure keymap in X11
     services = {
-        # Auto maunt usb devices
-        udisks2.enable = true;
-        devmon.enable = true;
-        gvfs.enable = true;
-
         flatpak.enable = true;
         displayManager.defaultSession = "none+i3";
 
@@ -171,10 +156,6 @@ in
             windowManager.i3 = {
                 enable = true;
                 package = unstable.i3;
-                extraPackages = with pkgs; [
-                    i3status
-                    i3lock
-                ];
             };
 
             displayManager.sessionCommands = ''
@@ -182,8 +163,6 @@ in
                 ${pkgs.xorg.xmodmap}/bin/xmodmap -e "add mod4 = Hyper_L"
             '';
         };
-
-        gnome.gnome-keyring.enable = true;  # For Sway
 
         picom = {
             enable = true;
@@ -211,29 +190,16 @@ in
         udev.packages = with pkgs; [ via ];
     };
 
+    programs = {
+        zsh.enable = true;
 
-    programs.sway = {
-        enable = true;
-        wrapperFeatures.gtk = true;
-    };
+        nix-ld.enable = true;
 
-    programs.zsh.enable = true;
-    users.defaultUserShell = pkgs.zsh;
-
-    # Define a user account. Don't forget to set a password with ‘passwd’.
-    users.users.nuclear-squid = {
-        isNormalUser = true;
-        description = "Nuclear Squid";
-        extraGroups = [ "networkmanager" "wheel" "audio" ];
-        packages = with pkgs; [];
-    };
-
-    programs.nix-ld.enable = true;
-
-    programs.steam = {
-        enable = true;
-        remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
-        dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+        steam = {
+            enable = true;
+            remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
+            dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+        };
     };
 
     environment = {
@@ -248,6 +214,14 @@ in
         };
 
         systemPackages = builtins.concatLists (builtins.attrValues global-system-packages);
+    };
+
+    xdg.portal = {
+        enable = true;
+        extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
+        config.common.default = "*";  # XXX: keep xdg-portal behaviour in <1.17.
+                                      # May break stuff, honnestly I have no
+                                      # idea what it means
     };
 
     # Some programs need SUID wrappers, can be configured further or are
