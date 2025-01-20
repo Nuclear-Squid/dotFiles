@@ -131,12 +131,8 @@ bindcode $mod+$kc_t workspace number $ws5; exec $refresh_i3status
 bindcode $mod+$kc_y workspace number $ws6; exec $refresh_i3status
 bindcode $mod+$kc_u workspace number $ws7; exec $refresh_i3status
 bindcode $mod+$kc_i workspace number $ws8; exec $refresh_i3status
-# bindcode $mod+$kc_o workspace number $ws9; exec --no-startup-id xdotool key ISO_Level5_Latch; exec $refresh_i3status
-bindcode $mod+$kc_o workspace number $ws9; exec $refresh_i3status
-# bindcode $mod+$kc_o workspace number $ws9; exec --no-startup-id xdotool key Escape; exec $refresh_i3status
+bindcode $mod+$kc_o workspace number $ws9; exec xdotool key Shift_Lock; exec $refresh_i3status
 bindcode $mod+$kc_p workspace number $ws10; exec $refresh_i3status
-
-bindcode --release $mod+$kc_o exec screenshot
 
 # move focused container to workspace
 bindcode $mod+Shift+$kc_q move container to workspace number $ws1
@@ -147,7 +143,7 @@ bindcode $mod+Shift+$kc_t move container to workspace number $ws5
 bindcode $mod+Shift+$kc_y move container to workspace number $ws6
 bindcode $mod+Shift+$kc_u move container to workspace number $ws7
 bindcode $mod+Shift+$kc_i move container to workspace number $ws8
-bindcode $mod+Shift+$kc_o move container to workspace number $ws9; exec --no-startup-id xdotool key ISO_Level5_Latch
+bindcode $mod+Shift+$kc_o move container to workspace number $ws9
 bindcode $mod+Shift+$kc_p move container to workspace number $ws10
 
 bindcode $mod+$kc_semicolon workspace back_and_forth
@@ -194,7 +190,7 @@ gaps inner 10px
 default_border pixel 2
 # hide_edge_borders smart  # Only show borders when nececary
 hide_edge_borders vertical
-smart_borders on
+# smart_borders on
 title_align center
 
 # class                 border  backgr. text    indicator child_border
