@@ -143,6 +143,10 @@ in
 
     # Configure keymap in X11
     services = {
+        # Auto maunt usb devices
+        udisks2.enable = true;
+        devmon.enable = true;
+        gvfs.enable = true;
         flatpak.enable = true;
         displayManager.defaultSession = "none+i3";
 
