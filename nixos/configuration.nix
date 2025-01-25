@@ -37,13 +37,14 @@ in let global-system-packages = with pkgs; {
         ];
 
         gui-apps = [
+            simplescreenrecorder
+            libreoffice-qt
             tor-browser
             thunderbird
             xfce.thunar
             spotify
             discord
             zoom-us
-            libreoffice-qt
             hunspell # Libs for libreoffice
             hunspellDicts.uk_UA
             hunspellDicts.th_TH
@@ -51,6 +52,7 @@ in let global-system-packages = with pkgs; {
 
         art-apps = [
             kdePackages.kdenlive
+            old-stable.ardour  # Stable and Unstable versions are brocken.
             inkscape
             blender
         ];
@@ -147,6 +149,7 @@ in
         udisks2.enable = true;
         devmon.enable = true;
         gvfs.enable = true;
+
         flatpak.enable = true;
         displayManager.defaultSession = "none+i3";
 
