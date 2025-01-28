@@ -13,6 +13,7 @@ in let global-system-packages = with pkgs; {
             valgrind
             gnumake
             cmake
+            unstable.gh
             # those should go in Ergo‑L’s repo
             unstable.hugo
             unstable.pandoc
@@ -198,9 +199,9 @@ in
     };
 
     programs = {
-        zsh.enable = true;
-
         nix-ld.enable = true;
+        zsh.enable = true;
+        ssh.startAgent = true;
 
         steam = {
             enable = true;
