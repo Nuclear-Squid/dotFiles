@@ -44,10 +44,10 @@ in {
             background_opacity = "0.9";
             foreground = "#f7dec7";
             background = "#120b14";
-            color0 = "#58424a";
-            color8 = "#b7859e";
-            color1 = "#bd1b30";
-            color9 = "#ef2447";
+            color0  = "#232136";
+            color8  = "#4b4673";
+            color1  = "#bd1b30";
+            color9  = "#ef2447";
             color2  = "#4fcf40";
             color10 = "#a5e443";
             color3  = "#f1a340";
