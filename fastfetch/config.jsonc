@@ -72,7 +72,7 @@
 
         {
             "type": "custom",
-            "format": "{#green;1}╭─── System ────────────────────────────",
+            "format": "{#green}╭─── System ────────────────────────────",
         },
 
         {
@@ -108,7 +108,7 @@
         {
             "type": "wm",
             "key": "│ 󰏖  WM:       ",
-            "format": "{protocol-name}, {pretty-name} (old reliable)",
+            "format": "{pretty-name} (old reliable)",
             "keyColor": "green",
         },
 
@@ -119,7 +119,7 @@
 
         {
             "type": "custom",
-            "format": "{#yellow;1}╭─── Environment ─────────────",
+            "format": "{#yellow}╭─── Environment ─────────────",
         },
 
         {
@@ -152,6 +152,7 @@
             "type": "terminaltheme",
             "key": "│ 󰏖  Theme:    ",
             "keyColor": "yellow",
+            "format": "Photon Darker",
         },
 
         {
