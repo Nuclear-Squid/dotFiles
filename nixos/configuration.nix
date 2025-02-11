@@ -2,6 +2,7 @@
 let
     unstable   = import <nixos-unstable>   { config = config.nixpkgs.config; };
     old-stable = import <nixos-old-stable> { config = config.nixpkgs.config; };
+    powersave_mode = true;
 in let global-system-packages = with pkgs; {
         code-editors = [
             unstable.neovim
@@ -107,6 +108,7 @@ in
     # Bootloader.
     boot.loader.systemd-boot.enable = true;
     boot.loader.efi.canTouchEfiVariables = true;
+    boot.kernelPackages = pkgs.linuxPackages_zen;
 
     networking.hostName = "nixos"; # Define your hostname.
     # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -174,6 +176,7 @@ in
 
         picom = {
             enable = true;
+            enable = !powersave_mode;
             settings = {
                 corner-radius = 10;
                 roundBorder = 1;
@@ -182,6 +185,29 @@ in
             };
         };
 
+        thermald.enable = powersave_mode;
+
+        tlp = {
+            enable = true;
+            settings = {
+                CPU_SCALING_GOVERNOR_ON_AC  = "performance";
+                CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+                PLATFORM_PROFILE_ON_BAT     = "low-power";
+
+                CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
+                CPU_ENERGY_PERF_POLICY_ON_AC  = "performance";
+                PLATFORM_PROFILE_ON_AC        = "performance";
+
+                CPU_MIN_PERF_ON_AC  = 0;
+                CPU_MAX_PERF_ON_AC  = 100;
+                CPU_MIN_PERF_ON_BAT = 0;
+                CPU_MAX_PERF_ON_BAT = 20;
+
+               # Helps save long term battery health
+               START_CHARGE_THRESH_BAT0 = 40;  # 40 and bellow it starts to charge
+               STOP_CHARGE_THRESH_BAT0 = 80;   # 80 and above it stops charging
+            };
+        };
         kanata = {
             enable = true;
             package = unstable.kanata;
