@@ -5,6 +5,9 @@ local nmap = utils.nmap
 local imap = utils.imap
 local vmap = utils.vmap
 
+local map_fns = require 'mapping_functions'
+local make_awesome_mapping = map_fns.make_awesome_mapping
+
 local set = vim.opt
 local autocmd = vim.api.nvim_create_autocmd
 local default_timer = 350
@@ -151,17 +154,17 @@ end
 --          ╰─────────────────────────────────────────────────────────╯
 
 --  ────────────────────< Why aren’t those standard? >─────────────────
-nmap 'Y' 'y$'
+nmap 'Y' 'yg_'
 nmap 'U' '<C-r>'
 imap '<C-BS>' '<C-w>'
 
-for _, mapping in pairs { 'j', '<Down>', '+' } do
-  map { 'n', 'v' }(mapping) 'gj'
-end
+map { 'n', 'v' } 'j'      'gj'
+map { 'n', 'v' } '<Down>' 'gj'
+map { 'n', 'v' } '+'      'gj'
 
-for _, mapping in pairs { 'k', '<Up>', '-' } do
-  map { 'n', 'v' }(mapping) 'gk'
-end
+map { 'n', 'v' } 'k'    'gk'
+map { 'n', 'v' } '<Up>' 'gk'
+map { 'n', 'v' } '-'    'gk'
 
 vmap '<' '<gv'
 vmap '>' '>gv'
@@ -178,16 +181,18 @@ nmap 'd{' 'V{d'
 
 --  ──────────────────────────────< Leader >───────────────────────────
 vim.g.mapleader = ' '
-vim.g.maplocalleader = vim.api.nvim_replace_termcodes('<BS>', false, false, true)
+vim.g.maplocalleader = '’'  -- typo -> espace en Ergo‑L
 
 nmap '<leader>w' ':w<CR>'
 nmap '<leader>q' ':q<CR>'
 nmap '<leader>x' ':x<CR>'
+nmap '<leader>d' (map_fns.make_text_object_cmd(map_fns.duplicate_and_comment))
+vmap '<leader>d' (map_fns.make_visual_cmd(map_fns.duplicate_and_comment))
 
 --  ───────────────────────────< Miscellaneous >───────────────────────────
 nmap '<Esc>' '<cmd>nohlsearch<CR>' -- Remove highlight
 nmap 'vv' 'v$h'
-map 't' '<Esc>' '<C-\\><C-n>' -- Exit term mode
+map 't' '<Esc><Esc>' '<C-\\><C-n>' -- Exit term mode
 
 -- Ergo‑L symbol layer aliases
 imap '-+' '0'
@@ -197,6 +202,12 @@ imap '+/' '-1'
 -- Code folding
 nmap '<Tab>' 'za'
 nmap '<S-Tab>' 'zA'
+
+imap '{(' (map_fns.bracket_group('{', '}'))
+imap '~[' (map_fns.bracket_group('[', ']'))
+
+nmap 'µ' '`m'
+nmap 'î' '`d'
 
 -- -- Diagnostic keymaps
 -- vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
