@@ -104,6 +104,7 @@ set.showmode = false -- Cacher le mode, vu qu’il est déjà dans la status bar
 
 --  ──────────────────────────< config Neovide >───────────────────────
 if vim.g.neovide then
+  vim.g.neovide_scale_factor = 0.4
   vim.g.neovide_padding_top = 5
   vim.g.neovide_padding_left = 5
   vim.g.neovide_cursor_unfocused_outline_width = 0.1
@@ -133,10 +134,8 @@ if vim.g.neovide then
   -- J’aimerai bien avoir ça en plus, mais c’est pas possible
   -- vim.g.neovide_cursor_vfx_mode = "ripple"
 
-  -- Changer la taille de police à la volée (Mud <3 <3 <3)
-  -- https://stackoverflow.com/questions/73572079/neovim-lua-how-to-use-mutable-variables-in-keymappings/73574837#73574837
-  -- map('n', '<C-->', ":let g:font_size = (g:font_size - 1)<CR>:let &guifont = 'FantasqueSansMono Nerd Font Mono:h'.g:font_size<CR>", { silent = true })
-  -- map('n', '<C-+>', ":let g:font_size = (g:font_size + 1)<CR>:let &guifont = 'FantasqueSansMono Nerd Font Mono:h'.g:font_size<CR>", { silent = true })
+  nmap '<C-+>' (function() vim.g.neovide_scale_factor = vim.g.neovide_scale_factor + 0.1 end)
+  nmap '<C-->' (function() vim.g.neovide_scale_factor = vim.g.neovide_scale_factor - 0.1 end)
 
   -- -- Passer vite entre la taille de police pour écran 12 et 24 pouces
   -- vim.keymap.set(
