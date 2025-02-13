@@ -43,22 +43,22 @@ in {
             cursor = "#666666";
             background_opacity = "0.9";
             foreground = "#f7dec7";
-            background = "#120b14";
-            color0  = "#232136";
-            color8  = "#4b4673";
-            color1  = "#bd1b30";
-            color9  = "#ef2447";
-            color2  = "#4fcf40";
-            color10 = "#a5e443";
-            color3  = "#f1a340";
-            color11 = "#eed656";
-            color4  = "#296ece";
-            color12 = "#658cf5";
-            color5  = "#c62ccc";
-            color13 = "#e65bf5";
+            background = "#1a0c24";
+            color0  = "#373354";
+            color1  = "#c02030";
+            color2  = "#3bb846";
+            color3  = "#dd9046";
+            color4  = "#2a68c8";
+            color5  = "#b02cc0";
             color6  = "#48d5aa";
-            color14 = "#4debda";
-            color7  = "#f8d4d4";
+            color7  = "#9C9BBA";
+            color8  = "#4b4673";
+            color9  = "#e86671";
+            color10 = "#8ebd6b";
+            color11 = "#e5c07b";
+            color12 = "#5ab0f6";
+            color13 = "#c678dd";
+            color14 = "#48d5aa";
             color15 = "#f5d9de";
         };
         keybindings = {
@@ -73,7 +73,6 @@ in {
     programs.zsh = rec {
         enable = true;
         enableCompletion = true;
-        # enableAutosuggestions = true;
         autosuggestion.enable = true;
         syntaxHighlighting.enable = true;
         syntaxHighlighting.styles.path = "fg=cyan";
