@@ -60,6 +60,10 @@ return { -- LSP Configuration & Plugins
           })
         end
 
+        if client then
+          client.server_capabilities.semanticTokensProvider = nil
+        end
+
         -- Toggle inlay hints (if lsp server has them)
         if client and client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
           map('<leader>th', function()
@@ -92,7 +96,9 @@ return { -- LSP Configuration & Plugins
     --  - settings (table): Override the default settings passed when initializing the server.
     --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
     local servers = {
-      clangd = {},
+      clangd = {
+        cmd = { 'clangd', '--query-driver=/run/current-system/sw/bin/c++' },
+      },
       pyright = {},
       rust_analyzer = {},
 

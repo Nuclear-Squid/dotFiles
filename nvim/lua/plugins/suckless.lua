@@ -12,9 +12,9 @@ return {
         ['<M-[oO]>'] = 'CreateWindow("[sv]")',
         ['<M-q>'] = 'CloseWindow("prout")',
         ['<M-Space>'] = 'TermOpen("zsh", "f")',
-        ['<M-Backspace>'] = 'TermOpenRanger()',
+        ['<M-Backspace>'] = 'TermOpenRanger("yazi")',
         ['<M-[123456789]>'] = 'SelectTab([123456789])',
-        ['<M-[!@#$%^&*(]>'] = 'MoveWindowToTab([123456789])',
+        ['<M-[€«»$%^&*#]>'] = 'MoveWindowToTab([123456789])',
         ['<C-M-[123456789]>'] = 'CopyWindowToTab([123456789])',
       }
     end,

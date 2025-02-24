@@ -69,7 +69,9 @@ set.autowrite = true -- Auto-save avant certaines cmd comme :next / :make
 set.undofile = true -- Sauvegarde l’historique de retours en arrière.
 
 --  ───────────────────────────< Code folding >────────────────────────
-set.foldmethod = 'indent' -- Genère les folds à partir de l'indentation
+-- set.foldmethod = 'indent' -- Genère les folds à partir de l'indentation
+vim.wo.foldmethod = 'expr'
+vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
 set.smartindent = true -- Auto-indentation quand on retourne à la ligne
 set.shiftwidth = 4 -- Nombre d’espaces à ajouter / retirer avec `<` et `>`
 set.softtabstop = 4 -- Nombre d'espaces quand on fait tab
@@ -81,7 +83,6 @@ set.hlsearch = true -- Surligne les patterns trouvés pendant les recherches
 set.ignorecase = true -- Les recherches ne sont de base pas case sensitives
 set.smartcase = true -- Recherches case sensitives si il y a une maj dans le pattern
 set.incsearch = true -- Sauter au match suivant / précédant avec n / N
-set.inccommand = 'split' -- Affiche le résultat de :s en temps réel
 
 --  ──────────────────────────< aides visuelles >──────────────────────────
 set.scrolloff = 10 -- Garder au moins 10 lignes au dessus / dessous le curseur
@@ -186,6 +187,7 @@ vim.g.maplocalleader = '’'  -- typo -> espace en Ergo‑L
 nmap '<leader>w' ':w<CR>'
 nmap '<leader>q' ':q<CR>'
 nmap '<leader>x' ':x<CR>'
+-- make_awesome_mapping('<leader>d', map_fns.duplicate_and_comment)
 nmap '<leader>d' (map_fns.make_text_object_cmd(map_fns.duplicate_and_comment))
 vmap '<leader>d' (map_fns.make_visual_cmd(map_fns.duplicate_and_comment))
 
@@ -205,6 +207,8 @@ nmap '<S-Tab>' 'zA'
 
 imap '{(' (map_fns.bracket_group('{', '}'))
 imap '~[' (map_fns.bracket_group('[', ']'))
+
+-- nmap 'é' (map_fns.make_text_object_cmd(map_fns.replace_on_range))
 
 nmap 'µ' '`m'
 nmap 'î' '`d'
@@ -230,6 +234,7 @@ end ---@diagnostic disable-next-line: undefined-field
 
 -- add Lazy to neovim’s runtime path
 vim.opt.rtp:prepend(lazypath)
+---@diagnostic disable-next-line: missing-fields
 require('lazy').setup {
   --  ──────────────────────────────< Photon >───────────────────────────
   -- I made this color theme, so it’s in my dotFiles repo. If you are seeing
@@ -243,11 +248,80 @@ require('lazy').setup {
     end,
   },
 
+
+  --  ──────────────────────────< Neorg <3 <3 <3 >───────────────────────
+  {
+    "nvim-neorg/neorg",
+    lazy = false,  -- Disable lazy loading (from neorg’s docs, dunno why)
+    version = "*", -- Pin Neorg to the latest stable release
+    dependencies = {
+      -- "luarocks.nvim",
+      "nvim-neorg/lua-utils.nvim",
+      "pysan3/pathlib.nvim",
+      -- "jbyuki/nabla.nvim",  -- Render math inside Neovim
+    },
+
+    config = function()
+      require('neorg').setup {
+        load = {
+          ["core.defaults"] = {},  -- Loads the default behaviour
+          ["core.concealer"] = {}, -- Loads the default behaviour
+        },
+      }
+    end,
+  },
+
+  --  ─────────────────────────────< Fancy UI >──────────────────────────
+  { "folke/noice.nvim",
+    event = "VeryLazy",
+    opts = {
+      -- add any options here
+    },
+    dependencies = {
+      -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+      "MunifTanjim/nui.nvim",
+      -- OPTIONAL:
+  { 'rmagatti/session-lens',
+    dependencies = {'nvim-telescope/telescope.nvim', { 'rmagatti/auto-session', opts = {} }},
+    opts = {
+      prompt_title = "Sessions ! Fuck Yeah !",
+      previewer = true,
+    },
+  },
+      --   `nvim-notify` is only needed, if you want to use the notification view.
+      --   If not available, we use `mini` as the fallback
+      "rcarriga/nvim-notify",
+    }
+  },
+
+  { "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
+    config = function()
+      require("lsp_lines").setup()
+      vim.diagnostic.config {
+        virtual_text = false,
+        virtual_lines = {
+          only_current_line = true,
+          highlight_whole_line = true,
+        },
+      }
+    end,
+  },
+
+
+  {
+    "SunnyTamang/select-undo.nvim",
+    config = function()
+      require("select-undo").setup()
+    end
+  },
+
   --  ──────────────────────────< Fancy comments >───────────────────────
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
-  { 'numToStr/Comment.nvim', opts = {} },
-  {
-    'LudoPinelli/comment-box.nvim',
+  { 'numToStr/Comment.nvim', opts = {
+        ignore = '^$'  -- Don’t comment empty lines
+    }
+  },
+  { 'LudoPinelli/comment-box.nvim',
     init = function()
       nmap '<leader>c' ':CBccline8<CR>'
       nmap '<leader>b' ':CBccbox<CR>'
@@ -267,12 +341,19 @@ require('lazy').setup {
   --  ─────────────────────────< In Tpope we trust >─────────────────────────
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
   'tpope/vim-repeat',
-  {
-    'tpope/vim-surround',
+  { 'tpope/vim-surround',
     init = function()
       nmap 's' '<Plug>Csurround'
       vmap 's' '<Plug>VSurround'
     end,
+  },
+
+  { 'folke/snacks.nvim',
+    opts = {
+      image = {
+        enabled = true,
+      },
+    },
   },
 
   --  ────────────────────< More complex plugin setups >─────────────────

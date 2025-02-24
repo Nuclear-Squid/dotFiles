@@ -64,19 +64,24 @@ function M.replace_on_range()
   local start_line = unpack(vim.api.nvim_buf_get_mark(0, '['))
   local finish_line = unpack(vim.api.nvim_buf_get_mark(0, ']'))
   vim.api.nvim_feedkeys(string.format(':%d,%ds/', start_line, finish_line), 'n', false)
+function M.replace_on_range(start, finish, cursor)
+  vim.api.nvim_feedkeys(string.format(':%d,%ds/', start[1], finish[1]), 'n', false)
 end
 
 -- « Atta je réessaye »
 function M.duplicate_and_comment(start_line, finish_line, cursor_line, cursor_col)
   local new_cursor_line = cursor_line + finish_line - start_line + 1
   local range = string.format('%d,%d ', start_line, finish_line)
+function M.duplicate_and_comment(start, finish, cursor)
+  local new_cursor_line = cursor[1] + finish[1] - start[1] + 1
+  local range = string.format('%d,%d ', start[1], finish[1])
 
   vim.cmd(range .. 'yank')
-  vim.cmd(range .. 'Commentary')
+  vim.cmd(range .. 'norm gcc')
 
-  vim.api.nvim_win_set_cursor(0, { finish_line, 0 })
+  vim.api.nvim_win_set_cursor(0, { finish[1], 0 })
   vim.cmd 'put'
-  vim.api.nvim_win_set_cursor(0, { new_cursor_line, cursor_col })
+  vim.api.nvim_win_set_cursor(0, { new_cursor_line, cursor[2] })
 end
 
 -- La position du curseur est stoquée dans le marqueur '`'
@@ -85,6 +90,24 @@ function M.duplicate_and_comment_normal()
   local finish_line = vim.api.nvim_buf_get_mark(0, ']')[1]
   local cursor_line, cursor_col = unpack(vim.api.nvim_buf_get_mark(0, '`'))
   duplicate_and_comment(start_line, finish_line, cursor_line, cursor_col)
+function M.make_text_object_cmd(fn)
+    local set_opfunc = vim.fn[vim.api.nvim_exec2([[
+        func s:set_opfunc(val)
+            let &opfunc = a:val
+        endfunc
+        echon get(function('s:set_opfunc'), 'name')
+    ]], { output = true })["output"]]
+
+    return function()
+        set_opfunc(function()
+            local start  = vim.api.nvim_buf_get_mark(0, '[')
+            local finish = vim.api.nvim_buf_get_mark(0, ']')
+            local cursor = vim.api.nvim_buf_get_mark(0, '`')
+            fn(start, finish, cursor)
+        end)
+
+        vim.api.nvim_feedkeys("m`g@", "n", false)
+    end
 end
 
 function M.duplicate_and_comment_visual()
@@ -95,6 +118,20 @@ function M.duplicate_and_comment_visual()
   else
     duplicate_and_comment(visual_line, cursor_line, cursor_line, cursor_col)
   end
+function M.make_visual_cmd(fn)
+    return function()
+        local start  = vim.api.nvim_win_get_cursor(0)
+        local finish = vim.fn.getpos("v")
+        finish = { finish[2], finish[1] }
+
+        if start[1] > finish[1] then
+            start, finish = finish, start
+        elseif start[2] > finish[2] then
+            start, finish = finish, start
+        end
+
+        fn(start, finish, start)
+    end
 end
 
 return M
