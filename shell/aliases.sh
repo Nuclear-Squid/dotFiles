@@ -42,3 +42,12 @@ cd() {
         echo -e "\x1b[1;35mAuto-jumped\x1b[0m inside of \x1b[3;33m$auto_jumped_path\x1b[0m"
     fi
 }
+
+cut_last_field() { echo "$1" | rev | cut -d "$2" -f 1 | rev }
+
+gc() {
+    local github_repo_ssh_link="$1"
+    local repo_name=$(cut_last_field "$github_repo_ssh_link" '/' | cut -d '.' -f 1)
+    git clone "$github_repo_ssh_link"
+    cd "$repo_name"
+}
