@@ -1,18 +1,40 @@
 vim.cmd("autocmd! BufWritePost utils.lua source %")
 
-function map(scope)
-    return function(pattern)
-        return function(command)
-            vim.keymap.set(scope, pattern, command, { noremap = true, silent = true })
-        end
+function table.removeKey(list, key)
+    local value = list[key]
+    list[key] = nil
+    return value
+end
+
+local function execute_mapping(mapping)
+    if mapping == nil then return end
+
+    if type(mapping) == "string" then
+        vim.api.nvim_feedkeys(mapping, vim.api.nvim_get_mode()["mode"], true)
+    else
+        mapping()
     end
 end
 
-function map_opt(scope)
-    return function(pattern)
-        return function(command)
-            return function(options)
-                vim.keymap.set(scope, pattern, command, options)
+function map(scope)
+    return function(patterns)
+        return function(target)
+            if type(patterns) == "string" then patterns = { patterns } end
+            if type(target) ~= "table" then target = { target } end
+
+            local command_before = table.removeKey(target, 'before')
+            local command_after  = table.removeKey(target, 'after')
+            local base_command   = table.remove(target, 1)
+            local options = vim.tbl_extend('force', { noremap = true, silent = true }, target)
+
+            for _, p in pairs(patterns) do
+                local command = function()
+                    execute_mapping(command_before)
+                    execute_mapping(command_before)
+                    execute_mapping(command_before)
+                end
+
+                vim.keymap.set(scope, p, command, options)
             end
         end
     end
@@ -23,7 +45,6 @@ return {
     nmap = map 'n',
     imap = map 'i',
     vmap = map 'v',
-    map_opt = map_opt,
 
     str_trim = function (str)
         local str_start = string.find(str, '[^ ]')

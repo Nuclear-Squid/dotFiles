@@ -60,18 +60,11 @@ function M.bracket_group(opening_delim, closing_delim)
   end
 end
 
-function M.replace_on_range()
-  local start_line = unpack(vim.api.nvim_buf_get_mark(0, '['))
-  local finish_line = unpack(vim.api.nvim_buf_get_mark(0, ']'))
-  vim.api.nvim_feedkeys(string.format(':%d,%ds/', start_line, finish_line), 'n', false)
 function M.replace_on_range(start, finish, cursor)
   vim.api.nvim_feedkeys(string.format(':%d,%ds/', start[1], finish[1]), 'n', false)
 end
 
 -- « Atta je réessaye »
-function M.duplicate_and_comment(start_line, finish_line, cursor_line, cursor_col)
-  local new_cursor_line = cursor_line + finish_line - start_line + 1
-  local range = string.format('%d,%d ', start_line, finish_line)
 function M.duplicate_and_comment(start, finish, cursor)
   local new_cursor_line = cursor[1] + finish[1] - start[1] + 1
   local range = string.format('%d,%d ', start[1], finish[1])
@@ -85,11 +78,6 @@ function M.duplicate_and_comment(start, finish, cursor)
 end
 
 -- La position du curseur est stoquée dans le marqueur '`'
-function M.duplicate_and_comment_normal()
-  local start_line = vim.api.nvim_buf_get_mark(0, '[')[1]
-  local finish_line = vim.api.nvim_buf_get_mark(0, ']')[1]
-  local cursor_line, cursor_col = unpack(vim.api.nvim_buf_get_mark(0, '`'))
-  duplicate_and_comment(start_line, finish_line, cursor_line, cursor_col)
 function M.make_text_object_cmd(fn)
     local set_opfunc = vim.fn[vim.api.nvim_exec2([[
         func s:set_opfunc(val)
@@ -110,14 +98,6 @@ function M.make_text_object_cmd(fn)
     end
 end
 
-function M.duplicate_and_comment_visual()
-  local cursor_line, cursor_col = unpack(vim.api.nvim_win_get_cursor(0))
-  local visual_line = vim.fn.getpos('v')[2]
-  if cursor_line < visual_line then
-    duplicate_and_comment(cursor_line, visual_line, cursor_line, cursor_col)
-  else
-    duplicate_and_comment(visual_line, cursor_line, cursor_line, cursor_col)
-  end
 function M.make_visual_cmd(fn)
     return function()
         local start  = vim.api.nvim_win_get_cursor(0)

@@ -1,3 +1,5 @@
+vim.hl = vim.highlight  -- XXX: Remove on nvim != 0.10.3
+
 --  ────────────────────< Imports and syntaxic sugar >─────────────────
 local utils = require 'utils'
 local map = utils.map
@@ -71,7 +73,16 @@ set.undofile = true -- Sauvegarde l’historique de retours en arrière.
 --  ───────────────────────────< Code folding >────────────────────────
 -- set.foldmethod = 'indent' -- Genère les folds à partir de l'indentation
 vim.wo.foldmethod = 'expr'
-vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+set.foldtext = require 'foldtext'
+set.fillchars = {
+  eob = " ",
+  fold = " ",
+  foldopen = "",
+  foldclose = "",
+  foldsep = " ", -- or "│" to use bar for show fold area
+}
+
 set.smartindent = true -- Auto-indentation quand on retourne à la ligne
 set.shiftwidth = 4 -- Nombre d’espaces à ajouter / retirer avec `<` et `>`
 set.softtabstop = 4 -- Nombre d'espaces quand on fait tab
@@ -159,26 +170,23 @@ nmap 'Y' 'yg_'
 nmap 'U' '<C-r>'
 imap '<C-BS>' '<C-w>'
 
-map { 'n', 'v' } 'j'      'gj'
-map { 'n', 'v' } '<Down>' 'gj'
-map { 'n', 'v' } '+'      'gj'
+map { 'n', 'v' } { 'j', '<Down>', '+' } 'gj'
+map { 'n', 'v' } { 'k', '<Up>',   '-' } 'gk'
 
-map { 'n', 'v' } 'k'    'gk'
-map { 'n', 'v' } '<Up>' 'gk'
-map { 'n', 'v' } '-'    'gk'
+-- vmap '<' '<gv'
+-- vmap '>' '>gv'
+-- vmap '<C-a>' '<C-a>gv'
+-- vmap '<C-x>' '<C-x>gv'
+-- vmap 'g<C-a>' 'g<C-a>gv'
+-- vmap 'g<C-x>' 'g<C-x>gv'
 
-vmap '<' '<gv'
-vmap '>' '>gv'
-vmap '<C-a>' '<C-a>gv'
-vmap '<C-x>' '<C-x>gv'
-vmap 'g<C-a>' 'g<C-a>gv'
-vmap 'g<C-x>' 'g<C-x>gv'
+vmap { '<', '>', '<c-a>', '<c-x>', 'g<c-a>', 'g<c-x>' } { after = 'gv' }
 
 map { 'n', 'v', 'o' } ',' ';'
 map { 'n', 'v', 'o' } ';' ','
 
-nmap 'd}' 'V}d'
-nmap 'd{' 'V{d'
+nmap 'd}' 'V}kd'
+nmap 'd{' 'V{jd'
 
 --  ──────────────────────────────< Leader >───────────────────────────
 vim.g.mapleader = ' '
@@ -281,18 +289,20 @@ require('lazy').setup {
       -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
       "MunifTanjim/nui.nvim",
       -- OPTIONAL:
-  { 'rmagatti/session-lens',
-    dependencies = {'nvim-telescope/telescope.nvim', { 'rmagatti/auto-session', opts = {} }},
-    opts = {
-      prompt_title = "Sessions ! Fuck Yeah !",
-      previewer = true,
-    },
-  },
       --   `nvim-notify` is only needed, if you want to use the notification view.
       --   If not available, we use `mini` as the fallback
       "rcarriga/nvim-notify",
     }
   },
+
+  --  ─────────────────────────< Session manager >─────────────────────────
+  --[[ { 'rmagatti/session-lens',
+    dependencies = {'nvim-telescope/telescope.nvim', { 'rmagatti/auto-session', opts = {} }},
+    opts = {p
+      prompt_title = "Sessions ! Fuck Yeah !",
+      previewer = true,
+    },
+  }, ]]
 
   { "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
     config = function()
@@ -317,10 +327,6 @@ require('lazy').setup {
 
   --  ──────────────────────────< Fancy comments >───────────────────────
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
-  { 'numToStr/Comment.nvim', opts = {
-        ignore = '^$'  -- Don’t comment empty lines
-    }
-  },
   { 'LudoPinelli/comment-box.nvim',
     init = function()
       nmap '<leader>c' ':CBccline8<CR>'
@@ -348,23 +354,16 @@ require('lazy').setup {
     end,
   },
 
-  { 'folke/snacks.nvim',
-    opts = {
-      image = {
-        enabled = true,
-      },
-    },
-  },
-
   --  ────────────────────< More complex plugin setups >─────────────────
   require 'plugins.cmp',
   -- require 'plugins.conform',
   require 'plugins.debug',
-  -- require 'plugins.gitsigns',
+  require 'plugins.gitsigns',
   require 'plugins.lint',
   require 'plugins.lspconfig',
   require 'plugins.lualine',
   require 'plugins.suckless',
   require 'plugins.telescope',
   require 'plugins.treesitter',
+  require 'plugins.snacks',
 }
