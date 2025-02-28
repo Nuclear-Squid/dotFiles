@@ -174,16 +174,6 @@ in
             '';
         };
 
-        picom = {
-            enable = true;
-            enable = !powersave_mode;
-            settings = {
-                corner-radius = 10;
-                roundBorder = 1;
-                fading = true;
-                fade-delta = 3;
-            };
-        };
 
         thermald.enable = powersave_mode;
 

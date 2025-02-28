@@ -1,16 +1,47 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 let
     unstable = import <nixos-unstable> { config = config.nixpkgs.config; };
+    homeDir = "/home/nuclear-squid";
 in {
     home = {
         username = "nuclear-squid";
-        homeDirectory = "/home/nuclear-squid";
+        homeDirectory = homeDir;
         stateVersion = "24.05";
+        packages = with pkgs; [ picom ];
     };
 
     programs.home-manager.enable = true;
 
     programs.ncspot.enable = true;
+    xdg = {
+        configHome = "${homeDir}/.config";
+        # configFile.picom.text = builtins.readFile ../picom.conf;
+        enable = true;
+        configFile."picom/picom.conf" = {
+            source = config.lib.file.mkOutOfStoreSymlink ../picom.conf;
+            force = true;
+        };
+    };
+
+    systemd.user.services.picom =
+        let cfg_systemd_target = "graphical-session.target";
+        in {
+        Unit = {
+            Description = "Picom X11 compositor";
+            After = [ cfg_systemd_target ];
+            PartOf = [ cfg_systemd_target ];
+        };
+        Install = {
+            WantedBy = [ cfg_systemd_target ];
+        };
+        Service = {
+            ExecStart = lib.concatStringsSep " " [
+                "${lib.getExe pkgs.picom}"
+                    # "--config ${config.xdg.configFile."picom/picom.conf".source}"
+                    "--config ${homeDir}/.config/picom/picom.conf"
+            ];
+        };
+    };
 
     programs.git = {
         enable = true;
