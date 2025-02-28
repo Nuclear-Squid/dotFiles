@@ -68,7 +68,10 @@ in {
         };
     };
 
-    programs.zoxide.enable = true;
+    programs.zoxide = {
+        enable = true;
+        options = [ "--cmd" "t" ];
+    };
 
     programs.zsh = rec {
         enable = true;
@@ -86,7 +89,8 @@ in {
         initExtraFirst = builtins.readFile ../shell/dumb_autorun.sh;
 
         initExtra =
-            builtins.readFile ../shell/aliases.sh
+            builtins.readFile ../shell/utils.sh
+            + builtins.readFile ../shell/aliases.sh
             + builtins.readFile ../shell/zsh_config.sh
             ;
     };
