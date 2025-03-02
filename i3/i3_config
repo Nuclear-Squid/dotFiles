@@ -187,9 +187,9 @@ font pango:monospace 0
 # for_window [class=".*"] title_format ""
 
 gaps inner 10px
-default_border pixel 2
-# hide_edge_borders smart  # Only show borders when nececary
-hide_edge_borders vertical
+default_border pixel 3
+# hide_edge_borders horizontal  # Only show borders when nececary
+# hide_edge_borders vertical
 # smart_borders on
 title_align center
 
