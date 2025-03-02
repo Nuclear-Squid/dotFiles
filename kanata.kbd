@@ -56,7 +56,7 @@
     q    w    e    r    t         y    u    i    o    p
     a    s    d    f    g         h    j    k    l    ;
     z    x    c    v    b   cmp   n    m    ,    .    /
-                  @num  spc       spc @nav
+                  @num  spc       del @nav
 )
 
 (deftemplate mt (keycode modifier)
