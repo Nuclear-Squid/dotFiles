@@ -9,11 +9,6 @@ alias vi   "neovide --fork --"
 alias v    "nvim"
 alias lg   "lazygit"
 
-function duplicate_term; kitty . &; end
-
-bind \e\x7F yazi
-bind \e\x20 duplicate_term
-
 function ggez -a commands
     if  [ (string match -e 'u' $commands) ]
         echo ---------------------
@@ -90,3 +85,18 @@ function ti
     #git_repo_changed && onefetch
     magic_ls
 end
+
+function duplicate_term; kitty . &; end
+
+function magic_enter
+    if test -z (commandline)
+        echo
+        magic_ls
+        echo -ne '\x1b[A'
+    end
+    commandline -f execute
+end
+
+bind \e\x7F yazi
+bind \e\x20 duplicate_term
+bind \cM magic_enter
