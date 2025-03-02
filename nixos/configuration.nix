@@ -138,7 +138,7 @@ in
         LC_TIME = "fr_FR.UTF-8";
     };
 
-    users.defaultUserShell = pkgs.zsh;
+    users.defaultUserShell = pkgs.fish;
     users.users.nuclear-squid = {
         isNormalUser = true;
         description = "Nuclear Squid";
@@ -198,6 +198,7 @@ in
                STOP_CHARGE_THRESH_BAT0 = 80;   # 80 and above it stops charging
             };
         };
+
         kanata = {
             enable = true;
             package = unstable.kanata;

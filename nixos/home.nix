@@ -104,8 +104,13 @@ in {
         options = [ "--cmd" "t" ];
     };
 
-    programs.zsh = rec {
+    programs.fish = {
         enable = true;
+        shellInit = builtins.readFile ../shell/fish_config.fish;
+    };
+
+    programs.zsh = rec {
+        enable = false;
         enableCompletion = true;
         autosuggestion.enable = true;
         syntaxHighlighting.enable = true;
