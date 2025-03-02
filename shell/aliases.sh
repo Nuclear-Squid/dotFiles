@@ -1,9 +1,7 @@
 # My shell aliases and commands, that can be used in pretty much any of shell
 
-eza_extra_options=(--group-directories-first --git --icons --no-quotes)
-
-alias l="eza -l $eza_extra_options"
-alias la="eza -la $eza_extra_options"
+alias l="eza -l"
+alias la="eza -la"
 alias rm="rm -I"
 alias cat="bat"
 alias chux="chmod u+x"

@@ -152,7 +152,8 @@ in {
 
     programs.eza = {
         enable = true;
-        # enableZshIntegration = true;
+        enableZshIntegration = true;
+        enableFishIntegration = true;
         git = true;
         icons = "auto";
         extraOptions = [
