@@ -107,6 +107,21 @@ in {
     programs.fish = {
         enable = true;
         shellInit = builtins.readFile ../shell/fish_config.fish;
+        shellInitLast = ''
+            functions --copy t zoxide_wrapper
+            function t --wraps=t
+                zoxide_wrapper $argv
+                git_repo_changed && onefetch
+                magic_ls
+            end
+
+            functions --copy ti zoxide_interactive_wrapper
+            function ti --wraps=ti
+                zoxide_interactive_wrapper $argv
+                git_repo_changed && onefetch
+                magic_ls
+            end
+        '';
     };
 
     programs.zsh = rec {
