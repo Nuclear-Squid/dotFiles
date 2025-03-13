@@ -1,12 +1,12 @@
 { config, pkgs, lib, ... }:
 let
-    unstable = import <nixos-unstable> { config = config.nixpkgs.config; };
+    unstable = import <nixos-unstable> {};
     homeDir = "/home/nuclear-squid";
 in {
     home = {
         username = "nuclear-squid";
         homeDirectory = homeDir;
-        stateVersion = "24.05";
+        stateVersion = "24.11";
         packages = with pkgs; [ picom ];
     };
 
@@ -62,8 +62,9 @@ in {
 
     programs.kitty = {
         enable = true;
+        package = unstable.kitty;
         font = {
-            name = "FantasqueSansMonoNerdFont";
+            name = "FantasqueSansM Nerd Font Mono";
             size = 10;
         };
         settings = {

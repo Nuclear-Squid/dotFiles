@@ -7,7 +7,7 @@
     fg1:    #9C9BBA;
     fg2:    #605969;
 
-    font:   "FantasqueSansMonoNerdFont 11";
+    font:   "FantasqueSansM Nerd Font Mono 11";
 
     background-color:   transparent;
     text-color:         @fg0;
