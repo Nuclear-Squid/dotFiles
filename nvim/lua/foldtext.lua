@@ -1,3 +1,4 @@
+-- File stolen from https://github.com/Wansmer/nvim-config/blob/main/lua/modules/foldtext.lua
 
 local function parse_line(linenr)
   local bufnr = vim.api.nvim_get_current_buf()

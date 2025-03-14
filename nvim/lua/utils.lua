@@ -10,7 +10,8 @@ local function execute_mapping(mapping)
     if mapping == nil then return end
 
     if type(mapping) == "string" then
-        vim.api.nvim_feedkeys(mapping, vim.api.nvim_get_mode()["mode"], true)
+        local keys = vim.api.nvim_replace_termcodes(mapping, true, true, true)
+        vim.api.nvim_feedkeys(keys, vim.api.nvim_get_mode()["mode"], false)
     else
         mapping()
     end
@@ -28,10 +29,15 @@ function map(scope)
             local options = vim.tbl_extend('force', { noremap = true, silent = true }, target)
 
             for _, p in pairs(patterns) do
-                local command = function()
-                    execute_mapping(command_before)
-                    execute_mapping(command_before)
-                    execute_mapping(command_before)
+                local command
+                if type(command_before) ~= "function" and type(base_command) ~= "function" and type(command_after) ~= "function" then
+                    command = (command_before or '') .. (base_command or p) .. (command_after or '')
+                else
+                    command = function()
+                        execute_mapping(command_before)
+                        execute_mapping(base_command or p)
+                        execute_mapping(command_after)
+                    end
                 end
 
                 vim.keymap.set(scope, p, command, options)

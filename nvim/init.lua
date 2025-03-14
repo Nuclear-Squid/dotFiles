@@ -1,5 +1,3 @@
-vim.hl = vim.highlight  -- XXX: Remove on nvim != 0.10.3
-
 --  ────────────────────< Imports and syntaxic sugar >─────────────────
 local utils = require 'utils'
 local map = utils.map
@@ -15,7 +13,15 @@ local autocmd = vim.api.nvim_create_autocmd
 local default_timer = 350
 
 --  ───────────────────────────< Autocommands >────────────────────────
-autocmd('InsertLeave', { pattern = '*', command = 'write' })
+-- Save when leaving insert mode, unless the file has no name.
+autocmd('InsertLeave', {
+    pattern = '*',
+    callback = function()
+        if vim.api.nvim_buf_get_name(0) ~= "" then
+            vim.cmd ':w'
+        end
+    end,
+})
 
 -- Disable folding in Telescope's result window.
 autocmd("FileType", { pattern = "TelescopeResults", command = [[setlocal nofoldenable]] })
@@ -336,8 +342,7 @@ require('lazy').setup {
 
   --  ──────────────────────────< Better motions >───────────────────────
   'jeetsukumaran/vim-indentwise',
-  'wellle/targets.vim', -- supercharge your text objects
-  { -- ignore folds when jumping to next paragraphe
+  { -- ignore folds when jumping to next paragraph
     'justinmk/vim-ipmotion',
     init = function()
       vim.g.ip_skipfold = 1
@@ -366,4 +371,6 @@ require('lazy').setup {
   require 'plugins.telescope',
   require 'plugins.treesitter',
   require 'plugins.snacks',
+  require 'plugins.mini',
+  require 'plugins.sessions',
 }

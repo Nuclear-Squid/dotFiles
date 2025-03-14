@@ -7,10 +7,10 @@ function M.bracket_group(opening_delim, closing_delim)
     local current_line = vim.api.nvim_get_current_line()
     local row, col = unpack(vim.api.nvim_win_get_cursor(0))
 
-    local left_of_cursor = ''
+    local left_of_cursor  = ''
     local right_of_cursor = ''
 
-    local left_no_space_chars = '({['
+    local left_no_space_chars  = '({['
     local right_no_space_chars = ')}];,'
 
     local function no_space_char_at_pos(no_space_chars, str, pos)
@@ -60,6 +60,7 @@ function M.bracket_group(opening_delim, closing_delim)
   end
 end
 
+---@diagnostic disable-next-line
 function M.replace_on_range(start, finish, cursor)
   vim.api.nvim_feedkeys(string.format(':%d,%ds/', start[1], finish[1]), 'n', false)
 end
