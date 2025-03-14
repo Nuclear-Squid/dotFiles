@@ -46,11 +46,6 @@ function git_repo_changed
     test -n $curr_git_repo; and test $curr_git_repo != $prev_git_repo
 end
 
-function cf -a directory
-    mkdir -p $directory
-    builtin cd $dierctory
-end
-
 function magic_ls
     paste \
         (ll --color=always | psub) \
@@ -60,6 +55,11 @@ function magic_ls
 end
 
 functions --copy cd cd_wrapper
+function cf -a directory
+    mkdir -p $directory
+    cd_wrapper $directory
+end
+
 function cd --wraps=cd
     cd_wrapper $argv
     if [ $status -ne 0 ]
@@ -68,6 +68,10 @@ function cd --wraps=cd
     end
     git_repo_changed && onefetch
     magic_ls
+end
+
+function cut_last_field -a input delimiter
+    echo "$input" | rev | cut -d "$delimiter" -f 1 | rev
 end
 
 function gc -a repo
