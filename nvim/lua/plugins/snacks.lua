@@ -105,5 +105,6 @@ return {
 
         statuscolumn = {},
 
+        debug = {},
     },
 }

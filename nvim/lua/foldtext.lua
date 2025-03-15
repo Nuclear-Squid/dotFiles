@@ -102,9 +102,11 @@ function HighlightedFoldtext()
   local result2 = parse_line(vim.v.foldend)
   if result2 then
     local first = result2[1]
-    result2[1] = { vim.trim(first[1]), first[2] }
-    for _, item in ipairs(result2) do
-      table.insert(result, item)
+    if first then
+      result2[1] = { vim.trim(first[1]), first[2] }
+      for _, item in ipairs(result2) do
+        table.insert(result, item)
+      end
     end
   end
 
