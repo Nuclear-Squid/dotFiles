@@ -1,6 +1,6 @@
 local M = {}
 
-local utils = require 'utils'
+local utils = require 'my_utils'
 
 local function execute_mapping(mapping)
     if mapping == nil then return end

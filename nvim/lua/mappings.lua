@@ -38,6 +38,7 @@ nmap '<leader>x' ':x<CR>'
 -- make_awesome_mapping('<leader>d', map_fns.duplicate_and_comment)
 nmap '<leader>d' (map_fns.make_text_object_cmd(map_fns.duplicate_and_comment))
 vmap '<leader>d' (map_fns.make_visual_cmd(map_fns.duplicate_and_comment))
+nmap '<leader>z' 'zMzvzczAzz'
 
 --  ───────────────────────────< Miscellaneous >───────────────────────────
 nmap '<Esc>' '<cmd>nohlsearch<CR>' -- Remove highlight

@@ -10,10 +10,32 @@ end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 ---@diagnostic disable-next-line: missing-fields
 require('lazy').setup {
+
+  {
+    dir = '~/Code/nvim_plugins/nuisance.nvim',
+    -- lazy = false,
+    -- event = "BufReadPost",
+    opts = {
+      player = "paplay", -- options: paplay (default), pw-play, mpv
+      max_sounds = 20, -- Limit the amount of sounds that can play at the same time
+      sounds = {
+        -- Add custom sound paths or lists of sounds for other events here
+        -- For example, BufRead can play a random sound from a list
+        BufReadPre = { path = '~/Code/dotFiles/Zelda chest opening ｜ Sound Effect.wav', volume = 100, delay = 8000, probability = 0.05 },
+        -- CursorMovedI = { path = sound_dir .. "click.ogg", volume = 0-100 },
+        -- InsertLeave = { path = sound_dir .. "toggle.ogg", volume = 0-100 },
+        -- ExitPre = { path = sound_dir .. "exit.ogg", volume = 0-100 },
+        -- BufWrite = { path = sound_dir .. "save.ogg", volume = 0-100 },
+        -- TextChangedI = { path = '~/Code/dotFiles/Windows_XP_Error_sound_effect.wav', volume = 100 },
+     },
+    },
+  },
+
   require 'plugins.pretty_ui',
   require 'plugins.neorg',
   require 'plugins.qol_extra',
   require 'plugins.cmp',
+  -- require 'plugins.blink',
   -- require 'plugins.conform',
   require 'plugins.debug',
   require 'plugins.gitsigns',

@@ -28,20 +28,6 @@ return {
     }
   },
 
-  --  ───────────────────────< Pretty LSP diagnostic >───────────────────────
-  { "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
-    config = function()
-      require("lsp_lines").setup()
-      vim.diagnostic.config {
-        virtual_text = false,
-        virtual_lines = {
-          only_current_line = true,
-          highlight_whole_line = true,
-        },
-      }
-    end,
-  },
-
   --  ──────────────────────────< Fancy comments >───────────────────────
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
   { 'LudoPinelli/comment-box.nvim',

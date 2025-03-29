@@ -17,7 +17,7 @@ autocmd('TextYankPost', {
   desc = 'Highlight when yanking (copying) text',
   group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
   callback = function()
-    vim.highlight.on_yank { timeout = default_timer }
+    vim.highlight.on_yank { timeout = 300 }
   end,
 })
 
@@ -33,12 +33,12 @@ autocmd("BufReadPost", {
     end,
 })
 
-autocmd("BufWinEnter", {
-    desc = "Folds everything except what’s under the cursor when opening a new file",
-    callback = function()
-        vim.cmd('normal zMzvzczAzz')
-    end,
-})
+-- autocmd("BufWinEnter", {
+--     desc = "Folds everything except what’s under the cursor when opening a new file",
+--     callback = function()
+--         vim.cmd('normal zMzvzczAzz')
+--     end,
+-- })
 
 -- Show cursorline only on active windows
 autocmd({ "InsertLeave", "WinEnter" }, {
