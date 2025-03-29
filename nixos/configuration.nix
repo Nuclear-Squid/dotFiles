@@ -212,12 +212,11 @@ in
             };
         };
 
-        udev.packages = with pkgs; [ via ];
     };
 
     programs = {
         nix-ld.enable = true;
-        zsh.enable = true;
+        fish.enable = true;
         ssh.startAgent = true;
 
         steam = {
@@ -248,6 +247,12 @@ in
                                       # May break stuff, honnestly I have no
                                       # idea what it means
     };
+
+    # fonts.packages = with unstable.nerd-fonts; [
+        # monaspace
+        # fantasque-sans-mono
+        # pkgs.maple-mono
+    # ];
 
     fonts.packages = [ pkgs.nerdfonts ];
     fonts.fontconfig.useEmbeddedBitmaps = true;

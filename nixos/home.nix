@@ -1,6 +1,7 @@
 { config, pkgs, lib, ... }:
 let
-    unstable = import <nixos-unstable> {};
+    unstable   = import <nixos-unstable>   {};
+    old-stable = import <nixos-old-stable> {};
     homeDir = "/home/nuclear-squid";
 in {
     home = {
@@ -10,9 +11,6 @@ in {
         packages = with pkgs; [ picom ];
     };
 
-    programs.home-manager.enable = true;
-
-    programs.ncspot.enable = true;
     xdg = {
         configHome = "${homeDir}/.config";
         # configFile.picom.text = builtins.readFile ../picom.conf;
@@ -43,11 +41,25 @@ in {
         };
     };
 
+    programs.neovide = {
+        enable = true;
+        package = unstable.neovide;
+        settings.backtraces_path = "$HOME/.local/share/neovide";
+        settings.font = {
+            size = 16;
+            normal        = { family = "FantasqueSansM Nerd Font Mono"; style = "regular"; };
+            bold          = { family = "FantasqueSansM Nerd Font Mono"; style = "bold"; };
+            italic        = { family = "MonaspiceRn Nerd Font Mono";    style = "regular"; };
+            bold_italic   = { family = "MonaspiceRn Nerd Font Mono";    style = "italic"; };
+        };
+    };
+
     programs.git = {
         enable = true;
         lfs.enable = true;
         userName = "Nuclear-Squid";
         userEmail = "leo@cazenave.cc";
+        extraConfig.push.autoSetupRemote = true;
         aliases = {
             cv = "commit -v";
             cb = "checkout -b";
@@ -55,8 +67,56 @@ in {
             lo = "log --graph --oneline";
             pf = "push --force-with-lease";
         };
-        extraConfig = {
-            push = { autoSetupRemote = true; };
+    };
+
+    programs.gh = {
+        enable = true;
+        extensions = [ pkgs.gh-notify ];
+    };
+
+    programs.alacritty = {
+        enable = true;
+        settings = {
+            font = {
+                size = 7;
+                # normal.family = "Operator-caska";
+                normal        = { family = "FantasqueSansM Nerd Font Mono"; style = "regular"; };
+                bold          = { family = "FantasqueSansM Nerd Font Mono"; style = "bold"; };
+                italic        = { family = "MonaspiceRn Nerd Font Mono";    style = "regular"; };
+                bold_italic   = { family = "MonaspiceRn Nerd Font Mono";    style = "italic"; };
+            };
+            window = {
+                opacity = 0.9;
+                blur = true;
+            };
+            colors = {
+                primary = {
+                    foreground = "#f7dec7";
+                    background = "#1a0c24";
+                };
+                normal = {
+                    black   = "#373354";
+                    red     = "#c02030";
+                    green   = "#3bb846";
+                    yellow  = "#dd9046";
+                    blue    = "#2a68c8";
+                    magenta = "#b02cc0";
+                    cyan    = "#48d5aa";
+                    white   = "#9C9BBA";
+                };
+                bright = {
+                    black   = "#4b4673";
+                    red     = "#e86671";
+                    green   = "#8ebd6b";
+                    yellow  = "#e5c07b";
+                    blue    = "#5ab0f6";
+                    magenta = "#c678dd";
+                    cyan    = "#48d5aa";
+                    white   = "#f5d9de";
+                };
+                transparent_background_colors = true;
+            };
+            selection.save_to_clipboard = true;
         };
     };
 
@@ -65,12 +125,10 @@ in {
         package = unstable.kitty;
         font = {
             name = "FantasqueSansM Nerd Font Mono";
+            # name = "Operator-caska";
             size = 10;
         };
         settings = {
-            bold_font = "auto";
-            italic_font = "auto";
-            bold_italic_font = "auto";
             bell_path = "~/Code/dotFiles/Windows_XP_Error_sound_effect.wav";
             cursor = "#666666";
             background_opacity = "0.9";
@@ -108,7 +166,7 @@ in {
     programs.fish = {
         enable = true;
         shellInit = builtins.readFile ../shell/fish_config.fish;
-        shellInitLast = ''
+        interactiveShellInit = ''
             functions --copy t zoxide_wrapper
             function t --wraps=t
                 zoxide_wrapper $argv
@@ -147,11 +205,6 @@ in {
             ;
     };
 
-    programs.thefuck = {
-        enable = true;
-        enableZshIntegration = true;
-    };
-
     programs.starship = {
         enable = true;
         settings = {
@@ -185,7 +238,7 @@ in {
 
     programs.fzf = rec {
         enable = true;
-        enableZshIntegration = true;
+        enableFishIntegration = true;
         defaultCommand = "fd --type f --strip-cwd-prefix";
 
         # ctrl-t
