@@ -69,7 +69,7 @@ floating_modifier $mod
 
 # move tiling windows via drag & drop by left-clicking into the title bar,
 # or left-clicking anywhere into the window while holding the floating modifier.
-tiling_drag modifier titlebar
+# tiling_drag modifier titlebar
 
 bindcode $mod+$kc_x kill
 bindcode $mod+Mod1+$kc_r reload
@@ -132,7 +132,10 @@ bindcode $mod+$kc_y workspace number $ws6; exec $refresh_i3status
 bindcode $mod+$kc_u workspace number $ws7; exec $refresh_i3status
 bindcode $mod+$kc_i workspace number $ws8; exec $refresh_i3status
 bindcode $mod+$kc_o workspace number $ws9; exec xdotool key Shift_Lock; exec $refresh_i3status
+# bindcode $mod+$kc_o workspace number $ws9; exec $refresh_i3status
 bindcode $mod+$kc_p workspace number $ws10; exec $refresh_i3status
+
+# bindsym $mod+Iso_Level5_Latch nop
 
 # move focused container to workspace
 bindcode $mod+Shift+$kc_q move container to workspace number $ws1
@@ -178,7 +181,7 @@ bindcode $mod+$kc_z mode "resize"
 
 #   ────────────────────────────< Pretty stuff >────────────────────────────
 # Set background
-exec feh --bg-scale ~/Code/dotFiles/wallpaper_hollow_knight.jpg
+exec feh --bg-scale ~/Code/dotFiles/wallpapers/hollow_knight.jpg
 
 # Font for window titles. Will also be used by the bar unless a different font
 # font pango:FantasqueSansMonoNerdFont 8
@@ -186,7 +189,9 @@ font pango:monospace 0
 # for_window [class=".*"] title_format "<span alpha='1'>%title</span>"
 # for_window [class=".*"] title_format ""
 
-gaps inner 10px
+titlebar hide
+
+gaps inner 10
 default_border pixel 3
 # hide_edge_borders horizontal  # Only show borders when nececary
 # hide_edge_borders vertical
