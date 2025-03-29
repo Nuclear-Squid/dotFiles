@@ -2,12 +2,14 @@
 let
     unstable   = import <nixos-unstable>   { config = config.nixpkgs.config; };
     old-stable = import <nixos-old-stable> { config = config.nixpkgs.config; };
-    powersave_mode = true;
+    customI3 = true;
 in let global-system-packages = with pkgs; {
         code-editors = [
             unstable.neovim
-            unstable.neovide
+            unstable.arduino-ide
+            stlink
             lazygit
+            ghdl
         ];
 
         dev-tools = [
@@ -34,18 +36,24 @@ in let global-system-packages = with pkgs; {
             tealdeer
             ripgrep
             mupdf
+            llpp
             feh
             fd
         ];
 
         gui-apps = [
             simplescreenrecorder
+            telegram-desktop
+            signal-desktop
             libreoffice-qt
             tor-browser
+            firefox
             thunderbird
             xfce.thunar
             spotify
             discord
+            element-desktop
+            iamb
             zoom-us
             hunspell # Libs for libreoffice
             hunspellDicts.uk_UA
@@ -54,7 +62,9 @@ in let global-system-packages = with pkgs; {
 
         art-apps = [
             kdePackages.kdenlive
-            old-stable.ardour  # Stable and Unstable versions are brocken.
+            old-stable.ardour  # Stable and Unstable versions are broken.
+            unstable.musescore
+            unstable.muse-sounds-manager
             inkscape
             blender
         ];
@@ -104,6 +114,12 @@ in
     ];
 
     nix.optimise.automatic = true; # Optimise storage space of NixOS
+    nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
+    system.autoUpgrade = {
+        enable = true;
+        dates = "weekly";
+    };
 
     # Bootloader.
     boot.loader.systemd-boot.enable = true;
@@ -153,6 +169,8 @@ in
         devmon.enable = true;
         gvfs.enable = true;
 
+        pipewire.enable = false;
+
         flatpak.enable = true;
         displayManager.defaultSession = "none+i3";
 
@@ -165,7 +183,13 @@ in
 
             windowManager.i3 = {
                 enable = true;
-                package = unstable.i3;
+                package =
+                    if customI3
+                    then unstable.i3.overrideAttrs {
+                        src = /home/nuclear-squid/Code/Forks/i3;
+                        doCheck = false;
+                    }
+                    else unstable.i3-rounded;
             };
 
             displayManager.sessionCommands = ''
@@ -175,7 +199,7 @@ in
         };
 
 
-        thermald.enable = powersave_mode;
+        thermald.enable = true;
 
         tlp = {
             enable = true;
