@@ -1,13 +1,15 @@
 ;; (defcfg
 ;;     sequence-input-mode hidden-delay-type
 ;;     process-unmapped-keys yes
+;;     concurent-tap-hold yes
 ;; )
 
 (defvar
     tap-timeout      175
     hold-timeout     200
     one-shot-timeout 500
-    combo-timeout    12
+    combo-timeout    30
+    ;; combo-lock-time  150
 )
 
 (defsrc
@@ -18,10 +20,17 @@
 )
 
 (deflayer qwerty
-    q    w    e    r    t         y    u    i    o    p
+    q    w    e    r    t         y    u    i   @o_   p
     a   @ss  @dd  @ff   g         h   @jj  @kk  @ll   ;
     z    x    c    v    b   cmp   n    m    ,    .    /
                   @sup @nav    @alt @num
+)
+
+(deflayer hands-down-promethium
+   @f   @p   @d   @l   @x        @'   @u   @o   @y   @b
+   @s   @dnn @dtt @dhh @k        @,   @daa @dee @dii @c
+   @v   @w   @g   @m   @j  C-w   @-   @.   @z   @q   XX
+                 @hots @drr     @spc  @num
 )
 
 (deflayer hypergol
@@ -40,7 +49,7 @@
 
 (deflayer vimnav
     C-q  @stp @vup @vdn @hyp      home pgdn pgup end  _
-    C-a  C-s S-tab tab  @std      lft  down up   rght _
+    C-a  C-s S-tab tab  @std      lft  down up   rght @build
     C-z  C-x  C-w  C-v  @gam _    bldn brdn brup blup _
               XX ret                   ret XX
 )
@@ -82,16 +91,24 @@
     vup (fork VolumeUp   MediaTrackPrevious (lsft))
     vdn (fork VolumeDown MediaTrackNext     (lsft))
 
-    hyp (layer-switch hypergol)
+    ;; hyp (layer-switch hypergol)
+    hyp (layer-switch hands-down-promethium)
     std (layer-switch qwerty)
     gam (layer-switch gaming)
+
+    build (macro esc spc t M-h 50 up)
 )
 
 ;; Ergo‑L aliases
 (defalias
     ;; Thumb keys
     sup (t! mt esc lmet)
-    nav (t! lt (fork @ots-caps spc (ralt)) vimnav)
+    ;; nav (t! lt (fork @ots-caps spc (ralt)) vimnav)
+    nav (fork
+        (t! lt @ots-caps vimnav)
+        (t! lt spc numrow)
+        (ralt)
+    )
     alt (t! mt spc (fork ralt @space-nav (lmet)))
     num (t! lt bspc numrow)
 
@@ -99,24 +116,19 @@
     ss (t! mt s lsft)
     dd (t! mt d lctl)
     ff (t! mt f lalt)
-    jj (t! mt (chord ergol-combos j) lalt)
-    kk (t! mt (chord ergol-combos k) lctl)
+    jj (t! mt j lalt)
+    kk (t! mt k lctl)
     ll (t! mt l lsft)
+
+    o_ (macro o)
 )
 
-;; Ergo‑L combos
-(defchords ergol-combos $combo-timeout
-    ;; Keep standard tap actions
-    (j) j
-    (k) k
+;; (defchordsv2
+;;     (k l) ret 50 all-released (gaming)
+;; )
 
-    ;; Actual combos
-    (k j) ret
-)
-
-;; Hypergol aliases
+;; Keycodes for Hypergol / Hands-down-promethium over Ergo‑L
 (defalias
-    ;; Keycodes for Hypergol over Ergo‑L
     a    a
     b    b
     c    w
@@ -146,8 +158,23 @@
     ,    .
     .    n
     '    (macro o spc)
-    odk (one-shot 1000 (layer-while-held hypergol_odk))
+    -    c
+)
 
+;; Hands-down-promethium aliases
+(defalias
+    drr (t! lt (fork @r spc (ralt)) vimnav)
+    dnn (t! mt @n lsft)
+    dtt (t! mt @t lctl)
+    dhh (t! mt @h lalt)
+    daa (t! mt @a lalt)
+    dee (t! mt @e lctl)
+    dii (t! mt @i lsft)
+)
+
+;; Hypergol aliases
+(defalias
+    odk (one-shot 1000 (layer-while-held hypergol_odk))
     qu   (macro q sldr nop1)
     yo   (macro p sldr nop2)
 
