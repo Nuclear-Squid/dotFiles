@@ -219,7 +219,8 @@ in
                     if customI3
                     then unstable.i3.overrideAttrs {
                         # src = /home/nuclear-squid/Code/Forks/i3;
-                        src = ../i3/i3; # XXX: This is fucking disgusting
+                        # src = ../i3/i3; # XXX: This is fucking disgusting
+                        patches = [ ../i3/0001-Added-option-to-hide-title-bar-on-tabs-and-staks.patch ];
                         doCheck = false;
                     }
                     else unstable.i3-rounded;
