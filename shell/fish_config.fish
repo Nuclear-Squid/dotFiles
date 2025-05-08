@@ -9,6 +9,8 @@ alias vi   "neovide --fork --"
 alias v    "nvim"
 alias lg   "lazygit"
 
+set -Ux MANPAGER "nvim +Man!"
+
 function ggez -a commands
     if  [ (string match -e 'u' $commands) ]
         echo ---------------------
