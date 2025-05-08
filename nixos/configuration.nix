@@ -1,8 +1,10 @@
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 let
-    unstable   = import <nixos-unstable>   { config = config.nixpkgs.config; };
-    old-stable = import <nixos-old-stable> { config = config.nixpkgs.config; };
-    customI3 = true;
+    # unstable   = import <nixos-unstable>   { config = config.nixpkgs.config; };
+    # old-stable = import <nixos-old-stable> { config = config.nixpkgs.config; };
+    unstable   = inputs.unstable.legacyPackages.${pkgs.system};
+    old-stable = inputs.old-stable.legacyPackages.${pkgs.system};
+    customI3   = true;
 in let global-system-packages = with pkgs; {
         code-editors = [
             unstable.neovim
@@ -76,8 +78,8 @@ in let global-system-packages = with pkgs; {
         art-apps = [
             kdePackages.kdenlive
             old-stable.ardour  # Stable and Unstable versions are broken.
-            unstable.musescore
-            unstable.muse-sounds-manager
+            # unstable.musescore
+            # unstable.muse-sounds-manager
             inkscape
             blender
         ];
@@ -127,7 +129,8 @@ in
     };
 
     imports = [ # Include the results of the hardware scan.
-        /etc/nixos/hardware-configuration.nix
+        # /etc/nixos/hardware-configuration.nix
+        ./hardware-configuration.nix
         # ./home.nix
     ];
 
@@ -215,7 +218,8 @@ in
                 package =
                     if customI3
                     then unstable.i3.overrideAttrs {
-                        src = /home/nuclear-squid/Code/Forks/i3;
+                        # src = /home/nuclear-squid/Code/Forks/i3;
+                        src = ../i3/i3; # XXX: This is fucking disgusting
                         doCheck = false;
                     }
                     else unstable.i3-rounded;
