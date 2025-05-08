@@ -1,27 +1,13 @@
 { config, pkgs, inputs, ... }:
 let
-    # unstable   = import <nixos-unstable>   { config = config.nixpkgs.config; };
-    # old-stable = import <nixos-old-stable> { config = config.nixpkgs.config; };
     unstable   = inputs.unstable.legacyPackages.${pkgs.system};
     old-stable = inputs.old-stable.legacyPackages.${pkgs.system};
     customI3   = true;
 in let global-system-packages = with pkgs; {
         code-editors = [
             unstable.neovim
-            # unstable.neovide
-            # unstable.arduino-ide
-            # stlink
             lazygit
-            # ghdl
         ];
-
-        # fuck-me = [
-        #     unstable.popsicle
-        # ];
-
-        # lsp-servers = [
-        #     clang-tools
-        # ];
 
         dev-tools = [
             valgrind
@@ -33,43 +19,32 @@ in let global-system-packages = with pkgs; {
         ];
 
         languages-and-compilers = [
-            # unstable.android-studio
-            # gradle
-            # kotlin
-            # kvmtool
             unstable.cargo
-            # arduino-cli
-            # nodejs_22
             python3
             clang
-            # gcc
-            # go
         ];
 
         rice-and-cli-tools = [
             onefetch
             tealdeer
             ripgrep
-            # mupdf
             llpp
             feh
             fd
         ];
 
         gui-apps = [
+            inputs.zen-browser.packages.x86_64-linux.default
             simplescreenrecorder
             telegram-desktop
             signal-desktop
             libreoffice-qt
             tor-browser
-            # firefox
             thunderbird
             xfce.thunar
             spotify
             discord
             element-desktop
-            # iamb
-            # zoom-us
             hunspell # Libs for libreoffice
             hunspellDicts.uk_UA
             hunspellDicts.th_TH
@@ -86,25 +61,19 @@ in let global-system-packages = with pkgs; {
 
         keyboard-stuff = [
             unstable.kanata
-            # xorg.xkbcomp
             unstable.qmk
-            # via
         ];
 
         lower-level-system = [
             brightnessctl
-            # libxkbcommon
-            # xorg.libXext
             xorg.xmodmap
             pulseaudio
             signaldctl
-            # pkg-config
             alsa-lib
             libiconv
             xdotool
             killall
             bottom
-            # expat
             xclip
             unzip
             wget
@@ -129,18 +98,12 @@ in
     };
 
     imports = [ # Include the results of the hardware scan.
-        # /etc/nixos/hardware-configuration.nix
         ./hardware-configuration.nix
         # ./home.nix
     ];
 
     nix.optimise.automatic = true; # Optimise storage space of NixOS
     nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
-    # system.autoUpgrade = {
-    #     enable = true;
-    #     dates = "weekly";
-    # };
 
     # Bootloader.
     boot.loader.systemd-boot.enable = true;
@@ -188,9 +151,6 @@ in
         packages = with pkgs; [];
     };
 
-    # systemd.services.picom.serviceConfig.ExecStart = "${pkgs.picom.outPath}/bin/picom --config /home/nuclear-squid/Code/dotFiles/picom.conf";
-
-    # Configure keymap in X11
     services = {
         # Auto maunt usb devices
         udisks2.enable = true;
@@ -211,15 +171,9 @@ in
 
             windowManager.i3 = {
                 enable = true;
-                # package = unstable.i3;
-                # package = unstable.i3.overrideAttrs {
-                    # src = /home/nuclear-squid/Code/Forks/i3;
-                # };
                 package =
                     if customI3
                     then unstable.i3.overrideAttrs {
-                        # src = /home/nuclear-squid/Code/Forks/i3;
-                        # src = ../i3/i3; # XXX: This is fucking disgusting
                         patches = [ ../i3/0001-Added-option-to-hide-title-bar-on-tabs-and-staks.patch ];
                         doCheck = false;
                     }
@@ -231,16 +185,6 @@ in
                 ${pkgs.xorg.xmodmap}/bin/xmodmap -e "add mod4 = Hyper_L"
             '';
         };
-
-        # picom = {
-        #     enable = true;
-        #     settings = {
-        #         corner-radius = 10;
-        #         roundBorder = 1;
-        #         fading = true;
-        #         fade-delta = 3;
-        #     };
-        # };
 
         thermald.enable = true;
 
@@ -295,7 +239,7 @@ in
     programs = {
         nix-ld.enable = true;
         fish.enable = true;
-        ssh.startAgent = true;
+        # ssh.startAgent = true;
 
         steam = {
             enable = true;
@@ -325,12 +269,6 @@ in
                                       # May break stuff, honnestly I have no
                                       # idea what it means
     };
-
-    # fonts.packages = with unstable.nerd-fonts; [
-        # monaspace
-        # fantasque-sans-mono
-        # pkgs.maple-mono
-    # ];
 
     fonts.packages = [ pkgs.nerdfonts ];
     fonts.fontconfig.useEmbeddedBitmaps = true;
