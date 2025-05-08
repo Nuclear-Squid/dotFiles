@@ -6,36 +6,49 @@ let
 in let global-system-packages = with pkgs; {
         code-editors = [
             unstable.neovim
-            unstable.arduino-ide
-            stlink
+            # unstable.neovide
+            # unstable.arduino-ide
+            # stlink
             lazygit
-            ghdl
+            # ghdl
         ];
+
+        # fuck-me = [
+        #     unstable.popsicle
+        # ];
+
+        # lsp-servers = [
+        #     clang-tools
+        # ];
 
         dev-tools = [
             valgrind
             gnumake
             cmake
-            unstable.gh
             # those should go in Ergo‑L’s repo
             unstable.hugo
             unstable.pandoc
         ];
 
         languages-and-compilers = [
+            # unstable.android-studio
+            # gradle
+            # kotlin
+            # kvmtool
             unstable.cargo
-            arduino-cli
-            nodejs_22
+            # arduino-cli
+            # nodejs_22
             python3
             clang
-            gcc
+            # gcc
+            # go
         ];
 
         rice-and-cli-tools = [
             onefetch
             tealdeer
             ripgrep
-            mupdf
+            # mupdf
             llpp
             feh
             fd
@@ -47,14 +60,14 @@ in let global-system-packages = with pkgs; {
             signal-desktop
             libreoffice-qt
             tor-browser
-            firefox
+            # firefox
             thunderbird
             xfce.thunar
             spotify
             discord
             element-desktop
-            iamb
-            zoom-us
+            # iamb
+            # zoom-us
             hunspell # Libs for libreoffice
             hunspellDicts.uk_UA
             hunspellDicts.th_TH
@@ -71,24 +84,29 @@ in let global-system-packages = with pkgs; {
 
         keyboard-stuff = [
             unstable.kanata
-            xorg.xkbcomp
+            # xorg.xkbcomp
             unstable.qmk
-            via
+            # via
         ];
 
         lower-level-system = [
             brightnessctl
+            # libxkbcommon
+            # xorg.libXext
             xorg.xmodmap
             pulseaudio
             signaldctl
-            pkg-config
+            # pkg-config
             alsa-lib
             libiconv
             xdotool
             killall
+            bottom
+            # expat
             xclip
             unzip
             wget
+            curl
             zip
         ];
 
@@ -116,10 +134,10 @@ in
     nix.optimise.automatic = true; # Optimise storage space of NixOS
     nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-    system.autoUpgrade = {
-        enable = true;
-        dates = "weekly";
-    };
+    # system.autoUpgrade = {
+    #     enable = true;
+    #     dates = "weekly";
+    # };
 
     # Bootloader.
     boot.loader.systemd-boot.enable = true;
@@ -158,9 +176,16 @@ in
     users.users.nuclear-squid = {
         isNormalUser = true;
         description = "Nuclear Squid";
-        extraGroups = [ "networkmanager" "wheel" "audio" ];
+        extraGroups = [
+            "networkmanager"
+            "wheel"  # Enable 'sudo' for the user.
+            "audio"
+            "dialout"  # Allow access to serial device (for Arduino dev)
+        ];
         packages = with pkgs; [];
     };
+
+    # systemd.services.picom.serviceConfig.ExecStart = "${pkgs.picom.outPath}/bin/picom --config /home/nuclear-squid/Code/dotFiles/picom.conf";
 
     # Configure keymap in X11
     services = {
@@ -183,6 +208,10 @@ in
 
             windowManager.i3 = {
                 enable = true;
+                # package = unstable.i3;
+                # package = unstable.i3.overrideAttrs {
+                    # src = /home/nuclear-squid/Code/Forks/i3;
+                # };
                 package =
                     if customI3
                     then unstable.i3.overrideAttrs {
@@ -198,11 +227,20 @@ in
             '';
         };
 
+        # picom = {
+        #     enable = true;
+        #     settings = {
+        #         corner-radius = 10;
+        #         roundBorder = 1;
+        #         fading = true;
+        #         fade-delta = 3;
+        #     };
+        # };
 
         thermald.enable = true;
 
         tlp = {
-            enable = true;
+            enable = false;
             settings = {
                 CPU_SCALING_GOVERNOR_ON_AC  = "performance";
                 CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
@@ -232,10 +270,21 @@ in
                 extraDefCfg = ''
                     sequence-input-mode hidden-delay-type
                     process-unmapped-keys yes
+                    concurrent-tap-hold yes
+                    chords-v2-min-idle 300
                 '';
             };
         };
 
+        # Upload programs to Mbed arduino boards
+        udev.extraRules = ''
+            SUBSYSTEMS=="usb", ATTRS{idVendor}=="2e8a", MODE:="0666"
+            SUBSYSTEMS=="usb", ATTRS{idVendor}=="2341", MODE:="0666"
+            SUBSYSTEMS=="usb", ATTRS{idVendor}=="1fc9", MODE:="0666"
+            SUBSYSTEMS=="usb", ATTRS{idVendor}=="0525", MODE:="0666"
+        '';
+
+        # udev.packages = with pkgs; [ via ];
     };
 
     programs = {
