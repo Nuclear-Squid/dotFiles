@@ -31,6 +31,8 @@ require('lazy').setup {
     },
   },
 
+  'neovim/nvim-lspconfig',
+
   require 'plugins.pretty_ui',
   require 'plugins.neorg',
   require 'plugins.qol_extra',

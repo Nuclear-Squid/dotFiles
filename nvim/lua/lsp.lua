@@ -39,4 +39,7 @@ vim.lsp.config("*", {
 })
 
 -- Enable each language server by filename under the lsp/ folder
-vim.lsp.enable({ "clangd" })
+-- vim.lsp.enable({ "clangd", "arduino-language-server" })
+-- vim.lsp.enable({ "clangd" })
+
+vim.lsp.enable('arduino-language-server')

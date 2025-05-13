@@ -9,6 +9,11 @@ in let global-system-packages = with pkgs; {
             lazygit
         ];
 
+        lsp-servers = [
+            arduino-language-server
+            clang-tools
+        ];
+
         dev-tools = [
             valgrind
             gnumake
