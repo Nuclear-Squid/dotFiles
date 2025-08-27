@@ -48,43 +48,16 @@ do
 end
 
 return {
-  default_config = {
-    cmd = { 'ltex-ls' },
-    filetypes = filetypes,
-    root_dir = function(fname)
-      return vim.fs.dirname(vim.fs.find('.git', { path = fname, upward = true })[1])
-    end,
-    single_file_support = true,
-    get_language_id = get_language_id,
-    settings = {
-      ltex = {
-        enabled = enabled_ids,
-      },
-    },
-  },
-  docs = {
-    description = [=[
-https://github.com/valentjn/ltex-ls
-
-LTeX Language Server: LSP language server for LanguageTool 🔍✔️ with support for LaTeX 🎓, Markdown 📝, and others
-
-To install, download the latest [release](https://github.com/valentjn/ltex-ls/releases) and ensure `ltex-ls` is on your path.
-
-This server accepts configuration via the `settings` key.
-
-```lua
+  cmd = { 'ltex-ls' },
+  filetypes = filetypes,
+  root_dir = function(fname)
+    return vim.fs.dirname(vim.fs.find('.git', { path = fname, upward = true })[1])
+  end,
+  single_file_support = true,
+  get_language_id = get_language_id,
   settings = {
-		ltex = {
-			language = "en-GB",
-		},
-	},
-```
-
-To support org files or R sweave, users can define a custom filetype autocommand (or use a plugin which defines these filetypes):
-
-```lua
-vim.cmd [[ autocmd BufRead,BufNewFile *.org set filetype=org ]]
-```
-]=],
+    ltex = {
+      enabled = enabled_ids,
+    },
   },
 }
