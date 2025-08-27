@@ -3,9 +3,16 @@ local util = require 'lspconfig.util'
 local rv = {
   filetypes = { 'arduino' },
   root_dir = util.root_pattern '*.ino',
+  -- cmd = { 'arduino-language-server', },
+
   cmd = {
     'arduino-language-server',
+    '-clangd'     , 'clangd',
+    '-cli'        , '/usr/bin/arduino-cli',
+    '-cli-config' , vim.fn.expand('~/.arduino15/arduino-cli.yaml'),
+    '-fqbn'       , 'esp32-bluepad32:esp32:esp32',
   },
+
   capabilities = {
     textDocument = {
       semanticTokens = vim.NIL,

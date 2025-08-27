@@ -2,7 +2,9 @@
 -- if there is a language server active in the file
 vim.api.nvim_create_autocmd("LspAttach", {
     desc = "LSP actions",
+    group = vim.api.nvim_create_augroup("UserLspAttach", { clear = true }),
     callback = function(event)
+        vim.lsp.completion.enable(true, event.data.client_id, event.buf)
         local opts = { buffer = event.buf }
 
         vim.keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover()<cr>", opts)
@@ -10,11 +12,11 @@ vim.api.nvim_create_autocmd("LspAttach", {
         vim.keymap.set("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<cr>", opts)
         vim.keymap.set("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<cr>", opts)
         vim.keymap.set("n", "go", "<cmd>lua vim.lsp.buf.type_definition()<cr>", opts)
-        vim.keymap.set("n", "gr", "<cmd>lua vim.lsp.buf.references()<cr>", opts)
+        vim.keymap.set("n", "gR", "<cmd>lua vim.lsp.buf.references()<cr>", opts)
         vim.keymap.set("n", "gs", "<cmd>lua vim.lsp.buf.signature_help()<cr>", opts)
-        vim.keymap.set("n", "gc", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
+        vim.keymap.set("n", "gr", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
         vim.keymap.set({ "n", "x" }, "<F3>", "<cmd>lua vim.lsp.buf.format({async = true})<cr>", opts)
-        vim.keymap.set("n", "<F4>", "<cmd>lua vim.lsp.buf.code_action()<cr>", opts)
+        vim.keymap.set("n", "<leader>ca", "<cmd>lua vim.lsp.buf.code_action()<cr>", opts)
     end,
 })
 
@@ -39,7 +41,29 @@ vim.lsp.config("*", {
 })
 
 -- Enable each language server by filename under the lsp/ folder
--- vim.lsp.enable({ "clangd", "arduino-language-server" })
--- vim.lsp.enable({ "clangd" })
+vim.lsp.enable({
+    "clangd",
+    "arduino",
+    "python",
+    "ltexls",
+    "ltexls_plus",
+})
 
-vim.lsp.enable('arduino-language-server')
+
+vim.diagnostic.config {
+  severity_sort = true,
+  float = { border = 'rounded', source = 'if_many' },
+  underline = { severity = vim.diagnostic.severity.ERROR },
+  signs = {
+    text = {
+      [vim.diagnostic.severity.ERROR] = '󰅚 ',
+      [vim.diagnostic.severity.WARN] = '󰀪 ',
+      [vim.diagnostic.severity.INFO] = '󰋽 ',
+      [vim.diagnostic.severity.HINT] = '󰌶 ',
+    },
+  },
+  virtual_lines = {
+    current_line = true,
+    highlight_whole_line = true,
+  },
+}
