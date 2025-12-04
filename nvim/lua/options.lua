@@ -56,8 +56,8 @@ for option_name, value in pairs(options) do
   -- To avoid errors on toggle nvim version
   local ok, _ = pcall(vim.api.nvim_get_option_info2, option_name, {})
   if ok then
-  vim.opt[option_name] = value
+    vim.opt[option_name] = value
   else
-  vim.notify("Option " .. option_name .. " is not supported", vim.log.levels.WARN)
+    vim.notify("Option " .. option_name .. " is not supported", vim.log.levels.WARN)
   end
 end

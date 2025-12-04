@@ -45,6 +45,9 @@ nmap '<Esc>' '<cmd>nohlsearch<CR>' -- Remove highlight
 nmap 'vv' 'v$h'
 map 't' '<Esc><Esc>' '<C-\\><C-n>' -- Exit term mode
 
+nmap 'gg' 'mjgg'
+nmap 'G'  'mjG'
+
 -- Ergo‑L symbol layer aliases
 imap '-+' '0'
 imap '+-' '1'
@@ -71,7 +74,7 @@ nmap 'î' '`d'
 -- vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 -- setup Lazy (package manager)
 
-nmap 'â' (function()
-    -- vim.cmd('!xdotool search --pid ' .. term_pid .. ' key a b c')
-    vim.cmd('!xdotool key a b c --window $(xdotool search --pid ' .. term_pid .. ')')
-end)
+-- nmap 'â' (function()
+--     -- vim.cmd('!xdotool search --pid ' .. term_pid .. ' key a b c')
+--     vim.cmd('!xdotool key a b c --window $(xdotool search --pid ' .. term_pid .. ')')
+-- end)

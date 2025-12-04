@@ -28,7 +28,7 @@ return {
     keymap = {
       preset = 'none',
       ['<tab>']   = { 'select_next', 'fallback' },
-      ['<s-tab>'] = { 'select_prev' },
+      ['<s-tab>'] = { 'select_prev', 'fallback' },
       ['<cr>']    = { 'accept', 'snippet_forward', 'fallback' },
     },
 
@@ -39,7 +39,10 @@ return {
     },
 
     -- (Default) Only show the documentation popup when manually triggered
-    completion = { documentation = { auto_show = true } },
+    completion = {
+      preselect = false,  -- Don’t automatically select first element in completion list
+      documentation = { auto_show = true }
+    },
 
     -- Default list of enabled providers defined so that you can extend it
     -- elsewhere in your config, without redefining it, due to `opts_extend`

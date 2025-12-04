@@ -37,11 +37,14 @@
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
-  hardware.pulseaudio.enable = true;
+  # hardware.pulseaudio.enable = true;
 
-  # hardware.graphics = {
-  #   enable = true;
-  #   # extraPackages = with pkgs; [ intel-media-sdk ];
-  #   extraPackages = with pkgs; [ vpl-gpu-rt ];
-  # };
+  hardware.keyboard.qmk.enable = true;
+
+  hardware.graphics = {
+    enable = true;
+    extraPackages = with pkgs; [ intel-media-sdk intel-media-driver intel-ocl intel-vaapi-driver ];
+    # extraPackages = with pkgs; [ vpl-gpu-rt ];
+  };
+  # hardware.intelgpu.vaapiDriver = "intel-media-driver";
 }

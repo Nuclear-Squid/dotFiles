@@ -41,6 +41,14 @@ in {
         };
     };
 
+
+    wayland.windowManager.hyprland = {
+        enable = true;
+        xwayland.enable = true;
+        plugins = with pkgs.hyprlandPlugins; [ hy3 ];
+        extraConfig = builtins.readFile ../hyperland.conf;
+    };
+
     programs.neovide = {
         enable = true;
         package = unstable.neovide;

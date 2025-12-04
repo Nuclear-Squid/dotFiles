@@ -10,21 +10,28 @@ in let global-system-packages = with pkgs; {
         ];
 
         lsp-servers = [
-            arduino-language-server
+            unstable.arduino-language-server
             clang-tools
+            languagetool
+            ltex-ls-plus
+            ltex-ls
+            ty
         ];
 
         dev-tools = [
             valgrind
             gnumake
             cmake
+            act  # Build GitHub’s CI locally
             # those should go in Ergo‑L’s repo
             unstable.hugo
             unstable.pandoc
+            nginx
         ];
 
         languages-and-compilers = [
             unstable.cargo
+            scilab-bin
             python3
             clang
         ];
@@ -36,23 +43,30 @@ in let global-system-packages = with pkgs; {
             llpp
             feh
             fd
+            nh
         ];
 
         gui-apps = [
             inputs.zen-browser.packages.x86_64-linux.default
             simplescreenrecorder
-            telegram-desktop
-            signal-desktop
             libreoffice-qt
+            firefox
             tor-browser
             thunderbird
             xfce.thunar
-            spotify
-            discord
             element-desktop
             hunspell # Libs for libreoffice
             hunspellDicts.uk_UA
             hunspellDicts.th_TH
+        ];
+
+        chat = [
+            spotify
+            discord
+            telegram-desktop
+            signal-desktop
+            zulip
+            zulip-term
         ];
 
         art-apps = [
@@ -67,18 +81,20 @@ in let global-system-packages = with pkgs; {
         keyboard-stuff = [
             unstable.kanata
             unstable.qmk
+            unstable.chrysalis
         ];
 
         lower-level-system = [
             brightnessctl
             xorg.xmodmap
             pulseaudio
-            signaldctl
+            # signaldctl
             alsa-lib
             libiconv
             xdotool
             killall
             bottom
+            btop
             xclip
             unzip
             wget
@@ -87,10 +103,13 @@ in let global-system-packages = with pkgs; {
         ];
 
         miscellaneous = [
+            protontricks  # For Steam proton
             home-manager
             xfce.xfce4-screenshooter
             unstable.prismlauncher  # Minecraft launcher
-            love  # 2d lua game engine, for olympus (celeste mod installer)
+            # love  # 2d lua game engine, for olympus (celeste mod installer)
+            unstable.olympus  # Celeste mod installer
+            jay  # Wayland compositor I wanna try out
         ];
 
     };
@@ -152,26 +171,57 @@ in
             "wheel"  # Enable 'sudo' for the user.
             "audio"
             "dialout"  # Allow access to serial device (for Arduino dev)
+            "docker"  # Allow using docker without root access
+            "nginx"  # Allow using nginx in localhost
         ];
         packages = with pkgs; [];
+    };
+
+    specialisation = {
+        powersave.configuration = {
+            services.tlp = {
+                enable = true;
+                settings = {
+                    CPU_SCALING_GOVERNOR_ON_AC  = "performance";
+                    CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+                    PLATFORM_PROFILE_ON_BAT     = "low-power";
+
+                    CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
+                    CPU_ENERGY_PERF_POLICY_ON_AC  = "performance";
+                    PLATFORM_PROFILE_ON_AC        = "performance";
+
+                    CPU_MIN_PERF_ON_AC  = 0;
+                    CPU_MAX_PERF_ON_AC  = 100;
+                    CPU_MIN_PERF_ON_BAT = 0;
+                    CPU_MAX_PERF_ON_BAT = 20;
+
+                   # Helps save long term battery health
+                   START_CHARGE_THRESH_BAT0 = 40;  # 40 and bellow it starts to charge
+                   STOP_CHARGE_THRESH_BAT0 = 80;   # 80 and above it stops charging
+                };
+            };
+        };
     };
 
     services = {
         # Auto maunt usb devices
         udisks2.enable = true;
-        devmon.enable = true;
-        gvfs.enable = true;
+        devmon.enable  = true;
+        gvfs.enable    = true;
 
-        pipewire.enable = false;
+        pulseaudio.enable = true;
+        pipewire.enable   = false;
 
         flatpak.enable = true;
         displayManager.defaultSession = "none+i3";
 
         xserver = {
             enable = true;
-            xkb.layout = "fr";
+            xkb.layout  = "fr";
             xkb.variant = "ergol";
+            xkb.options = "compose:102";
 
+            # videoDrivers = [ "intel" ];
             desktopManager.xterm.enable = false;
 
             windowManager.i3 = {
@@ -193,28 +243,6 @@ in
 
         thermald.enable = true;
 
-        tlp = {
-            enable = false;
-            settings = {
-                CPU_SCALING_GOVERNOR_ON_AC  = "performance";
-                CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
-                PLATFORM_PROFILE_ON_BAT     = "low-power";
-
-                CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
-                CPU_ENERGY_PERF_POLICY_ON_AC  = "performance";
-                PLATFORM_PROFILE_ON_AC        = "performance";
-
-                CPU_MIN_PERF_ON_AC  = 0;
-                CPU_MAX_PERF_ON_AC  = 100;
-                CPU_MIN_PERF_ON_BAT = 0;
-                CPU_MAX_PERF_ON_BAT = 20;
-
-               # Helps save long term battery health
-               START_CHARGE_THRESH_BAT0 = 40;  # 40 and bellow it starts to charge
-               STOP_CHARGE_THRESH_BAT0 = 80;   # 80 and above it stops charging
-            };
-        };
-
         kanata = {
             enable = true;
             package = unstable.kanata;
@@ -225,9 +253,26 @@ in
                     sequence-input-mode hidden-delay-type
                     process-unmapped-keys yes
                     concurrent-tap-hold yes
-                    chords-v2-min-idle 300
+                    chords-v2-min-idle 120
                 '';
             };
+        };
+
+        nginx = {
+            enable = true;
+            recommendedGzipSettings  = true;
+            recommendedOptimisation  = true;
+            recommendedProxySettings = true;
+            recommendedTlsSettings   = true;
+
+            virtualHosts.localhost = {
+                # addSSL = true;
+                # enableACME = true;
+                # default = true;
+                root = "${config.users.users.nuclear-squid.home}/Code/www/";
+                # locations."/var/html/".proxyPass = "http://localhost:8000";
+            };
+            # appendHttpConfig = "listen 127.0.0.1:80";
         };
 
         # Upload programs to Mbed arduino boards
@@ -251,6 +296,17 @@ in
             remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
             dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
         };
+
+        hyprland = {
+            enable = true;
+            xwayland.enable = true;
+        };
+    };
+
+    # Docker
+    virtualisation.docker.rootless = {
+        enable = true;
+        setSocketVariable = true;
     };
 
     environment = {
@@ -275,8 +331,12 @@ in
                                       # idea what it means
     };
 
-    fonts.packages = [ pkgs.nerdfonts ];
-    fonts.fontconfig.useEmbeddedBitmaps = true;
+    fonts.packages = with pkgs.nerd-fonts; [
+        fantasque-sans-mono
+        monaspace
+    ];
+    # fonts.packages = [ pkgs.nerdfonts ];
+    # fonts.fontconfig.useEmbeddedBitmaps = true;
 
     # Some programs need SUID wrappers, can be configured further or are
     # started in user sessions.

@@ -1,9 +1,9 @@
 {
   description = "My laptop system confituration";
   inputs = {
-    nixpkgs.url    = "github:nixos/nixpkgs/nixos-24.11";
+    nixpkgs.url    = "github:nixos/nixpkgs/nixos-25.05";
     unstable.url   = "github:nixos/nixpkgs/nixos-unstable";
-    old-stable.url = "github:nixos/nixpkgs/nixos-24.05";
+    old-stable.url = "github:nixos/nixpkgs/nixos-24.11";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -11,6 +11,11 @@
       url = "github:0xc000022070/zen-browser-flake";
       inputs.nixpkgs.follows = "unstable";
     };
+
+    # jay-compositer = {
+    #   url = "github:Yappaholic/jay-nixos";
+    #   inputs.nixpkgs.follows = "unstable";
+    # };
   };
 
   outputs = { nixpkgs, ... } @ inputs: {

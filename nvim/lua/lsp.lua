@@ -45,7 +45,7 @@ vim.lsp.enable({
     "clangd",
     "arduino",
     "python",
-    "ltexls",
+    -- "ltexls",
     "ltexls_plus",
 })
 

@@ -21,7 +21,7 @@ require('lazy').setup {
       sounds = {
         -- Add custom sound paths or lists of sounds for other events here
         -- For example, BufRead can play a random sound from a list
-        BufReadPre = { path = '~/Code/dotFiles/Zelda chest opening ｜ Sound Effect.wav', volume = 100, delay = 8000, probability = 0.05 },
+        BufReadPre = { path = '~/Code/dotFiles/Zelda chest opening ｜ Sound Effect.wav', volume = 100, delay = 8000, probability = 0.01 },
         -- CursorMovedI = { path = sound_dir .. "click.ogg", volume = 0-100 },
         -- InsertLeave = { path = sound_dir .. "toggle.ogg", volume = 0-100 },
         -- ExitPre = { path = sound_dir .. "exit.ogg", volume = 0-100 },
@@ -50,4 +50,21 @@ require('lazy').setup {
   require 'plugins.snacks',
   require 'plugins.mini',
   -- require 'plugins.sessions',
+
+  -- {
+  --   'barreiroleo/ltex_extra.nvim',
+  --   ft = { "markdown", "tex" },
+  --   dependencies = { "neovim/nvim-lspconfig" },
+  --   opts = {
+  --     server_opts = {
+  --       capabilities = your_capabilities,
+  --       on_attach = function(client, bufnr)
+  --         -- your on_attach process
+  --       end,
+  --       settings = {
+  --         -- ltex = { your settings }
+  --       }
+  --     },
+  --   }
+  -- },
 }
