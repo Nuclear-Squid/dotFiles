@@ -65,15 +65,22 @@ in {
     programs.git = {
         enable = true;
         lfs.enable = true;
-        userName = "Nuclear-Squid";
-        userEmail = "leo@cazenave.cc";
-        extraConfig.push.autoSetupRemote = true;
-        aliases = {
-            cv = "commit -v";
-            cb = "checkout -b";
-            st = "status";
-            lo = "log --graph --oneline";
-            pf = "push --force-with-lease";
+
+        settings = {
+            push.autoSetupRemote = true;
+
+            user = {
+                name = "Nuclear-Squid";
+                email = "leo@cazenave.cc";
+            };
+
+            alias = {
+                cv = "commit -v";
+                cb = "checkout -b";
+                st = "status";
+                lo = "log --graph --oneline";
+                pf = "push --force-with-lease";
+            };
         };
     };
 

@@ -1,6 +1,6 @@
 { config, pkgs, inputs, ... }:
 let
-    unstable   = inputs.unstable.legacyPackages.${pkgs.system};
+    unstable   = import inputs.unstable { system = pkgs.system; config.allowUnfree = true; };
     old-stable = inputs.old-stable.legacyPackages.${pkgs.system};
     customI3   = true;
 in let global-system-packages = with pkgs; {
@@ -40,7 +40,7 @@ in let global-system-packages = with pkgs; {
             onefetch
             tealdeer
             ripgrep
-            llpp
+            old-stable.llpp
             feh
             fd
             nh
@@ -293,8 +293,9 @@ in
 
         steam = {
             enable = true;
-            remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
-            dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+            package = unstable.steam;
+            # remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
+            # dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
         };
 
         hyprland = {

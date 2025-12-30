@@ -1,9 +1,9 @@
 {
   description = "My laptop system confituration";
   inputs = {
-    nixpkgs.url    = "github:nixos/nixpkgs/nixos-25.05";
+    nixpkgs.url    = "github:nixos/nixpkgs/nixos-25.11";
     unstable.url   = "github:nixos/nixpkgs/nixos-unstable";
-    old-stable.url = "github:nixos/nixpkgs/nixos-24.11";
+    old-stable.url = "github:nixos/nixpkgs/nixos-25.05";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 

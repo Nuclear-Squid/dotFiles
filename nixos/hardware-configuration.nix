@@ -35,16 +35,17 @@
   # networking.interfaces.wlp4s0.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+  # hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
   # hardware.pulseaudio.enable = true;
 
   hardware.keyboard.qmk.enable = true;
 
-  hardware.graphics = {
-    enable = true;
-    extraPackages = with pkgs; [ intel-media-sdk intel-media-driver intel-ocl intel-vaapi-driver ];
-    # extraPackages = with pkgs; [ vpl-gpu-rt ];
-  };
+  # hardware.graphics = {
+  #   enable = true;
+  #   extraPackages = with pkgs; [ intel-media-sdk intel-media-driver intel-ocl intel-vaapi-driver ];
+  #   # extraPackages = with pkgs; [ vpl-gpu-rt ];
+  # };
+
   # hardware.intelgpu.vaapiDriver = "intel-media-driver";
 }
