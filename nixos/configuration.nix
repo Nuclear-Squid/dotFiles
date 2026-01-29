@@ -6,7 +6,7 @@ let
 in let global-system-packages = with pkgs; {
         code-editors = [
             unstable.neovim
-            lazygit
+            unstable.lazygit
         ];
 
         lsp-servers = [
@@ -112,7 +112,6 @@ in let global-system-packages = with pkgs; {
             protontricks  # For Steam proton
             home-manager
             xfce.xfce4-screenshooter
-            unstable.prismlauncher  # Minecraft launcher
             # love  # 2d lua game engine, for olympus (celeste mod installer)
             unstable.olympus  # Celeste mod installer
             jay  # Wayland compositor I wanna try out
@@ -372,5 +371,5 @@ in
     # this value at the release version of the first install of this system.
     # Before changing this value read the documentation for this option
     # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-    system.stateVersion = "24.11"; # Did you read the comment?
+    stdenv.hostPlatform.stateVersion = "24.11"; # Did you read the comment?
 }

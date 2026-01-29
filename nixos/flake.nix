@@ -12,6 +12,8 @@
       inputs.nixpkgs.follows = "unstable";
     };
 
+    prismlauncher.url = "github:PrismLauncher/PrismLauncher";
+
     # jay-compositer = {
     #   url = "github:Yappaholic/jay-nixos";
     #   inputs.nixpkgs.follows = "unstable";
@@ -23,6 +25,12 @@
       specialArgs = { inherit inputs; };
       modules = [
         ./configuration.nix
+
+        ({ pkgs, ...}: {
+          environment.systemPackages = [
+            inputs.prismlauncher.packages.${pkgs.system}.prismlauncher
+          ];
+        })
       ];
     };
   };
