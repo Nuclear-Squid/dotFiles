@@ -8,7 +8,7 @@ in {
         username = "nuclear-squid";
         homeDirectory = homeDir;
         stateVersion = "24.11";
-        packages = with pkgs; [ picom ];
+        packages = with pkgs; [ picom swaybg ];
     };
 
     xdg = {
@@ -41,13 +41,10 @@ in {
         };
     };
 
+    services.mako.enable = true; # notification daemon
+    services.polkit-gnome.enable = true; # polkit
 
-    wayland.windowManager.hyprland = {
-        enable = true;
-        xwayland.enable = true;
-        plugins = with pkgs.hyprlandPlugins; [ hy3 ];
-        extraConfig = builtins.readFile ../hyperland.conf;
-    };
+    programs.waybar.enable = true;
 
     programs.neovide = {
         enable = true;

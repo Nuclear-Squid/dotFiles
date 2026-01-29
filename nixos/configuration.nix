@@ -37,10 +37,11 @@ in let global-system-packages = with pkgs; {
         ];
 
         rice-and-cli-tools = [
+            xwayland-satellite # xwayland support
+            old-stable.llpp
             onefetch
             tealdeer
             ripgrep
-            old-stable.llpp
             feh
             fd
             nh
@@ -100,6 +101,11 @@ in let global-system-packages = with pkgs; {
             wget
             curl
             zip
+        ];
+
+        linked-libraries = [
+            libxcursor # needed by Niri for some reason ?
+            libxi
         ];
 
         miscellaneous = [
@@ -213,7 +219,6 @@ in
         pipewire.enable   = false;
 
         flatpak.enable = true;
-        displayManager.defaultSession = "none+i3";
 
         xserver = {
             enable = true;
@@ -298,9 +303,9 @@ in
             # dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
         };
 
-        hyprland = {
+        niri = {
             enable = true;
-            xwayland.enable = true;
+            package = unstable.niri;
         };
     };
 
@@ -319,6 +324,7 @@ in
         variables = {
             EDITOR = "nvim";
             EXA_COLORS = "di=01;35:uu=03;33:ur=33:uw=33:gw=33:gx=01;32:tw=33:tx=01;32:sn=35";
+            LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath global-system-packages.linked-libraries}:$LD_LIBRARY_PATH";
         };
 
         systemPackages = builtins.concatLists (builtins.attrValues global-system-packages);
@@ -326,10 +332,12 @@ in
 
     xdg.portal = {
         enable = true;
-        extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
-        config.common.default = "*";  # XXX: keep xdg-portal behaviour in <1.17.
-                                      # May break stuff, honnestly I have no
-                                      # idea what it means
+        extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
+        configPackages = [ pkgs.niri ];
+        # extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
+        # config.common.default = "*";  # XXX: keep xdg-portal behaviour in <1.17.
+        #                               # May break stuff, honnestly I have no
+        #                               # idea what it means
     };
 
     fonts.packages = with pkgs.nerd-fonts; [
