@@ -33,5 +33,11 @@
         })
       ];
     };
+
+    templates.basic_shell = {
+      path = ./basic_shell;
+      description = "Boiler-plate around nix shell in a flake";
+      welcomeText = "Flake initialized, go ham, go nutz";
+    };
   };
 }
