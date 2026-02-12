@@ -1,7 +1,7 @@
 { config, pkgs, inputs, ... }:
 let
-    unstable   = import inputs.unstable { system = pkgs.system; config.allowUnfree = true; };
-    old-stable = inputs.old-stable.legacyPackages.${pkgs.system};
+    unstable   = import inputs.unstable { system = pkgs.stdenv.hostPlatform.system; config.allowUnfree = true; };
+    old-stable = inputs.old-stable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
     customI3   = true;
 in let global-system-packages = with pkgs; {
         code-editors = [
@@ -134,6 +134,7 @@ in
 
     nix.optimise.automatic = true; # Optimise storage space of NixOS
     nix.settings.experimental-features = [ "nix-command" "flakes" ];
+    nix.settings.warn-dirty = false; # Please stop yelling at me everytime I run `nix develop`
 
     # Bootloader.
     boot.loader.systemd-boot.enable = true;
@@ -368,5 +369,5 @@ in
     # this value at the release version of the first install of this system.
     # Before changing this value read the documentation for this option
     # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-    stdenv.hostPlatform.stateVersion = "24.11"; # Did you read the comment?
+    system.stateVersion = "24.11"; # Did you read the comment?
 }
