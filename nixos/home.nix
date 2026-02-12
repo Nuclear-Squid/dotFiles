@@ -182,15 +182,17 @@ in {
             functions --copy t zoxide_wrapper
             function t --wraps=t
                 zoxide_wrapper $argv
-                git_repo_changed && onefetch
+                git_repo_changed && clear && onefetch
                 magic_ls
+                nix_flake_available && nix develop
             end
 
             functions --copy ti zoxide_interactive_wrapper
             function ti --wraps=ti
                 zoxide_interactive_wrapper $argv
-                git_repo_changed && onefetch
+                git_repo_changed && clear && onefetch
                 magic_ls
+                nix_flake_available && nix develop
             end
         '';
     };
