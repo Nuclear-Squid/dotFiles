@@ -56,6 +56,7 @@ in let global-system-packages = with pkgs; {
             thunderbird
             xfce.thunar
             element-desktop
+            picoscope
             hunspell # Libs for libreoffice
             hunspellDicts.uk_UA
             hunspellDicts.th_TH
@@ -333,10 +334,6 @@ in
         enable = true;
         extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
         configPackages = [ pkgs.niri ];
-        # extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
-        # config.common.default = "*";  # XXX: keep xdg-portal behaviour in <1.17.
-        #                               # May break stuff, honnestly I have no
-        #                               # idea what it means
     };
 
     fonts.packages = with pkgs.nerd-fonts; [
