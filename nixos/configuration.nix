@@ -1,102 +1,121 @@
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 let
-    unstable   = import <nixos-unstable>   { config = config.nixpkgs.config; };
-    old-stable = import <nixos-old-stable> { config = config.nixpkgs.config; };
-    customI3 = true;
+    unstable   = import inputs.unstable { system = pkgs.stdenv.hostPlatform.system; config.allowUnfree = true; };
+    old-stable = inputs.old-stable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+    customI3   = true;
 in let global-system-packages = with pkgs; {
         code-editors = [
             unstable.neovim
-            unstable.arduino-ide
-            stlink
-            lazygit
-            ghdl
+            unstable.lazygit
+        ];
+
+        lsp-servers = [
+            unstable.arduino-language-server
+            clang-tools
+            languagetool
+            ltex-ls-plus
+            ltex-ls
+            ty
         ];
 
         dev-tools = [
             valgrind
             gnumake
             cmake
-            unstable.gh
+            act  # Build GitHub’s CI locally
             # those should go in Ergo‑L’s repo
             unstable.hugo
             unstable.pandoc
+            nginx
         ];
 
         languages-and-compilers = [
             unstable.cargo
-            arduino-cli
-            nodejs_22
+            scilab-bin
             python3
             clang
-            gcc
         ];
 
         rice-and-cli-tools = [
+            xwayland-satellite # xwayland support
+            old-stable.llpp
             onefetch
             tealdeer
             ripgrep
-            mupdf
-            llpp
             feh
             fd
+            nh
         ];
 
         gui-apps = [
+            inputs.zen-browser.packages.x86_64-linux.default
             simplescreenrecorder
-            telegram-desktop
-            signal-desktop
             libreoffice-qt
-            tor-browser
             firefox
+            tor-browser
             thunderbird
             xfce.thunar
-            spotify
-            discord
             element-desktop
-            iamb
-            zoom-us
+            picoscope
             hunspell # Libs for libreoffice
             hunspellDicts.uk_UA
             hunspellDicts.th_TH
         ];
 
+        chat = [
+            spotify
+            discord
+            telegram-desktop
+            signal-desktop
+            zulip
+            zulip-term
+        ];
+
         art-apps = [
             kdePackages.kdenlive
             old-stable.ardour  # Stable and Unstable versions are broken.
-            unstable.musescore
-            unstable.muse-sounds-manager
+            # unstable.musescore
+            # unstable.muse-sounds-manager
             inkscape
             blender
         ];
 
         keyboard-stuff = [
             unstable.kanata
-            xorg.xkbcomp
             unstable.qmk
-            via
+            unstable.chrysalis
         ];
 
         lower-level-system = [
             brightnessctl
             xorg.xmodmap
             pulseaudio
-            signaldctl
-            pkg-config
+            # signaldctl
             alsa-lib
             libiconv
             xdotool
             killall
+            bottom
+            btop
             xclip
             unzip
             wget
+            curl
             zip
         ];
 
+        linked-libraries = [
+            libxcursor # needed by Niri for some reason ?
+            libxi
+        ];
+
         miscellaneous = [
+            protontricks  # For Steam proton
             home-manager
             xfce.xfce4-screenshooter
-            unstable.prismlauncher  # Minecraft launcher
-            love  # 2d lua game engine, for olympus (celeste mod installer)
+            # love  # 2d lua game engine, for olympus (celeste mod installer)
+            unstable.olympus  # Celeste mod installer
+            jay  # Wayland compositor I wanna try out
         ];
 
     };
@@ -109,17 +128,13 @@ in
     };
 
     imports = [ # Include the results of the hardware scan.
-        /etc/nixos/hardware-configuration.nix
+        ./hardware-configuration.nix
         # ./home.nix
     ];
 
     nix.optimise.automatic = true; # Optimise storage space of NixOS
     nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
-    system.autoUpgrade = {
-        enable = true;
-        dates = "weekly";
-    };
+    nix.settings.warn-dirty = false; # Please stop yelling at me everytime I run `nix develop`
 
     # Bootloader.
     boot.loader.systemd-boot.enable = true;
@@ -158,27 +173,61 @@ in
     users.users.nuclear-squid = {
         isNormalUser = true;
         description = "Nuclear Squid";
-        extraGroups = [ "networkmanager" "wheel" "audio" ];
+        extraGroups = [
+            "networkmanager"
+            "wheel"  # Enable 'sudo' for the user.
+            "audio"
+            "dialout"  # Allow access to serial device (for Arduino dev)
+            "docker"  # Allow using docker without root access
+            "nginx"  # Allow using nginx in localhost
+        ];
         packages = with pkgs; [];
     };
 
-    # Configure keymap in X11
+    specialisation = {
+        powersave.configuration = {
+            services.tlp = {
+                enable = true;
+                settings = {
+                    CPU_SCALING_GOVERNOR_ON_AC  = "performance";
+                    CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+                    PLATFORM_PROFILE_ON_BAT     = "low-power";
+
+                    CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
+                    CPU_ENERGY_PERF_POLICY_ON_AC  = "performance";
+                    PLATFORM_PROFILE_ON_AC        = "performance";
+
+                    CPU_MIN_PERF_ON_AC  = 0;
+                    CPU_MAX_PERF_ON_AC  = 100;
+                    CPU_MIN_PERF_ON_BAT = 0;
+                    CPU_MAX_PERF_ON_BAT = 20;
+
+                   # Helps save long term battery health
+                   START_CHARGE_THRESH_BAT0 = 40;  # 40 and bellow it starts to charge
+                   STOP_CHARGE_THRESH_BAT0 = 80;   # 80 and above it stops charging
+                };
+            };
+        };
+    };
+
     services = {
         # Auto maunt usb devices
         udisks2.enable = true;
-        devmon.enable = true;
-        gvfs.enable = true;
+        devmon.enable  = true;
+        gvfs.enable    = true;
 
-        pipewire.enable = false;
+        pulseaudio.enable = true;
+        pipewire.enable   = false;
 
         flatpak.enable = true;
-        displayManager.defaultSession = "none+i3";
 
         xserver = {
             enable = true;
-            xkb.layout = "fr";
+            xkb.layout  = "fr";
             xkb.variant = "ergol";
+            xkb.options = "compose:102";
 
+            # videoDrivers = [ "intel" ];
             desktopManager.xterm.enable = false;
 
             windowManager.i3 = {
@@ -186,7 +235,7 @@ in
                 package =
                     if customI3
                     then unstable.i3.overrideAttrs {
-                        src = /home/nuclear-squid/Code/Forks/i3;
+                        patches = [ ../i3/0001-Added-option-to-hide-title-bar-on-tabs-and-staks.patch ];
                         doCheck = false;
                     }
                     else unstable.i3-rounded;
@@ -198,30 +247,7 @@ in
             '';
         };
 
-
         thermald.enable = true;
-
-        tlp = {
-            enable = true;
-            settings = {
-                CPU_SCALING_GOVERNOR_ON_AC  = "performance";
-                CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
-                PLATFORM_PROFILE_ON_BAT     = "low-power";
-
-                CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
-                CPU_ENERGY_PERF_POLICY_ON_AC  = "performance";
-                PLATFORM_PROFILE_ON_AC        = "performance";
-
-                CPU_MIN_PERF_ON_AC  = 0;
-                CPU_MAX_PERF_ON_AC  = 100;
-                CPU_MIN_PERF_ON_BAT = 0;
-                CPU_MAX_PERF_ON_BAT = 20;
-
-               # Helps save long term battery health
-               START_CHARGE_THRESH_BAT0 = 40;  # 40 and bellow it starts to charge
-               STOP_CHARGE_THRESH_BAT0 = 80;   # 80 and above it stops charging
-            };
-        };
 
         kanata = {
             enable = true;
@@ -232,22 +258,62 @@ in
                 extraDefCfg = ''
                     sequence-input-mode hidden-delay-type
                     process-unmapped-keys yes
+                    concurrent-tap-hold yes
+                    chords-v2-min-idle 120
                 '';
             };
         };
 
+        nginx = {
+            enable = true;
+            recommendedGzipSettings  = true;
+            recommendedOptimisation  = true;
+            recommendedProxySettings = true;
+            recommendedTlsSettings   = true;
+
+            virtualHosts.localhost = {
+                # addSSL = true;
+                # enableACME = true;
+                # default = true;
+                root = "${config.users.users.nuclear-squid.home}/Code/www/";
+                # locations."/var/html/".proxyPass = "http://localhost:8000";
+            };
+            # appendHttpConfig = "listen 127.0.0.1:80";
+        };
+
+        # Upload programs to Mbed arduino boards
+        udev.extraRules = ''
+            SUBSYSTEMS=="usb", ATTRS{idVendor}=="2e8a", MODE:="0666"
+            SUBSYSTEMS=="usb", ATTRS{idVendor}=="2341", MODE:="0666"
+            SUBSYSTEMS=="usb", ATTRS{idVendor}=="1fc9", MODE:="0666"
+            SUBSYSTEMS=="usb", ATTRS{idVendor}=="0525", MODE:="0666"
+        '';
+
+        # udev.packages = with pkgs; [ via ];
     };
 
     programs = {
         nix-ld.enable = true;
         fish.enable = true;
-        ssh.startAgent = true;
+        # ssh.startAgent = true;
 
         steam = {
             enable = true;
-            remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
-            dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+            package = unstable.steam;
+            # remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
+            # dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
         };
+
+        niri = {
+            enable = true;
+            package = unstable.niri;
+        };
+    };
+
+    # Docker
+    virtualisation.docker.rootless = {
+        enable = true;
+        setSocketVariable = true;
     };
 
     environment = {
@@ -259,6 +325,7 @@ in
         variables = {
             EDITOR = "nvim";
             EXA_COLORS = "di=01;35:uu=03;33:ur=33:uw=33:gw=33:gx=01;32:tw=33:tx=01;32:sn=35";
+            LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath global-system-packages.linked-libraries}:$LD_LIBRARY_PATH";
         };
 
         systemPackages = builtins.concatLists (builtins.attrValues global-system-packages);
@@ -266,20 +333,16 @@ in
 
     xdg.portal = {
         enable = true;
-        extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
-        config.common.default = "*";  # XXX: keep xdg-portal behaviour in <1.17.
-                                      # May break stuff, honnestly I have no
-                                      # idea what it means
+        extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
+        configPackages = [ pkgs.niri ];
     };
 
-    # fonts.packages = with unstable.nerd-fonts; [
-        # monaspace
-        # fantasque-sans-mono
-        # pkgs.maple-mono
-    # ];
-
-    fonts.packages = [ pkgs.nerdfonts ];
-    fonts.fontconfig.useEmbeddedBitmaps = true;
+    fonts.packages = with pkgs.nerd-fonts; [
+        fantasque-sans-mono
+        monaspace
+    ];
+    # fonts.packages = [ pkgs.nerdfonts ];
+    # fonts.fontconfig.useEmbeddedBitmaps = true;
 
     # Some programs need SUID wrappers, can be configured further or are
     # started in user sessions.

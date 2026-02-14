@@ -177,7 +177,7 @@ mode "resize" {
     bindcode $mod+$kc_r mode "default"
 }
 
-bindcode $mod+$kc_z mode "resize"
+bindcode $mod+$kc_c mode "resize"
 
 #   ────────────────────────────< Pretty stuff >────────────────────────────
 # Set background

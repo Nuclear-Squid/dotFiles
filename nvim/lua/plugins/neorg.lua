@@ -9,15 +9,16 @@ return {
       "nvim-neorg/lua-utils.nvim",
       "pysan3/pathlib.nvim",
       -- "jbyuki/nabla.nvim",  -- Render math inside Neovim
+      "nvim-lua/plenary.nvim",
+      "laher/neorg-exec",
     },
 
-    config = function()
-      require('neorg').setup {
-        load = {
-          ["core.defaults"] = {},  -- Loads the default behaviour
-          ["core.concealer"] = {}, -- Loads the default behaviour
-        },
-      }
-    end,
+    opts = {
+      load = {
+        ["core.defaults"]  = {},  -- Loads the default behaviour
+        ["core.concealer"] = {},  -- Loads the default behaviour
+        ["external.exec"]  = {},  -- Run code blocks
+      },
+    },
   },
 }

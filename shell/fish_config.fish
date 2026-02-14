@@ -1,13 +1,32 @@
-function fish_greeting; fastfetch; end
+function fish_greeting
+    if test -z "$IN_NIX_SHELL"
+        fastfetch
+    end
+end
 
-alias l    "eza -l"
-alias la   "eza -la"
-alias rm   "rm -I"
-alias cat  "bat"
-alias chux "chmod u+x"
-alias vi   "neovide --fork --"
-alias v    "nvim"
-alias lg   "lazygit"
+alias l         "eza -l"
+alias la        "eza -la"
+alias rm        "rm -I"
+alias cat       "bat"
+alias vi        "neovide --fork --"
+alias nix-shell "nix-shell --run fish"
+alias btm       "btm -r 250ms -g"
+
+abbr -a chux "chmod u+x"
+abbr -a lg   "lazygit"
+abbr -a v    "nvim"
+abbr -a nm   "nmcli"
+abbr -a nmc  "nmcli con up"
+
+set -Ux MANPAGER "nvim +Man!"
+
+function nix -a command
+    if [ $command = "develop" ]
+        command nix develop -c fish $argv[2..]
+    else
+        command nix $argv
+    end
+end
 
 function ggez -a commands
     if  [ (string match -e 'u' $commands) ]
@@ -32,6 +51,17 @@ function ggez -a commands
     end
 end
 
+function nix_flake_available
+    set dirpath (pwd)
+    while test "$dirpath" != "/"
+        if test -e "$dirpath/flake.nix"
+            return 0
+        end
+        set dirpath (dirname "$dirpath")
+    end
+    return 1
+end
+
 function get_git_repo_path -a directory
     if test -z "$directory"
         set directory (pwd)
@@ -42,7 +72,7 @@ end
 function git_repo_changed
     set --local prev_git_repo (get_git_repo_path $dirprev[-1])
     set --local curr_git_repo (get_git_repo_path)
-    false
+    # false
     test -n $curr_git_repo; and test $curr_git_repo != $prev_git_repo
 end
 
@@ -68,6 +98,14 @@ function cd --wraps=cd
     end
     git_repo_changed && onefetch
     magic_ls
+end
+
+function cdr -a child_dir
+    set --local dir (get_git_repo_path)
+    if test -z "$dir"
+        set --local dir "$HOME"
+    end
+    cd "$dir/$child_dir"
 end
 
 function cut_last_field -a input delimiter

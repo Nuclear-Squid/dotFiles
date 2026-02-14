@@ -93,10 +93,12 @@ return {
 
         lazygit = {},
 
-        image = {},
+        image = {
+            enabled = not vim.g.neovide
+        },
 
         scroll = {
-            enabled = true,
+            enabled = not vim.g.neovide,
             animate = {
                 duration = { step = 15, total = 250 },
                 easing = "outExpo",

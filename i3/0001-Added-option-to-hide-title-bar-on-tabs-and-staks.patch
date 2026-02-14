@@ -1,0 +1,175 @@
+From 8355bc3232a2728d858346d5d179e70452cb8365 Mon Sep 17 00:00:00 2001
+From: Nuclear Squid <leo@cazenave.cc>
+Date: Thu, 20 Feb 2025 14:03:27 +0100
+Subject: [PATCH] Added option to hide title bar on tabs and staks.
+
+---
+ include/config_directives.h |  1 +
+ include/configuration.h     |  2 ++
+ parser-specs/config.spec    |  6 ++++++
+ shell.nix                   | 38 +++++++++++++++++++++++++++++++++++++
+ src/con.c                   |  6 ++++++
+ src/config.c                |  1 +
+ src/config_directives.c     | 10 ++++++++++
+ src/render.c                |  1 +
+ 8 files changed, 65 insertions(+)
+ create mode 100644 shell.nix
+
+diff --git a/include/config_directives.h b/include/config_directives.h
+index 0141b833..9b4556e0 100644
+--- a/include/config_directives.h
++++ b/include/config_directives.h
+@@ -61,6 +61,7 @@ CFGFUN(fake_outputs, const char *outputs);
+ CFGFUN(force_display_urgency_hint, const long duration_ms);
+ CFGFUN(focus_on_window_activation, const char *mode);
+ CFGFUN(title_align, const char *alignment);
++CFGFUN(titlebar, const char *visibility);
+ CFGFUN(show_marks, const char *value);
+ CFGFUN(hide_edge_borders, const char *borders);
+ CFGFUN(assign_output, const char *output);
+diff --git a/include/configuration.h b/include/configuration.h
+index c062ae4c..be517efc 100644
+--- a/include/configuration.h
++++ b/include/configuration.h
+@@ -218,6 +218,8 @@ struct Config {
+         ALIGN_RIGHT
+     } title_align;
+ 
++    bool show_titlebar;
++
+     /** The default border style for new windows. */
+     border_style_t default_border;
+ 
+diff --git a/parser-specs/config.spec b/parser-specs/config.spec
+index d1528374..c4ae5647 100644
+--- a/parser-specs/config.spec
++++ b/parser-specs/config.spec
+@@ -50,6 +50,7 @@ state INITIAL:
+   'force_display_urgency_hint'             -> FORCE_DISPLAY_URGENCY_HINT
+   'focus_on_window_activation'             -> FOCUS_ON_WINDOW_ACTIVATION
+   'title_align'                            -> TITLE_ALIGN
++  'titlebar', 'title_bar'                  -> TITLEBAR
+   'show_marks'                             -> SHOW_MARKS
+   'workspace'                              -> WORKSPACE
+   'ipc_socket', 'ipc-socket'               -> IPC_SOCKET
+@@ -324,6 +325,11 @@ state TITLE_ALIGN:
+   alignment = 'left', 'center', 'right'
+       -> call cfg_title_align($alignment)
+ 
++# titlebar [show|hide]
++state TITLEBAR:
++  visibility = 'show', 'hide'
++      -> call cfg_titlebar($visibility)
++
+ # show_marks
+ state SHOW_MARKS:
+   value = word
+diff --git a/shell.nix b/shell.nix
+new file mode 100644
+index 00000000..5e0174ed
+--- /dev/null
++++ b/shell.nix
+@@ -0,0 +1,38 @@
++{ pkgs ? import <nixpkgs> {} }:
++with pkgs;
++mkShell {
++    name = "i3-dev-shell";
++
++    nativeBuildInputs = [
++        meson
++        libstartup_notification
++        pkg-config
++        xorg.libxcb
++        xorg.xcbutil
++        xcb-util-cursor
++        xorg.xcbutilkeysyms
++        xorg.xcbutilwm
++        xcbutilxrm
++        libxkbcommon
++        yajl
++        pcre2
++        cairo
++        pango
++        libev
++        openssl
++        ninja
++        rt
++        iconv
++    ];
++
++    # preConfigure = ''
++    # '';
++
++    # shellHook = ''
++    #     export LIBRARY_PATH=${libev}/lib
++    #     export LDFLAGS="-L/usr/local/lib"
++    #     export CPPFLAGS="-I/usr/local/include"
++    #     meson setup --wipe ./build
++    # '';
++
++}
+diff --git a/src/con.c b/src/con.c
+index f4c9918d..341e86df 100644
+--- a/src/con.c
++++ b/src/con.c
+@@ -1939,6 +1939,12 @@ int con_border_style(Con *con) {
+         return BS_NONE;
+     }
+ 
++    if (!config.show_titlebar) {
++        return con->parent != NULL && con->parent->type == CT_DOCKAREA
++            ? BS_NONE
++            : con->border_style;
++    }
++
+     if (con->parent != NULL) {
+         if (con->parent->layout == L_STACKED) {
+             return (con_num_children(con->parent) == 1 ? con->border_style : BS_NORMAL);
+diff --git a/src/config.c b/src/config.c
+index 60e07023..75e9c145 100644
+--- a/src/config.c
++++ b/src/config.c
+@@ -201,6 +201,7 @@ bool load_configuration(const char *override_configpath, config_load_t load_type
+     INIT_COLOR(config.client.unfocused, "#333333", "#222222", "#888888", "#292d2e");
+     INIT_COLOR(config.client.urgent, "#2f343a", "#900000", "#ffffff", "#900000");
+     config.client.got_focused_tab_title = false;
++    config.show_titlebar = true;
+ 
+     /* border and indicator color are ignored for placeholder contents */
+     INIT_COLOR(config.client.placeholder, "#000000", "#0c0c0c", "#ffffff", "#000000");
+diff --git a/src/config_directives.c b/src/config_directives.c
+index 38b506fc..ecc367c0 100644
+--- a/src/config_directives.c
++++ b/src/config_directives.c
+@@ -525,6 +525,16 @@ CFGFUN(title_align, const char *alignment) {
+     }
+ }
+ 
++CFGFUN(titlebar, const char *visibility) {
++    if (strcmp(visibility, "show") == 0) {
++        config.show_titlebar = true;
++    } else if (strcmp(visibility, "hide") == 0) {
++        config.show_titlebar = false;
++    } else {
++        assert(false);
++    }
++}
++
+ CFGFUN(show_marks, const char *value) {
+     config.show_marks = boolstr(value);
+ }
+diff --git a/src/render.c b/src/render.c
+index ac1b39c4..2591ab70 100644
+--- a/src/render.c
++++ b/src/render.c
+@@ -25,6 +25,7 @@ static void render_con_dockarea(Con *con, Con *child, render_params *p);
+  * Returns the height for the decorations
+  */
+ int render_deco_height(void) {
++    if (!config.show_titlebar) return 0;
+     int deco_height = config.font.height + 4;
+     if (config.font.height & 0x01) {
+         ++deco_height;
+-- 
+2.47.2
+

@@ -8,7 +8,7 @@ in {
         username = "nuclear-squid";
         homeDirectory = homeDir;
         stateVersion = "24.11";
-        packages = with pkgs; [ picom ];
+        packages = with pkgs; [ picom swaybg ];
     };
 
     xdg = {
@@ -41,6 +41,11 @@ in {
         };
     };
 
+    services.mako.enable = true; # notification daemon
+    services.polkit-gnome.enable = true; # polkit
+
+    programs.waybar.enable = true;
+
     programs.neovide = {
         enable = true;
         package = unstable.neovide;
@@ -57,15 +62,22 @@ in {
     programs.git = {
         enable = true;
         lfs.enable = true;
-        userName = "Nuclear-Squid";
-        userEmail = "leo@cazenave.cc";
-        extraConfig.push.autoSetupRemote = true;
-        aliases = {
-            cv = "commit -v";
-            cb = "checkout -b";
-            st = "status";
-            lo = "log --graph --oneline";
-            pf = "push --force-with-lease";
+
+        settings = {
+            push.autoSetupRemote = true;
+
+            user = {
+                name = "Nuclear-Squid";
+                email = "leo@cazenave.cc";
+            };
+
+            alias = {
+                cv = "commit -v";
+                cb = "checkout -b";
+                st = "status";
+                lo = "log --graph --oneline";
+                pf = "push --force-with-lease";
+            };
         };
     };
 
@@ -170,15 +182,17 @@ in {
             functions --copy t zoxide_wrapper
             function t --wraps=t
                 zoxide_wrapper $argv
-                git_repo_changed && onefetch
+                git_repo_changed && clear && onefetch
                 magic_ls
+                nix_flake_available && nix develop
             end
 
             functions --copy ti zoxide_interactive_wrapper
             function ti --wraps=ti
                 zoxide_interactive_wrapper $argv
-                git_repo_changed && onefetch
+                git_repo_changed && clear && onefetch
                 magic_ls
+                nix_flake_available && nix develop
             end
         '';
     };

@@ -1,62 +1,110 @@
 ;; (defcfg
 ;;     sequence-input-mode hidden-delay-type
 ;;     process-unmapped-keys yes
+;;     concurrent-tap-hold yes
+;;     chords-v2-min-idle 100
 ;; )
 
 (defvar
     tap-timeout      175
     hold-timeout     200
     one-shot-timeout 500
-    combo-timeout    12
+    combo-timeout    30
+    ;; combo-lock-time  150
+)
+
+;; Keys on the right hand are moved one column to the right due to the wide angle-mod
+(defchordsv2
+    ;; (s d) <       20 all-released (gaming)
+    (s d) <      20 all-released (gaming)
+    (d f) ret    20 all-released (gaming)
+    (k l) esc    20 all-released (gaming)
+    (l ;) C-bspc 20 all-released (gaming)
+    (, .) caps   20 all-released (gaming)
 )
 
 (defsrc
     q    w    e    r    t         u    i    o    p    [
     a    s    d    f    g         j    k    l    ;    '
     <    z    x    c    v    b    m    ,    .    /    rsft
-                  lalt spc       ralt prnt
+             lmet lalt spc       ralt prnt
 )
 
+;; (defsrc
+;;     2    3    4    5    6         7    8    9    0    -
+;;     q    w    e    r    t         u    i    o    p    [
+;;     a    s    d    f    g    y    j    k    l    ;    '
+;;              mouseleft lalt spc       ralt prnt
+;; )
+
 (deflayer qwerty
-    q    w    e    r    t         y    u    i    o    p
+    q    w    e    r    t        @dot  u    i   @odk  p
     a   @ss  @dd  @ff   g         h   @jj  @kk  @ll   ;
-    z    x    c    v    b   cmp   n    m    ,    .    /
-                  @sup @nav    @alt @num
+    XX   x    c    v    XX   <    XX   m    ,    .    XX
+            @mirr @sup @nav    @alt @num
+)
+
+(deflayer ergol_odk
+   @q_  @w_  @e_  @r_   z        @n_   y   @i_  @o_  @p_
+   @a_  @s_  @d_  @f_   b        @h_  @j_  @k_  @l_  @;_
+   XX   @z_  @c_  @v_  @b_  @<_  XX    /   @,_  @._  XX
+            @mirr @sup @nav    @spc_ @num
+)
+
+(deflayer hummingbird_symbols
+    XX    XX    XX    XX    XX         XX    XX    XX    XX    XX
+    RA-z  XX    XX    RA-b  XX         XX    RA-n  XX    XX    RA-/
+    XX    XX    XX    XX    XX   XX    XX    XX    XX    XX    XX
+                XX    XX    XX         XX    XX
+)
+
+(deflayer mirror
+    q    @o_  i    u    y         t    r    e    w    q
+    ;   @ml  @mk  @mj   h         g    f    d    s    a
+    /    .    ,    m    n   cmp   b    v    c    x    z
+            XX    @num @alt    @nav @sup
+)
+
+(deflayer hands-down-promethium
+   @f   @p   @d   @l   @x        @'   @u   @o   @y   @b
+   @s   @dnn @dtt @dhh @k        @,   @daa @dee @dii @c
+   @v   @w   @g   @m   @j  C-w   @-   @.   @z   @q   XX
+         XX      @hots @drr     @spc  @num
 )
 
 (deflayer hypergol
-   @yo  @u   @o   @g   @w        @.   @p   @m   @l   @odk
+   @yo  @u   @o   @g   @w        @.   @p   @m   @l   @hodk
    @d   @hii @haa @htt @'        @b   @hnn @hss @hrr @c
    XX   @,   @é   @qu  XX  C-w   XX   @h   @f   @v   XX
-                 @hots @he     @spc  @magic
+          XX     @hots @he     @spc  @magic
 )
 
 (deflayer hypergol_odk
    @y   @û   @ô   @œ   XX        XX   @j   @x   @k   @dead-diaresis
    @ù   @î   @â   @à   XX        XX   @ç   @z   XX   XX
    XX   XX   @ê   @q   XX   _    XX   XX   XX   XX   XX
-                  XX   @è        @_   XX
+           XX     XX   @è        @_   XX
 )
 
 (deflayer vimnav
     C-q  @stp @vup @vdn @hyp      home pgdn pgup end  _
-    C-a  C-s S-tab tab  @std      lft  down up   rght _
+    C-a  C-s S-tab tab  @std      lft  down up   rght @build
     C-z  C-x  C-w  C-v  @gam _    bldn brdn brup blup _
-              XX ret                   ret XX
+       XX     XX ret                   ret XX
 )
 
 (deflayer numrow
     S-1  S-2  S-3  _    _         _    _    _    _    _
     1    2    3    4    5         6    7    8    9    0
     _    _    _    _    _    _    _    _    _    _    _
-                   _    _         _    _
+            XX  spc S-spc         _    _
 )
 
 (deflayer gaming
     q    w    e    r    t         y    u    i    o    p
     a    s    d    f    g         h    j    k    l    ;
     z    x    c    v    b   cmp   n    m    ,    .    /
-                  @num  spc       del @nav
+            XX    @num  spc       del @nav
 )
 
 (deftemplate mt (keycode modifier)
@@ -74,7 +122,7 @@
 ;; Common aliases
 (defalias
     ;; Thumb key shorthands
-    ots-caps (tap-dance $tap-timeout ((one-shot-press $one-shot-timeout lsft) caps))
+    ots-caps (tap-dance $tap-timeout ((one-shot-press-pcancel $one-shot-timeout lsft) caps))
     space-nav (multi (release-key lmet) (layer-toggle vimnav))
 
     ;; Generic shorthands
@@ -83,40 +131,84 @@
     vdn (fork VolumeDown MediaTrackNext     (lsft))
 
     hyp (layer-switch hypergol)
+    ;; hyp (layer-switch hands-down-promethium)
     std (layer-switch qwerty)
     gam (layer-switch gaming)
+
+    build (macro esc spc t M-h 50 up)
 )
 
 ;; Ergo‑L aliases
 (defalias
     ;; Thumb keys
-    sup (t! mt esc lmet)
-    nav (t! lt (fork @ots-caps spc (ralt)) vimnav)
+    sup (t! mt
+        (fork
+            esc
+            (one-shot-press $one-shot-timeout (layer-while-held hummingbird_symbols))
+            (ralt)
+        )
+        lmet
+    )
+    ;; nav (t! lt (fork @ots-caps spc (ralt)) vimnav)
+    nav (fork
+        (t! lt @ots-caps vimnav)
+        (t! lt spc numrow)
+        (ralt)
+    )
     alt (t! mt spc (fork ralt @space-nav (lmet)))
     num (t! lt bspc numrow)
+
+    mirr (one-shot-press $one-shot-timeout (layer-toggle mirror))
 
     ;; Home-row-mods
     ss (t! mt s lsft)
     dd (t! mt d lctl)
     ff (t! mt f lalt)
-    jj (t! mt (chord ergol-combos j) lalt)
-    kk (t! mt (chord ergol-combos k) lctl)
+    jj (t! mt j lalt)
+    kk (t! mt k lctl)
     ll (t! mt l lsft)
+
+    mj (t! mt j lctl)
+    mk (t! mt k lsft)
+    ml (t! mt l lalt)
+
+    odk (fork
+        (one-shot-press $one-shot-timeout (layer-while-held ergol_odk))
+        o
+        (lmet ralt lsft)
+    )
+
+    dot (fork n y (ralt))
+
+    a_ (macro o a)
+    b_ (macro o b)
+    c_ (macro o c)
+    d_ (macro o d)
+    e_ (macro o e)
+    f_ (macro o f)
+    h_ (macro o h)
+    i_ (macro o i)
+    j_ (macro o j)
+    k_ (macro o k)
+    l_ (macro o l)
+    n_ (macro o n)
+    o_ (macro o o)
+    p_ (macro o p)
+    q_ (macro o q)
+    r_ (macro o r)
+    s_ (macro o s)
+    v_ (macro o v)
+    w_ (macro o w)
+    z_ (macro o z)
+    ,_ (macro o ,)
+    ._ (macro o .)
+    ;_ (macro o ;)
+    <_ (macro o <)
+    spc_ (macro o spc)
 )
 
-;; Ergo‑L combos
-(defchords ergol-combos $combo-timeout
-    ;; Keep standard tap actions
-    (j) j
-    (k) k
-
-    ;; Actual combos
-    (k j) ret
-)
-
-;; Hypergol aliases
+;; Keycodes for Hypergol / Hands-down-promethium over Ergo‑L
 (defalias
-    ;; Keycodes for Hypergol over Ergo‑L
     a    a
     b    b
     c    w
@@ -146,8 +238,23 @@
     ,    .
     .    n
     '    (macro o spc)
-    odk (one-shot 1000 (layer-while-held hypergol_odk))
+    -    c
+)
 
+;; Hands-down-promethium aliases
+(defalias
+    drr (t! lt (fork @r spc (ralt)) vimnav)
+    dnn (t! mt @n lsft)
+    dtt (t! mt @t lctl)
+    dhh (t! mt @h lalt)
+    daa (t! mt @a lalt)
+    dee (t! mt @e lctl)
+    dii (t! mt @i lsft)
+)
+
+;; Hypergol aliases
+(defalias
+    hodk (one-shot 1000 (layer-while-held hypergol_odk))
     qu   (macro q sldr nop1)
     yo   (macro p sldr nop2)
 
@@ -195,25 +302,19 @@
     magic (t! lt @magic-key numrow)
 
     hii (t! mt (chord hypergol-combos s) lsft)
-    haa (t! mt (chord hypergol-combos d) lctl)
+    haa (t! mt @a lctl)
     htt (t! mt (chord hypergol-combos f) lalt)
-    hnn (t! mt (chord hypergol-combos j) lalt)
-    hss (t! mt (chord hypergol-combos k) lctl)
+    hnn (t! mt @n lalt)
+    hss (t! mt @s lctl)
     hrr (t! mt @r lsft)
 )
 
 (defchords hypergol-combos $combo-timeout
     ;; Keep standard tap actions
-    (s    ) @i
-    (  d  ) @a
-    (    f) @t
-    (    j) @n
-    (  k  ) @s
-
+    (s   ) @i
+    (   f) @t
     ;; Actual combos
-    (s   f) (macro @t @h @e sldr nop3)
-    (  d f) esc
-    (  k j) ret
+    (s  f) (macro @t @h @e sldr nop3)
 )
 
 (deftemplate auto-fill (vk-name leader filler input-keys)
@@ -231,7 +332,6 @@
 (t! auto-fill qu' nop1 ; (o spc))
 (t! auto-fill qué nop1 ; (o s))
 (t! auto-fill you nop2 e ;)
-
 
 (deftemplate combo-ext (vk-name input-keys output-keys)
     (defvirtualkeys $vk-name (macro $output-keys))
