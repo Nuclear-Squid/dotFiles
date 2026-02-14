@@ -1,7 +1,7 @@
 local nmap = require('mapping_functions').nmap
 
 if vim.g.neovide then
-  vim.g.neovide_scale_factor = 0.4
+  vim.g.neovide_scale_factor = 0.6
   vim.g.neovide_padding_top = 5
   vim.g.neovide_padding_left = 5
   vim.g.neovide_cursor_unfocused_outline_width = 0.1
