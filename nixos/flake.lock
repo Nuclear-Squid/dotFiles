@@ -134,6 +134,22 @@
         "url": "https://channels.nixos.org/nixos-25.11/nixexprs.tar.xz"
       }
     },
+    "nixpkgs_3": {
+      "locked": {
+        "lastModified": 1771369470,
+        "narHash": "sha256-0NBlEBKkN3lufyvFegY4TYv5mCNHbi5OmBDrzihbBMQ=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "0182a361324364ae3f436a63005877674cf45efb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "old-stable": {
       "locked": {
         "lastModified": 1767313136,
@@ -178,6 +194,7 @@
         "old-stable": "old-stable",
         "prismlauncher": "prismlauncher",
         "unstable": "unstable",
+        "wrappers": "wrappers",
         "zen-browser": "zen-browser"
       }
     },
@@ -194,6 +211,24 @@
         "owner": "nixos",
         "ref": "nixos-unstable",
         "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "wrappers": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_3"
+      },
+      "locked": {
+        "lastModified": 1771402010,
+        "narHash": "sha256-Orak5gEBDOhSvg9chB1Q3uxpsfzth9RcjlOGfppGXLc=",
+        "owner": "Lassulus",
+        "repo": "wrappers",
+        "rev": "61424c8f8ae0caaaca98cabc03557eba1d79c936",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Lassulus",
+        "repo": "wrappers",
         "type": "github"
       }
     },

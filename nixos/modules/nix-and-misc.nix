@@ -1,8 +1,5 @@
 { inputs, ... }: {
-    flake.nixosModules.nix-and-misc = { pkgs, ... }:
-    let unstable   = inputs.unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
-        old-stable = inputs.old-stable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
-    in {
+    flake.nixosModules.nix-and-misc = { pkgs, ... }: {
         # Allow unfree packages
         nixpkgs.config = {
             allowUnfree = true;
@@ -27,4 +24,3 @@
         system.stateVersion = "24.11"; # Did you read the comment?
     };
 }
-
