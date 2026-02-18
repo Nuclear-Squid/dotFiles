@@ -8,7 +8,7 @@
         home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
         flake-parts.url = "github:hercules-ci/flake-parts";
-        # import-tree.url = "github:vic/import-tree";
+        import-tree.url = "github:vic/import-tree";
 
         zen-browser = {
             url = "github:0xc000022070/zen-browser-flake";
@@ -18,13 +18,12 @@
         prismlauncher.url = "github:PrismLauncher/PrismLauncher";
     };
 
-    outputs = { flake-parts, ... } @ inputs:
+    outputs = { flake-parts, import-tree, ... } @ inputs:
         flake-parts.lib.mkFlake { inherit inputs; } {
             systems = [ "x86_64-linux" ];
             imports = [
                 ./hosts/laptop.nix
-                ./modules/dev-environment.nix
-                ./modules/nix-and-misc.nix
+                (import-tree ./modules)
             ];
         };
 
