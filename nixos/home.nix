@@ -13,32 +13,7 @@ in {
 
     xdg = {
         configHome = "${homeDir}/.config";
-        # configFile.picom.text = builtins.readFile ../picom.conf;
         enable = true;
-        configFile."picom/picom.conf" = {
-            source = config.lib.file.mkOutOfStoreSymlink ../picom.conf;
-            force = true;
-        };
-    };
-
-    systemd.user.services.picom =
-        let cfg_systemd_target = "graphical-session.target";
-        in {
-        Unit = {
-            Description = "Picom X11 compositor";
-            After = [ cfg_systemd_target ];
-            PartOf = [ cfg_systemd_target ];
-        };
-        Install = {
-            WantedBy = [ cfg_systemd_target ];
-        };
-        Service = {
-            ExecStart = lib.concatStringsSep " " [
-                "${lib.getExe pkgs.picom}"
-                    # "--config ${config.xdg.configFile."picom/picom.conf".source}"
-                    "--config ${homeDir}/.config/picom/picom.conf"
-            ];
-        };
     };
 
     services.mako.enable = true; # notification daemon
@@ -79,6 +54,11 @@ in {
                 pf = "push --force-with-lease";
             };
         };
+    };
+
+    programs.delta = {
+        enable = true;
+        enableGitIntegration = true;
     };
 
     programs.gh = {
@@ -235,7 +215,6 @@ in {
 
     programs.eza = {
         enable = true;
-        enableZshIntegration = true;
         enableFishIntegration = true;
         git = true;
         icons = "auto";
@@ -287,6 +266,4 @@ in {
         package = pkgs.polybar.override { i3Support = true; };
         script = "";
     };
-
-    services.dunst.enable = true;
 }

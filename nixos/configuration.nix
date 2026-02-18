@@ -22,6 +22,7 @@ in let global-system-packages = with pkgs; {
             valgrind
             gnumake
             cmake
+            serie
             act  # Build GitHub’s CI locally
             # those should go in Ergo‑L’s repo
             unstable.hugo
