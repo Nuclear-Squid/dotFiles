@@ -36,6 +36,30 @@
                 ];
             };
         }).wrapper;
+
+        packages.git =
+        let delta = unstable.delta;
+        in (inputs.wrappers.wrapperModules.git.apply {
+            pkgs = unstable;
+            extraPackages = [ delta ];
+            settings = {
+                lfs.enable = true;
+                push.autoSetupRemote = true;
+                core.pager = lib.getExe delta-exe;
+                interactive.diffFilter = "${lib.getExe delta-exe} --color-only";
+                user = {
+                    name = "Nuclear-Squid";
+                    email = "leo@cazenave.cc";
+                };
+                alias = {
+                    cv = "commit -v";
+                    cb = "checkout -b";
+                    st = "status";
+                    lo = "log --graph --oneline";
+                    pf = "push --force-with-lease";
+                };
+            };
+        }).wrapper;
     };
 
     flake.nixosModules.dev-environment = { pkgs, config, wrappers, ... }:
@@ -44,8 +68,8 @@
     in {
         environment.systemPackages = with pkgs; [
             unstable.neovim
-            unstable.lazygit
             self-pkgs.kitty
+            self-pkgs.git
         ];
     };
 }
