@@ -1,10 +1,13 @@
-{ self, inputs, ... }: {
-    perSystem = { inputs', pkgs, ... }:
+{ self, inputs, lib, getSystem, ... }: {
+    perSystem = { self', inputs', pkgs, ... }:
     let unstable = inputs'.unstable.legacyPackages;
     in {
         packages.kitty = (inputs.wrappers.wrapperModules.kitty.apply {
             pkgs = unstable;
+            extraPackages = [ unstable.nerd-fonts.fantasque-sans-mono ];
             settings = {
+                font_family = "FantasqueSansM Nerd Font Mono";
+                font_size = 10;
                 bell_path = "~/Code/dotFiles/Windows_XP_Error_sound_effect.wav";
                 cursor = "#666666";
                 background_opacity = "0.9";
@@ -26,17 +29,23 @@
                 color13 = "#c678dd";
                 color14 = "#48d5aa";
                 color15 = "#f5d9de";
+                transparent_background_colors = "#1b1127@0.95 #231e36@0.95 #2d2a45@0.95 #373354@0.95";
+                map = [
+                    "ctrl+c copy_or_interrupt"
+                    "ctrl+v paste_from_clipboard"
+                ];
             };
         }).wrapper;
     };
 
-    flake.nixosModules.dev-environment = { pkgs, wrappers, ... }:
+    flake.nixosModules.dev-environment = { pkgs, config, wrappers, ... }:
     let unstable = inputs.unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+        self-pkgs = self.packages.${pkgs.stdenv.hostPlatform.system};
     in {
         environment.systemPackages = with pkgs; [
             unstable.neovim
             unstable.lazygit
-            self.packages.${pkgs.stdenv.hostPlatform.system}.kitty
+            self-pkgs.kitty
         ];
     };
 }
