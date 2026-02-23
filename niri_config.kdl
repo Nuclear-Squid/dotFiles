@@ -124,9 +124,7 @@ layout {
     // You can customize the widths that "switch-preset-column-width" (Mod+R) toggles between.
     preset-column-widths {
         proportion 0.3333
-        proportion 0.4
         proportion 0.5
-        proportion 0.6
         proportion 0.6667
         proportion 1.0
     }
@@ -135,7 +133,7 @@ layout {
     // preset-window-heights { }
 
     // You can change the default width of the new windows.
-    default-column-width { proportion 0.5; }
+    // default-column-width { proportion 0.7; }
     // If you leave the brackets empty, the windows themselves will decide their initial width.
     // default-column-width {}
 
@@ -306,16 +304,6 @@ animations {
 // Find more information on the wiki:
 // https://yalter.github.io/niri/Configuration:-Window-Rules
 
-// Work around WezTerm's initial configure bug
-// by setting an empty default-column-width.
-window-rule {
-    // This regular expression is intentionally made as specific as possible,
-    // since this is the default config, and we want no false positives.
-    // You can get away with just app-id="wezterm" if you want.
-    match app-id=r#"^org\.wezfurlong\.wezterm$"#
-    default-column-width {}
-}
-
 // Put swaybg inside the overview backdrop.
 layer-rule {
     match namespace="^wallpaper$"
@@ -335,6 +323,21 @@ window-rule {
     // - Flatpak Firefox (app-id is "org.mozilla.firefox")
     match app-id=r#"firefox$"# title="^Picture-in-Picture$"
     open-floating true
+}
+
+window-rule {
+    match app-id="librewolf|zen"
+    open-maximized true
+}
+
+window-rule {
+    match app-id="Tor"
+    open-fullscreen true
+}
+
+window-rule {
+    match app-id="discord|Zulip"
+    default-column-width { proportion 0.6667; }
 }
 
 // Example: block out two password managers from screen capture.
