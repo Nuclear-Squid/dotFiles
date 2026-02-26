@@ -56,6 +56,7 @@ in let global-system-packages = with pkgs; {
             tor-browser
             thunderbird
             xfce.thunar
+            pcmanfm
             element-desktop
             picoscope
             hunspell # Libs for libreoffice
@@ -99,6 +100,7 @@ in let global-system-packages = with pkgs; {
             bottom
             btop
             xclip
+            wl-clipboard-rs
             unzip
             wget
             curl
