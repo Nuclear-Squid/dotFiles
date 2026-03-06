@@ -16,6 +16,15 @@ in {
         enable = true;
     };
 
+    gtk = {
+        enable = true;
+        colorScheme = "dark";
+        theme = {
+            name = "Kanagawa-B";
+            package = pkgs.kanagawa-gtk-theme;
+        };
+    };
+
     services.mako.enable = true; # notification daemon
     services.polkit-gnome.enable = true; # polkit
 
