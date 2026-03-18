@@ -19,13 +19,21 @@
         prismlauncher.url = "github:PrismLauncher/PrismLauncher";
     };
 
-    outputs = { flake-parts, import-tree, ... } @ inputs:
+    outputs = { flake-parts, import-tree, home-manager, nixpkgs, ... } @ inputs:
         flake-parts.lib.mkFlake { inherit inputs; } {
             systems = [ "x86_64-linux" ];
             imports = [
+                home-manager.flakeModules.home-manager
                 ./hosts/laptop.nix
                 (import-tree ./modules)
             ];
+
+            flake.homeConfigurations.nuclear-squid = home-manager.lib.homeManagerConfiguration {
+                pkgs = import nixpkgs { system = "x86_64-linux"; };
+                modules = [
+                    inputs.self.homeModules.niri
+                ];
+            };
         };
 
 }

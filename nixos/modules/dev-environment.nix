@@ -45,8 +45,8 @@
             settings = {
                 lfs.enable = true;
                 push.autoSetupRemote = true;
-                core.pager = lib.getExe delta-exe;
-                interactive.diffFilter = "${lib.getExe delta-exe} --color-only";
+                core.pager = lib.getExe delta;
+                interactive.diffFilter = "${lib.getExe delta} --color-only";
                 user = {
                     name = "Nuclear-Squid";
                     email = "leo@cazenave.cc";
