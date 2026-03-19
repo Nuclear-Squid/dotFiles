@@ -15,6 +15,19 @@
         boot.loader.efi.canTouchEfiVariables = true;
         boot.kernelPackages = pkgs.linuxPackages_zen;
 
+        users.users.nuclear-squid = {
+            isNormalUser = true;
+            description = "Nuclear Squid";
+            extraGroups = [
+                "networkmanager"
+                "wheel"  # Enable 'sudo' for the user.
+                "audio"
+                "dialout"  # Allow access to serial device (for Arduino dev)
+                "docker"  # Allow using docker without root access
+                "nginx"  # Allow using nginx in localhost
+            ];
+        };
+
         # This value determines the NixOS release from which the default
         # settings for stateful data, like file locations and database versions
         # on your system were taken. It‘s perfectly fine and recommended to leave

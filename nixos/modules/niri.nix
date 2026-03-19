@@ -1,4 +1,4 @@
-{ inputs, ... }: {
+{ self, inputs, ... }: {
     flake.nixosModules.niri = { pkgs, ... }:
     let unstable = inputs.unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
         self-pkgs = self.packages.${pkgs.stdenv.hostPlatform.system};
@@ -15,7 +15,7 @@
         ];
 
         environment.variables.LD_LIBRARY_PATH =
-            "${pkgs.lib.makeLibraryPath [ libxcursor ]}:$LD_LIBRARY_PATH";
+            "${pkgs.lib.makeLibraryPath [ pkgs.libxcursor ]}:$LD_LIBRARY_PATH";
 
 
         xdg.portal = {

@@ -6,6 +6,7 @@
             self.nixosModules.hardware-configuration
             self.nixosModules.dev-environment
             self.nixosModules.nix-and-misc
+            self.nixosModules.niri
         ];
     };
 
