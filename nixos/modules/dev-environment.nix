@@ -48,7 +48,7 @@
                 core.pager = lib.getExe delta;
                 interactive.diffFilter = "${lib.getExe delta} --color-only";
                 user = {
-                    name = "Nuclear-Squid";
+                    name = "Nuclear Squid";
                     email = "leo@cazenave.cc";
                 };
                 alias = {
