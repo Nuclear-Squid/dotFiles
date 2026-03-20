@@ -7,6 +7,7 @@
             self.nixosModules.dev-environment
             self.nixosModules.nix-and-misc
             self.nixosModules.niri
+            self.nixosModules.i3
         ];
     };
 

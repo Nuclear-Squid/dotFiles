@@ -26,6 +26,7 @@
                 "docker"  # Allow using docker without root access
                 "nginx"  # Allow using nginx in localhost
             ];
+            packages = with pkgs; [];
         };
 
         # This value determines the NixOS release from which the default

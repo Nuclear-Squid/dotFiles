@@ -72,4 +72,96 @@
             self-pkgs.git
         ];
     };
+
+    flake.homeModules.dev-environment = { pkgs, ... }:
+    let unstable = inputs.unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+        self-pkgs = self.packages.${pkgs.stdenv.hostPlatform.system};
+    in {
+        programs.zoxide = {
+            enable = true;
+            options = [ "--cmd" "t" ];
+        };
+
+        programs.fish = {
+            enable = true;
+            shellInit = builtins.readFile ../shell/fish_config.fish;
+            interactiveShellInit = ''
+                functions --copy t zoxide_wrapper
+                function t --wraps=t
+                    zoxide_wrapper $argv
+                    git_repo_changed && clear && onefetch
+                    magic_ls
+                    nix_flake_available && nix develop
+                end
+
+                functions --copy ti zoxide_interactive_wrapper
+                function ti --wraps=ti
+                    zoxide_interactive_wrapper $argv
+                    git_repo_changed && clear && onefetch
+                    magic_ls
+                    nix_flake_available && nix develop
+                end
+            '';
+        };
+
+        programs.neovide = {
+            enable = true;
+            package = unstable.neovide;
+            settings.backtraces_path = "$HOME/.local/share/neovide";
+            settings.font = {
+                size = 16;
+                normal        = { family = "FantasqueSansM Nerd Font Mono"; style = "regular"; };
+                bold          = { family = "FantasqueSansM Nerd Font Mono"; style = "bold"; };
+                italic        = { family = "MonaspiceRn Nerd Font Mono";    style = "regular"; };
+                bold_italic   = { family = "MonaspiceRn Nerd Font Mono";    style = "italic"; };
+            };
+        };
+
+        programs.gh = {
+            enable = true;
+            extensions = [ pkgs.gh-notify ];
+        };
+
+        programs.starship = {
+            enable = true;
+            settings = {
+                character = {
+                  success_symbol = "[|>](bold green)";
+                  error_symbol   = "[!!](bold red)";
+                };
+
+                directory.truncation_length = 5;
+            };
+        };
+
+        programs.fastfetch.enable = true;
+
+        programs.eza = {
+            enable = true;
+            enableFishIntegration = true;
+            git = true;
+            icons = "auto";
+            extraOptions = [
+                "--group-directories-first"
+                "--git"
+                "--icons"
+                "--no-quotes"
+            ] ;
+        };
+
+        programs.bat.enable = true;
+        programs.yazi.enable = true;
+
+        programs.fzf = rec {
+            enable = true;
+            enableFishIntegration = true;
+            defaultCommand = "fd --type f --strip-cwd-prefix";
+
+            # ctrl-t
+            fileWidgetCommand = "fd --type f --type d --strip-cwd-prefix";
+            fileWidgetOptions = [
+                "--preview 'bat --color=always --style=plain -r :200 {}'"
+            ];
+        };
+    };
 }

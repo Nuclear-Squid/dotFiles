@@ -20,7 +20,7 @@
                 package =
                     if customI3
                     then unstable.i3.overrideAttrs {
-                        patches = [ ../i3/0001-Added-option-to-hide-title-bar-on-tabs-and-staks.patch ];
+                        patches = [ ../../i3/0001-Added-option-to-hide-title-bar-on-tabs-and-staks.patch ];
                         doCheck = false;
                     }
                     else unstable.i3-rounded;
