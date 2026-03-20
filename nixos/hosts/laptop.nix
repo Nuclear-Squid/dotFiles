@@ -10,7 +10,7 @@
             self.nixosModules.i3
             self.nixosModules.gui
             self.nixosModules.common
-            self.nixosModules.home
+            ../home.nix
         ];
     };
 
