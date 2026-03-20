@@ -41,7 +41,7 @@
         let delta = unstable.delta;
         in (inputs.wrappers.wrapperModules.git.apply {
             pkgs = unstable;
-            extraPackages = [ delta ];
+            extraPackages = [ delta pkgs.serie ];
             settings = {
                 lfs.enable = true;
                 push.autoSetupRemote = true;
@@ -63,14 +63,94 @@
     };
 
     flake.nixosModules.dev-environment = { pkgs, config, wrappers, ... }:
-    let unstable = inputs.unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
-        self-pkgs = self.packages.${pkgs.stdenv.hostPlatform.system};
+    let unstable   = inputs.unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+        old-stable = inputs.old-stable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+        self-pkgs  = self.packages.${pkgs.stdenv.hostPlatform.system};
     in {
+        programs.fish.enable = true;
+        users.defaultUserShell = pkgs.fish;
+
         environment.systemPackages = with pkgs; [
             unstable.neovim
             self-pkgs.kitty
             self-pkgs.git
+
+            # Dev tools
+            valgrind
+            gnumake
+            cmake
+            act  # Build GitHub’s CI locally
+            # those should go in Ergo‑L’s repo
+            # unstable.hugo
+            # unstable.pandoc
+            # nginx
+
+            # Fancy cli tools
+            old-stable.llpp  # PDF viewer based on mupdf
+            onefetch         # Fetcher for git repos
+            tealdeer         # `tldr`, when you can’t be bothered to RTFM
+            ripgrep          # `rg`, grep but better
+            feh              # Image viewer
+            fd               # Like `find`, but easy to use
+            nh               # nix cli replacement
         ];
+
+        environment.variables = {
+            EDITOR = "nvim";
+            EXA_COLORS = "di=01;35:uu=03;33:ur=33:uw=33:gw=33:gx=01;32:tw=33:tx=01;32:sn=35";
+        };
+
+        fonts.packages = with pkgs.nerd-fonts; [
+            fantasque-sans-mono
+            monaspace
+        ];
+
+        virtualisation.docker.rootless = {
+            enable = true;
+            setSocketVariable = true;
+        };
+
+        services = {
+            kanata = {
+                enable = true;
+                package = unstable.kanata;
+                keyboards.laptop = {
+                    devices = [ "/dev/input/event0" ];
+                    config = builtins.readFile ../../kanata.kbd;
+                    extraDefCfg = ''
+                        sequence-input-mode hidden-delay-type
+                        process-unmapped-keys yes
+                        concurrent-tap-hold yes
+                        chords-v2-min-idle 120
+                    '';
+                };
+            };
+
+            # Upload programs to Mbed arduino boards
+            udev.extraRules = ''
+                SUBSYSTEMS=="usb", ATTRS{idVendor}=="2e8a", MODE:="0666"
+                SUBSYSTEMS=="usb", ATTRS{idVendor}=="2341", MODE:="0666"
+                SUBSYSTEMS=="usb", ATTRS{idVendor}=="1fc9", MODE:="0666"
+                SUBSYSTEMS=="usb", ATTRS{idVendor}=="0525", MODE:="0666"
+            '';
+
+            nginx = {
+                enable = true;
+                recommendedGzipSettings  = true;
+                recommendedOptimisation  = true;
+                recommendedProxySettings = true;
+                recommendedTlsSettings   = true;
+
+                virtualHosts.localhost = {
+                    # addSSL = true;
+                    # enableACME = true;
+                    # default = true;
+                    root = "${config.users.users.nuclear-squid.home}/Code/www/";
+                    # locations."/var/html/".proxyPass = "http://localhost:8000";
+                };
+                # appendHttpConfig = "listen 127.0.0.1:80";
+            };
+        };
     };
 
     flake.homeModules.dev-environment = { pkgs, ... }:

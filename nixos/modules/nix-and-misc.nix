@@ -26,8 +26,39 @@
                 "docker"  # Allow using docker without root access
                 "nginx"  # Allow using nginx in localhost
             ];
-            packages = with pkgs; [];
+            # packages = with pkgs; [];
         };
+
+        programs.nix-ld.enable = true;
+
+        networking.hostName = "nixos"; # Define your hostname.
+        # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+
+        # Configure network proxy if necessary
+        # networking.proxy.default = "http://user:password@proxy:port/";
+        # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+
+        # Enable networking
+        networking.networkmanager.enable = true;
+
+        # Set your time zone.
+        time.timeZone = "Europe/Paris";
+
+        # Select internationalisation properties.
+        i18n.defaultLocale = "en_GB.UTF-8";
+
+        i18n.extraLocaleSettings = {
+            LC_ADDRESS = "fr_FR.UTF-8";
+            LC_IDENTIFICATION = "fr_FR.UTF-8";
+            LC_MEASUREMENT = "fr_FR.UTF-8";
+            LC_MONETARY = "fr_FR.UTF-8";
+            LC_NAME = "fr_FR.UTF-8";
+            LC_NUMERIC = "fr_FR.UTF-8";
+            LC_PAPER = "fr_FR.UTF-8";
+            LC_TELEPHONE = "fr_FR.UTF-8";
+            LC_TIME = "fr_FR.UTF-8";
+        };
+
 
         # This value determines the NixOS release from which the default
         # settings for stateful data, like file locations and database versions

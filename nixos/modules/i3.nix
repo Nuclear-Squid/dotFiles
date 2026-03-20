@@ -5,6 +5,9 @@
         customI3  = true;
     in {
         environment.pathsToLink = [ "/libexec" ];
+        environment.systemPackages = with pkgs; [
+            picom
+        ];
 
         services.xserver = {
             enable = true;
@@ -33,8 +36,18 @@
         };
     };
 
-    # flake.homeModules.niri = { pkgs, ... }: {
-    #     programs.niriswitcher.enable = true;
-    # };
+    flake.homeModules.i3 = { pkgs, ... }: {
+        programs.rofi = {
+            enable = true;
+            theme = ../rofi_theme.rasi;
+        };
+
+        services.polybar = {
+            enable = true;
+            config = ../polybar/config.ini;
+            package = pkgs.polybar.override { i3Support = true; };
+            script = "";
+        };
+    };
 }
 
