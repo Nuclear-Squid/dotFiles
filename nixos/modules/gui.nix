@@ -1,6 +1,6 @@
 { self, inputs, ... }: {
     flake.nixosModules.gui = { pkgs, ... }:
-    et unstable = inputs.unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+    let unstable = inputs.unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
         self-pkgs = self.packages.${pkgs.stdenv.hostPlatform.system};
     in {
         environment.systemPackages = with pkgs; [
