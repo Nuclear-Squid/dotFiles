@@ -16,7 +16,7 @@
             # old-stable.ardour  # Stable and Unstable versions are broken.
             ardour
             unstable.musescore
-            unstable.muse-sounds-manager
+            # unstable.muse-sounds-manager
 
             # Video / Art
             kdePackages.kdenlive

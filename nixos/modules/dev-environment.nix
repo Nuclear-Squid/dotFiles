@@ -41,7 +41,7 @@
         let delta = unstable.delta;
         in (inputs.wrappers.wrapperModules.git.apply {
             pkgs = unstable;
-            extraPackages = [ delta pkgs.serie ];
+            extraPackages = [ delta ];
             settings = {
                 lfs.enable = true;
                 push.autoSetupRemote = true;
@@ -74,6 +74,9 @@
             unstable.neovim
             self-pkgs.kitty
             self-pkgs.git
+
+            serie
+            lazygit
 
             # Dev tools
             valgrind
@@ -164,7 +167,7 @@
 
         programs.fish = {
             enable = true;
-            shellInit = builtins.readFile ../shell/fish_config.fish;
+            shellInit = builtins.readFile ../../shell/fish_config.fish;
             interactiveShellInit = ''
                 functions --copy t zoxide_wrapper
                 function t --wraps=t

@@ -3,6 +3,8 @@
     let unstable = inputs.unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
         self-pkgs = self.packages.${pkgs.stdenv.hostPlatform.system};
     in {
+        environment.systemPackages = [ pkgs.home-manager ];
+
         services = {
             udisks2.enable = true;
             devmon.enable  = true;
@@ -37,7 +39,7 @@
         # GUI app launcher, used by both I3 and Niri
         programs.rofi = {
             enable = true;
-            theme = ../rofi_theme.rasi;
+            theme = ../../rofi_theme.rasi;
         };
 
         programs.cava.enable = true;

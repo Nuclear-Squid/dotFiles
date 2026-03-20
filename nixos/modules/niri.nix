@@ -29,11 +29,6 @@
         programs.niriswitcher.enable = true;
         programs.waybar.enable = true;
         services.mako.enable = true; # notification daemon
-
-        programs.rofi = {
-            enable = true;
-            theme = ../rofi_theme.rasi;
-        };
     };
 }
 
