@@ -23,7 +23,7 @@
         flake-parts.lib.mkFlake { inherit inputs; } {
             systems = [ "x86_64-linux" ];
             imports = [
-                home-manager.flakeModules.home-manager
+                home-manager.nixosModules.home-manager
                 ./hosts/laptop.nix
                 (import-tree ./modules)
             ];
