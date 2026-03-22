@@ -10,6 +10,7 @@
             self.nixosModules.i3
             self.nixosModules.gui
             self.nixosModules.common
+            inputs.home-manager.nixosModules.default
         ];
     };
 
