@@ -3,7 +3,7 @@
     let unstable = inputs.unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
         self-pkgs = self.packages.${pkgs.stdenv.hostPlatform.system};
     in {
-        home-manager.users.nuclear-squid = ../home.nix;
+        # home-manager.users.nuclear-squid = ../home.nix;
         environment.systemPackages = [ pkgs.home-manager ];
 
         services = {
