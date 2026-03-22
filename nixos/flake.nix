@@ -31,7 +31,7 @@
             flake.homeConfigurations.nuclear-squid = home-manager.lib.homeManagerConfiguration {
                 pkgs = import nixpkgs { system = "x86_64-linux"; };
                 modules = [
-                    { home-manager.users.nuclear-squid = ./home.nix; }
+                    # { home-manager.users.nuclear-squid = ./home.nix; }
                     # inputs.self.homeModules.niri
                     # inputs.self.homeModules.i3
                     # inputs.self.homeModules.common

@@ -1,11 +1,13 @@
-{ self, inputs, ... }: {
-    flake.nixosModules.common = { pkgs, config, wrappers, ... }:
+{ self, inputs, home-manager, ... }: {
+    flake.nixosModules.common = { pkgs, config, wrappers, home-manager, ... }:
     let unstable = inputs.unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
         self-pkgs = self.packages.${pkgs.stdenv.hostPlatform.system};
     in {
+        home-manager.users.nuclear-squid = ./home.nix;
         environment.systemPackages = [ pkgs.home-manager ];
 
         services = {
+            # Auto-mount usb drives
             udisks2.enable = true;
             devmon.enable  = true;
             gvfs.enable    = true;
@@ -33,10 +35,6 @@
             configHome = "${homeDir}/.config";
             enable = true;
         };
-
-        services.polkit-gnome.enable = true; # No idea what it does
-
-        # GUI app launcher, used by both I3 and Niri
         programs.rofi = {
             enable = true;
             theme = ../../rofi_theme.rasi;
