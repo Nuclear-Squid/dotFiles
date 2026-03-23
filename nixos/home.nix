@@ -75,52 +75,6 @@ in {
         extensions = [ pkgs.gh-notify ];
     };
 
-    programs.alacritty = {
-        enable = true;
-        settings = {
-            font = {
-                size = 7;
-                # normal.family = "Operator-caska";
-                normal        = { family = "FantasqueSansM Nerd Font Mono"; style = "regular"; };
-                bold          = { family = "FantasqueSansM Nerd Font Mono"; style = "bold"; };
-                italic        = { family = "MonaspiceRn Nerd Font Mono";    style = "regular"; };
-                bold_italic   = { family = "MonaspiceRn Nerd Font Mono";    style = "italic"; };
-            };
-            window = {
-                opacity = 0.9;
-                blur = true;
-            };
-            colors = {
-                primary = {
-                    foreground = "#f7dec7";
-                    background = "#1a0c24";
-                };
-                normal = {
-                    black   = "#373354";
-                    red     = "#c02030";
-                    green   = "#3bb846";
-                    yellow  = "#dd9046";
-                    blue    = "#2a68c8";
-                    magenta = "#b02cc0";
-                    cyan    = "#48d5aa";
-                    white   = "#9C9BBA";
-                };
-                bright = {
-                    black   = "#4b4673";
-                    red     = "#e86671";
-                    green   = "#8ebd6b";
-                    yellow  = "#e5c07b";
-                    blue    = "#5ab0f6";
-                    magenta = "#c678dd";
-                    cyan    = "#48d5aa";
-                    white   = "#f5d9de";
-                };
-                transparent_background_colors = true;
-            };
-            selection.save_to_clipboard = true;
-        };
-    };
-
     programs.kitty = {
         enable = true;
         package = unstable.kitty;
@@ -184,28 +138,6 @@ in {
                 nix_flake_available && nix develop
             end
         '';
-    };
-
-    programs.zsh = rec {
-        enable = false;
-        enableCompletion = true;
-        autosuggestion.enable = true;
-        syntaxHighlighting.enable = true;
-        syntaxHighlighting.styles.path = "fg=cyan";
-        autocd = true;
-
-        history = {
-            size = 10000;
-            path = "/home/nuclear-squid/.zsh_history";
-        } ;
-
-        initExtraFirst = builtins.readFile ../shell/dumb_autorun.sh;
-
-        initExtra =
-            builtins.readFile ../shell/utils.sh
-            + builtins.readFile ../shell/aliases.sh
-            + builtins.readFile ../shell/zsh_config.sh
-            ;
     };
 
     programs.starship = {
