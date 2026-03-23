@@ -4,7 +4,7 @@
         nixpkgs.url    = "github:nixos/nixpkgs/nixos-25.11";
         unstable.url   = "github:nixos/nixpkgs/nixos-unstable";
         old-stable.url = "github:nixos/nixpkgs/nixos-25.05";
-        home-manager.url = "github:nix-community/home-manager";
+        home-manager.url = "github:nix-community/home-manager/release-25.11";
         home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
         flake-parts.url = "github:hercules-ci/flake-parts";
@@ -23,8 +23,7 @@
         flake-parts.lib.mkFlake { inherit inputs; } {
             systems = [ "x86_64-linux" ];
             imports = [
-                # home-manager.flakeModules.home-manager
-                home-manager.nixosModules.home-manager
+                home-manager.flakeModules.home-manager
                 ./hosts/laptop.nix
                 (import-tree ./modules)
             ];
@@ -32,14 +31,12 @@
             flake.homeConfigurations.nuclear-squid = home-manager.lib.homeManagerConfiguration {
                 pkgs = import nixpkgs { system = "x86_64-linux"; };
                 modules = [
-                    # { home-manager.users.nuclear-squid = ./home.nix; }
-                    # inputs.self.homeModules.niri
-                    # inputs.self.homeModules.i3
-                    # inputs.self.homeModules.common
-                    # inputs.self.homeModules.dev-environment
-                    # inputs.self.homeModules.gui
+                    inputs.self.homeModules.niri
+                    inputs.self.homeModules.i3
+                    inputs.self.homeModules.common
+                    inputs.self.homeModules.dev-environment
+                    inputs.self.homeModules.gui
                 ];
             };
         };
-
 }

@@ -1,6 +1,6 @@
-{ inputs, self, ... }: {
+{ inputs, self, home-manager, ... }: {
     flake.nixosConfigurations.nixos = inputs.nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit inputs; };
+        specialArgs = { inherit self inputs; };
         system  = "x86_64-linux";
         modules = [
             self.nixosModules.hardware-configuration
