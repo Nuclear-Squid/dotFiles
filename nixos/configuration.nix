@@ -67,6 +67,7 @@ in let global-system-packages = with pkgs; {
         chat = [
             spotify
             discord
+            legcord
             telegram-desktop
             signal-desktop
             zulip
@@ -89,6 +90,13 @@ in let global-system-packages = with pkgs; {
         ];
 
         lower-level-system = [
+            # GTK nonsense
+            glib
+            gtk2
+            gtk3
+            gtk4
+            gsettings-desktop-schemas
+
             brightnessctl
             xorg.xmodmap
             pulseaudio
@@ -296,6 +304,7 @@ in
     };
 
     programs = {
+        dconf.enable = true; # gsettings
         nix-ld.enable = true;
         fish.enable = true;
         # ssh.startAgent = true;
@@ -336,7 +345,7 @@ in
 
     xdg.portal = {
         enable = true;
-        extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
+        extraPortals = [ pkgs.xdg-desktop-portal-gnome pkgs.xdg-desktop-portal-gtk ];
         configPackages = [ pkgs.niri ];
     };
 
