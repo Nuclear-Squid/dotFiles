@@ -7,7 +7,7 @@ in {
         username = "nuclear-squid";
         homeDirectory = homeDir;
         stateVersion = "24.11";
-        packages = with pkgs; [ picom swaybg ];
+        packages = with pkgs; [ picom swaybg unstable.noctalia-shell ];
     };
 
     xdg = {
@@ -27,7 +27,7 @@ in {
     services.mako.enable = true; # notification daemon
     services.polkit-gnome.enable = true; # polkit
 
-    programs.waybar.enable = true;
+    # programs.waybar.enable = true;
 
     programs.neovide = {
         enable = true;
