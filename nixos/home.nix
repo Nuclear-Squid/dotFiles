@@ -1,7 +1,6 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, inputs, ... }:
 let
-    unstable   = import <nixos-unstable>   {};
-    old-stable = import <nixos-old-stable> {};
+    unstable   = inputs.unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
     homeDir = "/home/nuclear-squid";
 in {
     home = {
