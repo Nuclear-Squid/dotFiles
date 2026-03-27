@@ -224,6 +224,8 @@ in
 
         flatpak.enable = true;
 
+        upower.enable = true; # needed by the battery widget of noctalia
+
         xserver = {
             enable = true;
             xkb.layout  = "fr";

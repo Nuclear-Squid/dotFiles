@@ -13,7 +13,8 @@ input {
             // For more information, see xkeyboard-config(7).
 
             // For example:
-            // layout "us,ru"
+            // layout "us"
+            // variant "dvorak"
             // options "grp:win_space_toggle,compose:ralt,ctrl:nocaps"
 
             // If this section is empty, niri will fetch xkb settings
@@ -150,7 +151,8 @@ layout {
 
     // You can change how the focus ring looks.
     focus-ring {
-        width 3
+        off
+        width 2
 
         // Colors can be set in a variety of ways:
         // - CSS named colors: "red"
@@ -159,6 +161,7 @@ layout {
 
         // Color of the ring on the active monitor.
         active-color "#4c7899"
+        // active-color "#c678dd"
 
         // Color of the ring on inactive monitors.
         //
@@ -186,10 +189,11 @@ layout {
     border {
         // The settings are the same as for the focus ring.
         // If you enable the border, you probably want to disable the focus ring.
-        off
+        // off
 
-        width 4
-        active-color "#ffc87f"
+        width 2
+        // active-color "#ffc87f"
+        active-color "#4c7899"
         inactive-color "#505050"
 
         // Color of the border around windows that request your attention.
@@ -263,7 +267,8 @@ workspace "work (main)"
 // See the binds section below for more spawn examples.
 
 // This line starts waybar, a commonly used bar for Wayland compositors.
-spawn-at-startup "waybar"
+// spawn-at-startup "waybar"
+spawn-at-startup "noctalia-shell"
 spawn-sh-at-startup "sleep 0.1 && swaybg -m fit -i $HOME/Code/dotFiles/wallpapers/magic_forest_deer.jpg"
 
 // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
@@ -292,12 +297,154 @@ screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 // Animation settings.
 // The wiki explains how to configure individual animations:
 // https://yalter.github.io/niri/Configuration:-Animations
-animations {
+/-animations {
     // Uncomment to turn off all animations.
     // off
 
+    window-open {
+        duration-ms 250
+        curve "linear"
+
+        custom-shader r"
+            vec4 open_color(vec3 coords_geo, vec3 size_geo) {
+                vec4 color = vec4(0.0);
+
+                if (0.0 <= coords_geo.x && coords_geo.x <= 1.0
+                        && 0.0 <= coords_geo.y && coords_geo.y <= 1.0)
+                {
+                    vec4 from = vec4(1.0, 0.0, 0.0, 1.0);
+                    vec4 to = vec4(0.0, 1.0, 0.0, 1.0);
+                    color = mix(from, to, coords_geo.y);
+                }
+
+                return color * niri_clamped_progress;
+            }
+        "
+    }
+
     // Slow down all animations by this factor. Values below 1 speed them up instead.
     // slowdown 3.0
+}
+
+/-animations {
+    workspace-switch {
+        spring damping-ratio=0.85 stiffness=700 epsilon=0.0001
+    }
+
+    horizontal-view-movement {
+         spring damping-ratio=0.85 stiffness=700 epsilon=0.0001
+    }
+
+    window-open {
+      duration-ms 175
+      curve "ease-out-quad"
+      custom-shader r"
+        vec4 zoom_in(vec3 coords_geo, vec3 size_geo) {
+          float progress = niri_clamped_progress;
+          float scale = progress;
+          vec2 coords = (coords_geo.xy - vec2(0.5, 0.5)) * size_geo.xy;
+          coords = coords / scale;
+          coords_geo = vec3(coords / size_geo.xy + vec2(0.5, 0.5), 1.0);
+          vec3 coords_tex = niri_geo_to_tex * coords_geo;
+          vec4 color = texture2D(niri_tex, coords_tex.st);
+          color.a *= progress;
+
+          return color;
+        }
+        vec4 open_color(vec3 coords_geo, vec3 size_geo) {
+          return zoom_in(coords_geo, size_geo);
+        }
+      "
+    }
+
+    // Original by Lemmy: https://github.com/ItsLemmy
+    window-close {
+      duration-ms 200
+      curve "linear"
+      custom-shader r"
+        vec4 fall_and_rotate(vec3 coords_geo, vec3 size_geo) {
+          float progress = niri_clamped_progress * niri_clamped_progress;
+          vec2 coords = (coords_geo.xy - vec2(0.5, 1.0)) * size_geo.xy;
+          coords.y -= progress * 1440.0;
+          float random = (niri_random_seed - 0.5) / 2.0;
+          random = sign(random) - random;
+          float max_angle = 0.5 * random;
+          float angle = progress * max_angle;
+          mat2 rotate = mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
+          coords = rotate * coords;
+          coords_geo = vec3(coords / size_geo.xy + vec2(0.5, 1.0), 1.0);
+          vec3 coords_tex = niri_geo_to_tex * coords_geo;
+          vec4 color = texture2D(niri_tex, coords_tex.st);
+          color.a *= (1.0 - progress);
+
+          return color;
+        }
+        vec4 close_color(vec3 coords_geo, vec3 size_geo) {
+          return fall_and_rotate(coords_geo, size_geo);
+        }
+      "
+    }
+}
+
+animations {
+    window-open {
+        duration-ms 400
+        curve "linear"
+        custom-shader r"
+            vec4 open_color(vec3 coords_geo, vec3 size_geo) {
+                if (coords_geo.x < 0.0 || coords_geo.x > 1.0 || coords_geo.y < 0.0 || coords_geo.y > 1.0) return vec4(0.0);
+                float progress = niri_clamped_progress;
+                float glitch = 1.0 - progress;
+                vec2 uv = coords_geo.xy;
+
+                // RGB channel splitting - channels converge as window opens
+                float split = glitch * 0.04;
+                vec3 cr = niri_geo_to_tex * vec3(uv + vec2(split, 0.0), 1.0);
+                vec3 cg = niri_geo_to_tex * vec3(uv, 1.0);
+                vec3 cb = niri_geo_to_tex * vec3(uv - vec2(split, 0.0), 1.0);
+
+                float r = texture2D(niri_tex, cr.st).r;
+                float g = texture2D(niri_tex, cg.st).g;
+                float b = texture2D(niri_tex, cb.st).b;
+                float a = texture2D(niri_tex, cg.st).a;
+                vec3 color = vec3(r, g, b);
+
+                // CRT scanline effect
+                float scanline = 1.0 - 0.08 + 0.08 * sin(uv.y * 400.0);
+
+                return vec4(color * scanline, a * progress);
+            }
+        "
+    }
+
+    window-close {
+        duration-ms 400
+        curve "linear"
+        custom-shader r"
+            vec4 close_color(vec3 coords_geo, vec3 size_geo) {
+                if (coords_geo.x < 0.0 || coords_geo.x > 1.0 || coords_geo.y < 0.0 || coords_geo.y > 1.0) return vec4(0.0);
+                float progress = niri_clamped_progress;
+                vec2 uv = coords_geo.xy;
+
+                // RGB channel splitting - channels separate as window closes
+                float split = progress * 0.04;
+                vec3 cr = niri_geo_to_tex * vec3(uv + vec2(split, 0.0), 1.0);
+                vec3 cg = niri_geo_to_tex * vec3(uv, 1.0);
+                vec3 cb = niri_geo_to_tex * vec3(uv - vec2(split, 0.0), 1.0);
+
+                float r = texture2D(niri_tex, cr.st).r;
+                float g = texture2D(niri_tex, cg.st).g;
+                float b = texture2D(niri_tex, cb.st).b;
+                float a = texture2D(niri_tex, cg.st).a;
+                vec3 color = vec3(r, g, b);
+
+                // CRT scanline effect
+                float scanline = 1.0 - 0.08 + 0.08 * sin(uv.y * 400.0);
+
+                return vec4(color * scanline, a * (1.0 - progress));
+            }
+        "
+    }
 }
 
 // Window rules let you adjust behavior for individual windows.
@@ -305,15 +452,20 @@ animations {
 // https://yalter.github.io/niri/Configuration:-Window-Rules
 
 // Put swaybg inside the overview backdrop.
-layer-rule {
-    match namespace="^wallpaper$"
-    place-within-backdrop true
-}
+// layer-rule {
+//     match namespace="^wallpaper$"
+//     place-within-backdrop true
+// }
+//
+// overview {
+//     workspace-shadow {
+//         off
+//     }
+// }
 
-overview {
-    workspace-shadow {
-        off
-    }
+layer-rule {
+    match namespace="^noctalia-overview*"
+    place-within-backdrop true
 }
 
 // Open the Firefox picture-in-picture player as floating by default.
@@ -355,14 +507,15 @@ window-rule {
 // Example: enable rounded corners for all windows.
 // (This example rule is commented out with a "/-" in front.)
 window-rule {
-    geometry-corner-radius 10
+    geometry-corner-radius 16  // Matches radius of my noctalia bar
     clip-to-geometry true
 }
 
 binds {
     //  ─────────────────────< Apps / terminal launcher >──────────────────
     Mod+Space hotkey-overlay-title="Open a Terminal: kitty" { spawn "kitty"; }
-    Mod+Backspace hotkey-overlay-title="Run an Application: fuzzel" { spawn "rofi" "-show" "drun" "-show-icons"; }
+    // Mod+Backspace hotkey-overlay-title="Run an Application: fuzzel" { spawn "rofi" "-show" "drun" "-show-icons"; }
+    Mod+Backspace hotkey-overlay-title="Toggle app-launcher" {spawn "noctalia-shell" "ipc" "call" "launcher" "toggle";}
     Mod+Alt+Q hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
 
     //  ───────────────────────────< Media control >───────────────────────────
