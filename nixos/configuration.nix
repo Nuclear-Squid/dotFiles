@@ -230,7 +230,7 @@ in
             enable = true;
             xkb.layout  = "fr";
             xkb.variant = "ergol";
-            xkb.options = "compose:102";
+            # xkb.options = "compose:102";
 
             # videoDrivers = [ "intel" ];
             desktopManager.xterm.enable = false;
