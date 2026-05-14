@@ -8,16 +8,17 @@ alias l         "eza -l"
 alias la        "eza -la"
 alias rm        "rm -I"
 alias cat       "bat"
-alias vi        "neovide --fork --"
 alias nix-shell "nix-shell --run fish"
 alias btm       "btm -r 250ms -g"
 
 abbr -a chux "chmod u+x"
 abbr -a lg   "lazygit"
-abbr -a v    "nvim"
 abbr -a nm   "nmcli"
 abbr -a nmc  "nmcli con up"
+abbr -a v    "nvim"
+abbr -a vi   "neovide"
 
+set -Ux NEOVIDE_FORK "yes"
 set -Ux MANPAGER "nvim +Man!"
 
 function nix -a command

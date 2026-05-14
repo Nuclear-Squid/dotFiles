@@ -515,7 +515,8 @@ binds {
     //  ─────────────────────< Apps / terminal launcher >──────────────────
     Mod+Space hotkey-overlay-title="Open a Terminal: kitty" { spawn "kitty"; }
     // Mod+Backspace hotkey-overlay-title="Run an Application: fuzzel" { spawn "rofi" "-show" "drun" "-show-icons"; }
-    Mod+Backspace hotkey-overlay-title="Toggle app-launcher" {spawn "noctalia-shell" "ipc" "call" "launcher" "toggle";}
+    Mod+Backspace hotkey-overlay-title="Toggle app-launcher" { spawn "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
+    // Mod+Backspace hotkey-overlay-title="Toggle app-launcher" {spawn "qs -c noctalia" "ipc" "call" "launcher" "toggle";}
     Mod+Alt+Q hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
 
     //  ───────────────────────────< Media control >───────────────────────────

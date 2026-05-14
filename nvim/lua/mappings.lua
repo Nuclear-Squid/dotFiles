@@ -45,8 +45,10 @@ nmap '<Esc>' '<cmd>nohlsearch<CR>' -- Remove highlight
 nmap 'vv' 'v$h'
 map 't' '<Esc><Esc>' '<C-\\><C-n>' -- Exit term mode
 
-nmap 'gg' 'mjgg'
-nmap 'G'  'mjG'
+-- nmap 'gg' 'mjgg'
+-- nmap 'G'  'mjG'
+nmap 'gg' 'msgg'
+nmap 'G'  'msG'
 
 -- Ergo‑L symbol layer aliases
 imap '-+' '0'
@@ -66,6 +68,10 @@ imap '^<' (map_fns.bracket_group('(', ')'))
 
 nmap 'µ' '`m'
 nmap 'î' '`d'
+
+nmap 'é' '`s'
+nmap 'è' '`e'
+nmap 'ê' '`n'
 
 -- -- Diagnostic keymaps
 -- vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })

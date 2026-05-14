@@ -103,6 +103,7 @@ in {
             color13 = "#c678dd";
             color14 = "#48d5aa";
             color15 = "#f5d9de";
+            transparent_background_colors = "#1b1127@0.95 #231e36@0.95 #2d2a45@0.95 #373354@0.95";
         };
         keybindings = {
             "ctrl+c" = "copy_or_interrupt";

@@ -43,7 +43,7 @@ vim.lsp.config("*", {
 -- Enable each language server by filename under the lsp/ folder
 vim.lsp.enable({
     "clangd",
-    "arduino",
+    -- "arduino",
     "python",
     -- "ltexls",
     "ltexls_plus",
