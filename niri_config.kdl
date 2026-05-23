@@ -259,7 +259,7 @@ layout {
 
 workspace "chat / mail"
 workspace "web / media"
-workspace "work (main)"
+workspace "dev (main)"
 
 // Add lines like this to spawn processes at startup.
 // Note that running niri as a session supports xdg-desktop-autostart,
@@ -558,7 +558,7 @@ binds {
     Mod+Q { focus-workspace 1; }   // First workspace (always empty)
     Mod+C { focus-workspace "chat / mail"; }
     Mod+O { focus-workspace "web / media"; }
-    Mod+P { focus-workspace "work (main)"; }
+    Mod+P { focus-workspace "dev (main)"; }
     Mod+W { focus-workspace 99; }  // Last workspace (always empty)
 
     // Mod+Q      { focus-workspace 1; }

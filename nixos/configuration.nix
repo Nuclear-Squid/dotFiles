@@ -79,7 +79,7 @@ in let global-system-packages = with pkgs; {
             # unstable.musescore
             # unstable.muse-sounds-manager
             inkscape
-            blender
+            unstable.blender
         ];
 
         keyboard-stuff = [
