@@ -55,7 +55,7 @@ in let global-system-packages = with pkgs; {
             firefox
             tor-browser
             thunderbird
-            xfce.thunar
+            thunar
             pcmanfm
             element-desktop
             picoscope
@@ -90,10 +90,11 @@ in let global-system-packages = with pkgs; {
 
         lower-level-system = [
             brightnessctl
-            xorg.xmodmap
+            xmodmap
             pulseaudio
             # signaldctl
             alsa-lib
+            iptables # needed by waydroid
             libiconv
             xdotool
             killall
@@ -115,7 +116,7 @@ in let global-system-packages = with pkgs; {
         miscellaneous = [
             protontricks  # For Steam proton
             home-manager
-            xfce.xfce4-screenshooter
+            xfce4-screenshooter
             # love  # 2d lua game engine, for olympus (celeste mod installer)
             unstable.olympus  # Celeste mod installer
             jay  # Wayland compositor I wanna try out
@@ -128,6 +129,10 @@ in
     nixpkgs.config = {
         allowUnfree = true;
         pulseaudio = true;
+
+        permittedInsecurePackages = [
+            "electron-39.8.10"  # Needed by Zulip, see https://github.com/NixOS/nixpkgs/pull/526892
+        ];
     };
 
     imports = [ # Include the results of the hardware scan.
@@ -145,6 +150,7 @@ in
     boot.kernelPackages = pkgs.linuxPackages_zen;
 
     networking.hostName = "nixos"; # Define your hostname.
+    networking.nftables.enable = true; # Needed by waydroid
     # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
     # Configure network proxy if necessary
@@ -247,8 +253,8 @@ in
             };
 
             displayManager.sessionCommands = ''
-                ${pkgs.xorg.xmodmap}/bin/xmodmap -e "remove mod3 = Hyper_L"
-                ${pkgs.xorg.xmodmap}/bin/xmodmap -e "add mod4 = Hyper_L"
+                ${pkgs.xmodmap}/bin/xmodmap -e "remove mod3 = Hyper_L"
+                ${pkgs.xmodmap}/bin/xmodmap -e "add mod4 = Hyper_L"
             '';
         };
 
@@ -320,6 +326,8 @@ in
         enable = true;
         setSocketVariable = true;
     };
+
+    virtualisation.waydroid.enable = true;
 
     environment = {
         pathsToLink = [

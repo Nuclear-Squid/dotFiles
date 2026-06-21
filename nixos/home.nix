@@ -84,7 +84,7 @@ in {
         settings = {
             bell_path = "~/Code/dotFiles/Windows_XP_Error_sound_effect.wav";
             cursor = "#666666";
-            background_opacity = "0.9";
+            background_opacity = "0.8";
             foreground = "#f7dec7";
             background = "#1a0c24";
             color0  = "#373354";
@@ -103,7 +103,7 @@ in {
             color13 = "#c678dd";
             color14 = "#48d5aa";
             color15 = "#f5d9de";
-            transparent_background_colors = "#1b1127@0.95 #231e36@0.95 #2d2a45@0.95 #373354@0.95";
+            transparent_background_colors = "#1b1127@0.85 #231e36@0.85 #2d2a45@0.85 #373354@0.85";
         };
         keybindings = {
             "ctrl+c" = "copy_or_interrupt";

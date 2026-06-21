@@ -10,6 +10,7 @@ alias rm        "rm -I"
 alias cat       "bat"
 alias nix-shell "nix-shell --run fish"
 alias btm       "btm -r 250ms -g"
+alias bdsm      "sudo"  # https://piaille.fr/deck/@enerhpozyks@eldritch.cafe/116742269774938093
 
 abbr -a chux "chmod u+x"
 abbr -a lg   "lazygit"
