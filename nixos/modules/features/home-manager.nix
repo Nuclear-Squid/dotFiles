@@ -1,7 +1,7 @@
 { self, inputs, ... }: {
 
   # This is your module that imports and configures home-manager
-  flake.nixosModules.myHomeManager = { pkgs, ... }: {
+  flake.nixosModules.HomeManager = { pkgs, ... }: {
     imports = [
       inputs.home-manager.nixosModules.default # import official home-manager NixOS module
     ];
