@@ -316,6 +316,11 @@ overview {
     }
 }
 
+// layer-rule {
+//     match namespace="^noctalia-overview*"
+//     place-within-backdrop true
+// }
+
 // Open the Firefox picture-in-picture player as floating by default.
 window-rule {
     // This app-id regular expression will work for both:
