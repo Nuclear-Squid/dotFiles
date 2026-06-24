@@ -80,6 +80,8 @@ in let global-system-packages = with pkgs; {
             # unstable.muse-sounds-manager
             inkscape
             unstable.blender
+            unstable.krita
+            unstable.gimp
         ];
 
         keyboard-stuff = [
@@ -140,9 +142,20 @@ in
         # ./home.nix
     ];
 
-    nix.optimise.automatic = true; # Optimise storage space of NixOS
-    nix.settings.experimental-features = [ "nix-command" "flakes" ];
-    nix.settings.warn-dirty = false; # Please stop yelling at me everytime I run `nix develop`
+    nix = {
+        optimise.automatic = true; # Optimise storage space of NixOS
+
+        settings = {
+            experimental-features = [ "nix-command" "flakes" ];
+            warn-dirty = false; # Please stop yelling at me everytime I run `nix develop`
+        };
+
+        gc = {
+            automatic = true;
+            dates = "weekly";
+            options = "--delete-older-than 30d";
+        };
+    };
 
     # Bootloader.
     boot.loader.systemd-boot.enable = true;
