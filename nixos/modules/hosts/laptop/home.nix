@@ -3,12 +3,7 @@
   # This is your standalone home-manager configuration, meant to be used on non-nixos machines
   # with the home-manager command
   flake.homeConfigurations.nucelar-squid = inputs.home-manager.lib.homeManagerConfiguration {
-    pkgs = import inputs.nixpkgs {
-      system = "x86_64-linux";
-      # config.permittedInsecurePackages = [
-      #   "librewolf-151.0.2-1"
-      # ];
-    };
+    pkgs = import inputs.nixpkgs { system = "x86_64-linux"; };
     modules = [ self.homeModules.nuclear-squid ];
     extraSpecialArgs = { inherit inputs; };
     pecialArgs = { inherit inputs; };
@@ -21,25 +16,12 @@
     homeDir = "/home/nuclear-squid";
     dotFilesRoot = ../../../..;
   in {
-    # overlays = {
-    #   nixpkgsUnstable = _: prev: {
-    #     unstable = import inputs.unstable {
-    #       inherit (prev.pkgs.stdenv.hostPlatform) system;
-    #     };
-    #   };
-    # };
-
     home = {
       username = "nuclear-squid";
       homeDirectory = homeDir;
       packages = [ pkgs.hello ];
       stateVersion = "24.11";
     };
-
-    # nixpkgs.config.permittedInsecurePackages = [
-    #   "librewolf-151.0.2-1"
-    #   "librewolf-unwrapped-151.0.2-1"
-    # ];
 
     xdg = {
       configHome = "${homeDir}/.config";
