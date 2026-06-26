@@ -158,27 +158,27 @@
   in {
     # Allow unfree packages
     nixpkgs.config = {
-        allowUnfree = true;
-        pulseaudio = true;
+      allowUnfree = true;
+      pulseaudio = true;
 
-        permittedInsecurePackages = [
-            "electron-39.8.10"  # Needed by Zulip, see https://github.com/NixOS/nixpkgs/pull/526892
-        ];
+      permittedInsecurePackages = [
+        "electron-39.8.10"  # Needed by Zulip, see https://github.com/NixOS/nixpkgs/pull/526892
+      ];
     };
 
     nix = {
-        optimise.automatic = true; # Optimise storage space of NixOS
+      optimise.automatic = true; # Optimise storage space of NixOS
 
-        settings = {
-            experimental-features = [ "nix-command" "flakes" ];
-            warn-dirty = false; # Please stop yelling at me everytime I run `nix develop`
-        };
+      settings = {
+        experimental-features = [ "nix-command" "flakes" ];
+        warn-dirty = false; # Please stop yelling at me everytime I run `nix develop`
+      };
 
-        gc = {
-            automatic = true;
-            dates = "weekly";
-            options = "--delete-older-than 30d";
-        };
+      gc = {
+        automatic = true;
+        dates = "weekly";
+        options = "--delete-older-than 30d";
+      };
     };
 
     networking.hostName = "nixos"; # Define your hostname.
@@ -199,192 +199,192 @@
     i18n.defaultLocale = "en_GB.UTF-8";
 
     i18n.extraLocaleSettings = {
-        LC_ADDRESS = "fr_FR.UTF-8";
-        LC_IDENTIFICATION = "fr_FR.UTF-8";
-        LC_MEASUREMENT = "fr_FR.UTF-8";
-        LC_MONETARY = "fr_FR.UTF-8";
-        LC_NAME = "fr_FR.UTF-8";
-        LC_NUMERIC = "fr_FR.UTF-8";
-        LC_PAPER = "fr_FR.UTF-8";
-        LC_TELEPHONE = "fr_FR.UTF-8";
-        LC_TIME = "fr_FR.UTF-8";
+      LC_ADDRESS = "fr_FR.UTF-8";
+      LC_IDENTIFICATION = "fr_FR.UTF-8";
+      LC_MEASUREMENT = "fr_FR.UTF-8";
+      LC_MONETARY = "fr_FR.UTF-8";
+      LC_NAME = "fr_FR.UTF-8";
+      LC_NUMERIC = "fr_FR.UTF-8";
+      LC_PAPER = "fr_FR.UTF-8";
+      LC_TELEPHONE = "fr_FR.UTF-8";
+      LC_TIME = "fr_FR.UTF-8";
     };
 
     users.defaultUserShell = pkgs.fish;
     users.users.nuclear-squid = {
-        isNormalUser = true;
-        description = "Nuclear Squid";
-        extraGroups = [
-            "networkmanager"
-            "wheel"  # Enable 'sudo' for the user.
-            "audio"
-            "dialout"  # Allow access to serial device (for Arduino dev)
-            "docker"  # Allow using docker without root access
-            "nginx"  # Allow using nginx in localhost
-        ];
-        packages = with pkgs; [];
+      isNormalUser = true;
+      description = "Nuclear Squid";
+      extraGroups = [
+        "networkmanager"
+        "wheel"  # Enable 'sudo' for the user.
+        "audio"
+        "dialout"  # Allow access to serial device (for Arduino dev)
+        "docker"  # Allow using docker without root access
+        "nginx"  # Allow using nginx in localhost
+      ];
+      packages = with pkgs; [];
     };
 
     specialisation = {
-        powersave.configuration = {
-            services.tlp = {
-                enable = true;
-                settings = {
-                    CPU_SCALING_GOVERNOR_ON_AC  = "performance";
-                    CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
-                    PLATFORM_PROFILE_ON_BAT     = "low-power";
+      powersave.configuration = {
+        services.tlp = {
+          enable = true;
+          settings = {
+            CPU_SCALING_GOVERNOR_ON_AC  = "performance";
+            CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+            PLATFORM_PROFILE_ON_BAT     = "low-power";
 
-                    CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
-                    CPU_ENERGY_PERF_POLICY_ON_AC  = "performance";
-                    PLATFORM_PROFILE_ON_AC        = "performance";
+            CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
+            CPU_ENERGY_PERF_POLICY_ON_AC  = "performance";
+            PLATFORM_PROFILE_ON_AC        = "performance";
 
-                    CPU_MIN_PERF_ON_AC  = 0;
-                    CPU_MAX_PERF_ON_AC  = 100;
-                    CPU_MIN_PERF_ON_BAT = 0;
-                    CPU_MAX_PERF_ON_BAT = 20;
+            CPU_MIN_PERF_ON_AC  = 0;
+            CPU_MAX_PERF_ON_AC  = 100;
+            CPU_MIN_PERF_ON_BAT = 0;
+            CPU_MAX_PERF_ON_BAT = 20;
 
-                   # Helps save long term battery health
-                   START_CHARGE_THRESH_BAT0 = 40;  # 40 and bellow it starts to charge
-                   STOP_CHARGE_THRESH_BAT0 = 80;   # 80 and above it stops charging
-                };
-            };
+            # Helps save long term battery health
+            START_CHARGE_THRESH_BAT0 = 40;  # 40 and bellow it starts to charge
+            STOP_CHARGE_THRESH_BAT0 = 80;   # 80 and above it stops charging
+          };
         };
+      };
     };
 
     services = {
-        # Auto maunt usb devices
-        udisks2.enable = true;
-        devmon.enable  = true;
-        gvfs.enable    = true;
+      # Auto maunt usb devices
+      udisks2.enable = true;
+      devmon.enable  = true;
+      gvfs.enable    = true;
 
-        pulseaudio.enable = true;
-        pipewire.enable   = false;
+      pulseaudio.enable = true;
+      pipewire.enable   = false;
 
-        flatpak.enable = true;
+      flatpak.enable = true;
 
-        upower.enable = true; # needed by the battery widget of noctalia
+      upower.enable = true; # needed by the battery widget of noctalia
 
-        xserver = {
-            enable = true;
-            xkb.layout  = "fr";
-            xkb.variant = "ergol";
-            # xkb.options = "compose:102";
+      xserver = {
+        enable = true;
+        xkb.layout  = "fr";
+        xkb.variant = "ergol";
+        # xkb.options = "compose:102";
 
-            # videoDrivers = [ "intel" ];
-            desktopManager.xterm.enable = false;
+        # videoDrivers = [ "intel" ];
+        desktopManager.xterm.enable = false;
 
-            windowManager.i3 = {
-                enable = true;
-                package =
-                    if customI3
-                    then unstable.i3.overrideAttrs {
-                        patches = [ (dotFilesRoot + /i3/0001-Added-option-to-hide-title-bar-on-tabs-and-staks.patch) ];
-                        doCheck = false;
-                    }
-                    else unstable.i3-rounded;
-            };
-
-            displayManager.sessionCommands = ''
-                ${pkgs.xmodmap}/bin/xmodmap -e "remove mod3 = Hyper_L"
-                ${pkgs.xmodmap}/bin/xmodmap -e "add mod4 = Hyper_L"
-            '';
+        windowManager.i3 = {
+          enable = true;
+          package =
+            if customI3
+              then unstable.i3.overrideAttrs {
+                patches = [ (dotFilesRoot + /i3/0001-Added-option-to-hide-title-bar-on-tabs-and-staks.patch) ];
+                doCheck = false;
+              }
+            else unstable.i3-rounded;
         };
 
-        thermald.enable = true;
+        displayManager.sessionCommands = ''
+          ${pkgs.xmodmap}/bin/xmodmap -e "remove mod3 = Hyper_L"
+          ${pkgs.xmodmap}/bin/xmodmap -e "add mod4 = Hyper_L"
+        '';
+      };
 
-        kanata = {
-            enable = true;
-            package = unstable.kanata;
-            keyboards.laptop = {
-                devices = [ "/dev/input/event0" ];
-                config = builtins.readFile (dotFilesRoot + /kanata.kbd);
-                extraDefCfg = ''
+      thermald.enable = true;
+
+      kanata = {
+        enable = true;
+        package = unstable.kanata;
+        keyboards.laptop = {
+          devices = [ "/dev/input/event0" ];
+          config = builtins.readFile (dotFilesRoot + /kanata.kbd);
+          extraDefCfg = ''
                     sequence-input-mode hidden-delay-type
                     process-unmapped-keys yes
                     concurrent-tap-hold yes
                     chords-v2-min-idle 120
-                '';
-            };
+          '';
         };
+      };
 
-        nginx = {
-            enable = true;
-            recommendedGzipSettings  = true;
-            recommendedOptimisation  = true;
-            recommendedProxySettings = true;
-            recommendedTlsSettings   = true;
+      nginx = {
+        enable = true;
+        recommendedGzipSettings  = true;
+        recommendedOptimisation  = true;
+        recommendedProxySettings = true;
+        recommendedTlsSettings   = true;
 
-            virtualHosts.localhost = {
-                # addSSL = true;
-                # enableACME = true;
-                # default = true;
-                root = "${config.users.users.nuclear-squid.home}/Code/www/";
-                # locations."/var/html/".proxyPass = "http://localhost:8000";
-            };
-            # appendHttpConfig = "listen 127.0.0.1:80";
+        virtualHosts.localhost = {
+          # addSSL = true;
+          # enableACME = true;
+          # default = true;
+          root = "${config.users.users.nuclear-squid.home}/Code/www/";
+          # locations."/var/html/".proxyPass = "http://localhost:8000";
         };
+        # appendHttpConfig = "listen 127.0.0.1:80";
+      };
 
-        # Upload programs to Mbed arduino boards
-        udev.extraRules = ''
+      # Upload programs to Mbed arduino boards
+      udev.extraRules = ''
             SUBSYSTEMS=="usb", ATTRS{idVendor}=="2e8a", MODE:="0666"
             SUBSYSTEMS=="usb", ATTRS{idVendor}=="2341", MODE:="0666"
             SUBSYSTEMS=="usb", ATTRS{idVendor}=="1fc9", MODE:="0666"
             SUBSYSTEMS=="usb", ATTRS{idVendor}=="0525", MODE:="0666"
-        '';
+      '';
 
-        # udev.packages = with pkgs; [ via ];
+      # udev.packages = with pkgs; [ via ];
     };
 
     programs = {
-        nix-ld.enable = true;
-        fish.enable = true;
-        # ssh.startAgent = true;
+      nix-ld.enable = true;
+      fish.enable = true;
+      # ssh.startAgent = true;
 
-        steam = {
-            enable = true;
-            package = unstable.steam;
-            # remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
-            # dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
-        };
+      steam = {
+        enable = true;
+        package = unstable.steam;
+        # remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
+        # dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+      };
 
-        niri = {
-            enable = true;
-            package = unstable.niri;
-        };
+      niri = {
+        enable = true;
+        package = unstable.niri;
+      };
     };
 
     # Docker
     virtualisation.docker.rootless = {
-        enable = true;
-        setSocketVariable = true;
+      enable = true;
+      setSocketVariable = true;
     };
 
     virtualisation.waydroid.enable = true;
 
     environment = {
-        pathsToLink = [
-            "/libexec"    # Needed by i3
-            "/share/zsh"  # Needed by zsh
-        ];
+      pathsToLink = [
+        "/libexec"    # Needed by i3
+        "/share/zsh"  # Needed by zsh
+      ];
 
-        variables = {
-            EDITOR = "nvim";
-            EXA_COLORS = "di=01;35:uu=03;33:ur=33:uw=33:gw=33:gx=01;32:tw=33:tx=01;32:sn=35";
-            LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath global-system-packages.linked-libraries}:$LD_LIBRARY_PATH";
-        };
+      variables = {
+        EDITOR = "nvim";
+        EXA_COLORS = "di=01;35:uu=03;33:ur=33:uw=33:gw=33:gx=01;32:tw=33:tx=01;32:sn=35";
+        LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath global-system-packages.linked-libraries}:$LD_LIBRARY_PATH";
+      };
 
-        systemPackages = builtins.concatLists (builtins.attrValues global-system-packages);
+      systemPackages = builtins.concatLists (builtins.attrValues global-system-packages);
     };
 
     xdg.portal = {
-        enable = true;
-        extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
-        configPackages = [ pkgs.niri ];
+      enable = true;
+      extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
+      configPackages = [ pkgs.niri ];
     };
 
     fonts.packages = with pkgs.nerd-fonts; [
-        fantasque-sans-mono
-        monaspace
+      fantasque-sans-mono
+      monaspace
     ];
     # fonts.packages = [ pkgs.nerdfonts ];
     # fonts.fontconfig.useEmbeddedBitmaps = true;
@@ -411,8 +411,8 @@
 
   flake.nixosModules.laptopHardware = { config, lib, pkgs, modulesPath, ... }: {
     imports =
-        [ (modulesPath + "/installer/scan/not-detected.nix")
-        ];
+      [ (modulesPath + "/installer/scan/not-detected.nix")
+      ];
 
     # Bootloader.
     boot.loader.systemd-boot.enable = true;
@@ -425,15 +425,15 @@
     boot.extraModulePackages = [ ];
 
     fileSystems."/" =
-        { device = "/dev/disk/by-uuid/9a05b075-bdbd-4c5f-915a-2453b6d0b29d";
-            fsType = "ext4";
-        };
+      { device = "/dev/disk/by-uuid/9a05b075-bdbd-4c5f-915a-2453b6d0b29d";
+        fsType = "ext4";
+      };
 
     fileSystems."/boot" =
-        { device = "/dev/disk/by-uuid/2DEA-E195";
-            fsType = "vfat";
-            options = [ "fmask=0022" "dmask=0022" ];
-        };
+      { device = "/dev/disk/by-uuid/2DEA-E195";
+        fsType = "vfat";
+        options = [ "fmask=0022" "dmask=0022" ];
+      };
 
     swapDevices = [ ];
 
@@ -453,9 +453,9 @@
     hardware.keyboard.qmk.enable = true;
 
     hardware.graphics = {
-        enable = true;
-    #   extraPackages = with pkgs; [ intel-media-sdk intel-media-driver intel-ocl intel-vaapi-driver ];
-        extraPackages = with pkgs; [ vpl-gpu-rt ];
+      enable = true;
+      #   extraPackages = with pkgs; [ intel-media-sdk intel-media-driver intel-ocl intel-vaapi-driver ];
+      extraPackages = with pkgs; [ vpl-gpu-rt ];
     };
 
     # hardware.intelgpu.vaapiDriver = "intel-media-driver";
