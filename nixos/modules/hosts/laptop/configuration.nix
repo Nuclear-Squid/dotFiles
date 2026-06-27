@@ -225,6 +225,8 @@
       packages = with pkgs; [];
     };
 
+    home-manager.users.nuclear-squid = self.homeModules.nuclear-squid;
+
     specialisation = {
       powersave.configuration = {
         services.tlp = {
