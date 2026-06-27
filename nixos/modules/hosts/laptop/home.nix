@@ -131,7 +131,7 @@
     programs.fish = {
       enable = true;
       shellInit = builtins.readFile (dotFilesRoot + /shell/fish_config.fish);
-      interactiveShellInit = ''
+      shellInitLast = ''
             functions --copy t zoxide_wrapper
             function t --wraps=t
                 zoxide_wrapper $argv
