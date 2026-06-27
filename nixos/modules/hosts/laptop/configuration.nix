@@ -9,23 +9,6 @@
     ];
   };
 
-  # # This is your configuration.nix, a place where you configure your system
-  # # You can place it in a separate file.
-  # flake.nixosModules.laptopModule = { pkgs, ... }: {
-  #   environment.systemPackages = [
-  #     pkgs.vim
-  #     pkgs.firefox
-  #   ];
-  #
-  #   programs.fish.enable = true;
-  #
-  #   users.users.nuclear-squid = {
-  #     isNormalUser = true;
-  #     shell = pkgs.fish;
-  #   };
-  #   home-manager.users.nuclear-squid = self.homeModules.nuclear-squid;
-  # };
-
   # This is your configuration.nix, a place where you configure your system
   # You can place it in a separate file.
   flake.nixosModules.laptopModule = { pkgs, config, ... }: let
