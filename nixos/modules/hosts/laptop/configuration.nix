@@ -247,8 +247,6 @@
 
       flatpak.enable = true;
 
-      upower.enable = true; # needed by the battery widget of noctalia
-
       xserver = {
         enable = true;
         xkb.layout  = "fr";
@@ -330,11 +328,6 @@
         package = unstable.steam;
         # remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
         # dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
-      };
-
-      niri = {
-        enable = true;
-        package = unstable.niri;
       };
     };
 
