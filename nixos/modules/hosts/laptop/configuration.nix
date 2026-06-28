@@ -8,6 +8,7 @@
       self.nixosModules.HomeManager
       self.nixosModules.niri
       self.nixosModules.i3
+      self.nixosModules.nix-config
     ];
   };
 
@@ -141,30 +142,6 @@
     };
   in {
     # Allow unfree packages
-    nixpkgs.config = {
-      allowUnfree = true;
-      pulseaudio = true;
-
-      permittedInsecurePackages = [
-        "electron-39.8.10"  # Needed by Zulip, see https://github.com/NixOS/nixpkgs/pull/526892
-      ];
-    };
-
-    nix = {
-      optimise.automatic = true; # Optimise storage space of NixOS
-
-      settings = {
-        experimental-features = [ "nix-command" "flakes" ];
-        warn-dirty = false; # Please stop yelling at me everytime I run `nix develop`
-      };
-
-      gc = {
-        automatic = true;
-        dates = "weekly";
-        options = "--delete-older-than 30d";
-      };
-    };
-
     networking.hostName = "nixos"; # Define your hostname.
     networking.nftables.enable = true; # Needed by waydroid
     # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
