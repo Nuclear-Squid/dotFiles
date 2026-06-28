@@ -16,10 +16,8 @@
 
   # This is your configuration.nix, a place where you configure your system
   # You can place it in a separate file.
-  flake.nixosModules.laptopModule = { pkgs, config, ... }: let
+  flake.nixosModules.laptopModule = { pkgs, config, lib, ... }: let
     unstable   = import inputs.unstable { system = pkgs.stdenv.hostPlatform.system; config.allowUnfree = true; };
-    old-stable = inputs.old-stable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
-    customI3   = true;
     dotFilesRoot = ../../..;
   in let global-system-packages = with pkgs; {
       code-editors = [
@@ -56,7 +54,7 @@
       ];
 
       rice-and-cli-tools = [
-        old-stable.llpp
+        llpp
         onefetch
         tealdeer
         ripgrep
@@ -72,17 +70,11 @@
       ];
 
       linked-libraries = [
-        libxcursor # needed by Niri for some reason ?
-        libxi
+        # libxi
       ];
 
       miscellaneous = [
-        protontricks  # For Steam proton
         home-manager
-        xfce4-screenshooter
-        # love  # 2d lua game engine, for olympus (celeste mod installer)
-        unstable.olympus  # Celeste mod installer
-        jay  # Wayland compositor I wanna try out
       ];
 
     };
@@ -198,7 +190,8 @@
       variables = {
         EDITOR = "nvim";
         EXA_COLORS = "di=01;35:uu=03;33:ur=33:uw=33:gw=33:gx=01;32:tw=33:tx=01;32:sn=35";
-        LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath global-system-packages.linked-libraries}:$LD_LIBRARY_PATH";
+        # LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath global-system-packages.linked-libraries}:$LD_LIBRARY_PATH";
+        # LD_LIBRARY_PATH = [ lib.getLib pkgs.libxi ];
       };
 
       systemPackages = builtins.concatLists (builtins.attrValues global-system-packages);

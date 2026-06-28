@@ -21,12 +21,16 @@
           doCheck = false;
         };
       };
+
+      # displayManager.sessionCommands = ''
+      #   ${pkgs.xmodmap}/bin/xmodmap -e "remove mod3 = Hyper_L"
+      #   ${pkgs.xmodmap}/bin/xmodmap -e "add mod4 = Hyper_L"
+      # '';
     };
 
-    # displayManager.sessionCommands = ''
-    #   ${pkgs.xmodmap}/bin/xmodmap -e "remove mod3 = Hyper_L"
-    #   ${pkgs.xmodmap}/bin/xmodmap -e "add mod4 = Hyper_L"
-    # '';
+    environment.systemPackages = with pkgs; [
+        xfce4-screenshooter
+    ];
   };
 
   flake.homeModules.i3 = { pkgs, lib, ... }: let

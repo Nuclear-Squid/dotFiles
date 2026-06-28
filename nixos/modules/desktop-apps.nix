@@ -56,6 +56,10 @@
       unstable.blender
       unstable.krita
       unstable.gimp
+
+      # Games / Steam related
+      protontricks  # For Steam proton
+      unstable.olympus  # Celeste mod installer
     ];
   };
 }

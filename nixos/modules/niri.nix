@@ -1,5 +1,5 @@
 { self, inputs, ... }: {
-  flake.nixosModules.niri = { pkgs, ... }: let
+  flake.nixosModules.niri = { pkgs, lib, ... }: let
     unstable = inputs.unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
   in {
     programs.niri = {
@@ -20,5 +20,8 @@
     };
 
     services.upower.enable = true; # needed by the battery widget of noctalia
+
+    # Forgot why I even needed this library
+    # environment.variables.LD_LIBRARY_PATH = [ (lib.makeLibraryPath pkgs.libxcursor) ];
   };
 }
