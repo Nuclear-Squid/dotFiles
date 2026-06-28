@@ -18,7 +18,7 @@
     unstable   = import inputs.unstable { system = pkgs.stdenv.hostPlatform.system; config.allowUnfree = true; };
     old-stable = inputs.old-stable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
     customI3   = true;
-    dotFilesRoot = ../../../..;
+    dotFilesRoot = ../../..;
   in let global-system-packages = with pkgs; {
       code-editors = [
         unstable.neovim

@@ -15,7 +15,7 @@
   flake.homeModules.nuclear-squid = { pkgs, lib, ... }: let
     unstable = inputs.unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
     homeDir = "/home/nuclear-squid";
-    dotFilesRoot = ../../../..;
+    dotFilesRoot = ../../..;
   in {
     home = {
       username = "nuclear-squid";
