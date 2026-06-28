@@ -6,6 +6,8 @@
       self.nixosModules.laptopHardware
       self.nixosModules.laptopModule
       self.nixosModules.HomeManager
+      self.nixosModules.niri
+      self.nixosModules.i3
     ];
   };
 
@@ -247,32 +249,6 @@
 
       flatpak.enable = true;
 
-      xserver = {
-        enable = true;
-        xkb.layout  = "fr";
-        xkb.variant = "ergol";
-        # xkb.options = "compose:102";
-
-        # videoDrivers = [ "intel" ];
-        desktopManager.xterm.enable = false;
-
-        windowManager.i3 = {
-          enable = true;
-          package =
-            if customI3
-              then unstable.i3.overrideAttrs {
-                patches = [ (dotFilesRoot + /i3/0001-Added-option-to-hide-title-bar-on-tabs-and-staks.patch) ];
-                doCheck = false;
-              }
-            else unstable.i3-rounded;
-        };
-
-        displayManager.sessionCommands = ''
-          ${pkgs.xmodmap}/bin/xmodmap -e "remove mod3 = Hyper_L"
-          ${pkgs.xmodmap}/bin/xmodmap -e "add mod4 = Hyper_L"
-        '';
-      };
-
       thermald.enable = true;
 
       kanata = {
@@ -352,12 +328,6 @@
       };
 
       systemPackages = builtins.concatLists (builtins.attrValues global-system-packages);
-    };
-
-    xdg.portal = {
-      enable = true;
-      extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
-      configPackages = [ pkgs.niri ];
     };
 
     fonts.packages = with pkgs.nerd-fonts; [

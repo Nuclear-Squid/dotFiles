@@ -4,7 +4,10 @@
   # with the home-manager command
   flake.homeConfigurations.nuclear-squid = inputs.home-manager.lib.homeManagerConfiguration {
     pkgs = import inputs.nixpkgs { system = "x86_64-linux"; };
-    modules = [ self.homeModules.nuclear-squid ];
+    modules = [
+      self.homeModules.nuclear-squid
+      self.homeModules.i3
+    ];
   };
 
   # This is your home.nix, your module where you configure home-manager
@@ -193,11 +196,6 @@
       ];
     };
 
-    programs.rofi = {
-      enable = true;
-      theme = dotFilesRoot + /rofi_theme.rasi;
-    };
-
     programs.librewolf = {
       enable = true;
       # package = unstable.librewolf;
@@ -211,12 +209,5 @@
     };
 
     programs.cava.enable = true;
-
-    services.polybar = {
-      enable = true;
-      config = dotFilesRoot + /polybar/config.ini;
-      package = pkgs.polybar.override { i3Support = true; };
-      script = "";
-    };
   };
 }
