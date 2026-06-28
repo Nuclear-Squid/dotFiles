@@ -8,8 +8,9 @@
     };
 
     environment.systemPackages = with unstable; [
-      swaybg
-      noctalia-shell
+      noctalia-shell  # Fancy rice things, like bar, launcher or widgets
+      swaybg  # Quick background image setter
+      xwayland-satellite # xorg apps support for niri / wayland
     ];
 
     xdg.portal = {

@@ -53,7 +53,6 @@
       ];
 
       rice-and-cli-tools = [
-        xwayland-satellite # xwayland support
         old-stable.llpp
         onefetch
         tealdeer
