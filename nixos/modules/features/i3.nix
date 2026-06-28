@@ -1,7 +1,7 @@
 { self, inputs, ... }: {
   flake.nixosModules.i3 = { pkgs, ... }: let
     unstable = inputs.unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
-    dotFilesRoot = ../../../..;
+    dotFilesRoot = ../../..;
   in {
     services.xserver = {
       enable = true;
@@ -30,7 +30,7 @@
   };
 
   flake.homeModules.i3 = { pkgs, lib, ... }: let
-    dotFilesRoot = ../../../..;
+    dotFilesRoot = ../../..;
   in {
     programs.rofi = {
       enable = true;
