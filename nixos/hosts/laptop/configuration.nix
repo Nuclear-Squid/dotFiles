@@ -10,6 +10,7 @@
       self.nixosModules.i3
       self.nixosModules.nix-config
       self.nixosModules.low-level-jank
+      self.nixosModules.desktop-apps
     ];
   };
 
@@ -62,42 +63,6 @@
         feh
         fd
         nh
-      ];
-
-      gui-apps = [
-        inputs.zen-browser.packages.x86_64-linux.default
-        simplescreenrecorder
-        libreoffice-qt
-        firefox
-        tor-browser
-        thunderbird
-        thunar
-        pcmanfm
-        element-desktop
-        picoscope
-        hunspell # Libs for libreoffice
-        hunspellDicts.uk_UA
-        hunspellDicts.th_TH
-      ];
-
-      chat = [
-        spotify
-        discord
-        telegram-desktop
-        signal-desktop
-        zulip
-        zulip-term
-      ];
-
-      art-apps = [
-        kdePackages.kdenlive
-        old-stable.ardour  # Stable and Unstable versions are broken.
-        # unstable.musescore
-        # unstable.muse-sounds-manager
-        inkscape
-        unstable.blender
-        unstable.krita
-        unstable.gimp
       ];
 
       keyboard-stuff = [
@@ -214,13 +179,6 @@
     programs = {
       fish.enable = true;
       # ssh.startAgent = true;
-
-      steam = {
-        enable = true;
-        package = unstable.steam;
-        # remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
-        # dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
-      };
     };
 
     # Docker

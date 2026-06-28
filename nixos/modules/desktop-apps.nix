@@ -1,0 +1,62 @@
+{ self, inputs, ... }: {
+  flake.nixosModules.desktop-apps = { pkgs, lib, ... }: let
+    unstable = import inputs.unstable {
+      system = pkgs.stdenv.hostPlatform.system;
+      config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+        "steam"
+        "steam-unwrapped"
+      ];
+    };
+  in{
+    programs.steam = {
+      enable = true;
+      package = unstable.steam;
+      # remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
+      # dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+    };
+
+    environment.systemPackages = with pkgs; [
+      # Web browsers
+      firefox
+      tor-browser
+      inputs.zen-browser.packages.x86_64-linux.default
+
+      # Needed for work
+      thunderbird
+      picoscope
+
+      # File explorers
+      thunar
+      pcmanfm
+
+      simplescreenrecorder
+      # Libreoffice + libs
+      libreoffice-qt
+      hunspell
+      hunspellDicts.uk_UA
+      hunspellDicts.th_TH
+
+      # Chat
+      element-desktop
+      discord
+      telegram-desktop
+      signal-desktop
+      zulip
+      zulip-term
+
+      # Music
+      spotify
+      ardour
+
+      # Art / Graphic design
+      kdePackages.kdenlive
+      # unstable.musescore
+      # unstable.muse-sounds-manager
+      inkscape
+      unstable.blender
+      unstable.krita
+      unstable.gimp
+    ];
+  };
+}
+
