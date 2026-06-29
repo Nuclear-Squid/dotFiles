@@ -1,11 +1,10 @@
 { self, inputs, ... }: {
-  # This is your system configuration entry-point
   flake.nixosConfigurations.nixos = inputs.nixpkgs.lib.nixosSystem {
     modules = (builtins.attrValues self.nixosModules) ++ [
       ({ config, lib, pkgs, modulesPath, ... }: {
-        imports =
-          [ (modulesPath + "/installer/scan/not-detected.nix")
-          ];
+        imports = [
+          (modulesPath + "/installer/scan/not-detected.nix")
+        ];
 
         # Bootloader.
         boot.loader.systemd-boot.enable = true;
@@ -17,16 +16,16 @@
         boot.kernelModules = [ ];
         boot.extraModulePackages = [ ];
 
-        fileSystems."/" =
-          { device = "/dev/disk/by-uuid/9a05b075-bdbd-4c5f-915a-2453b6d0b29d";
-            fsType = "ext4";
-          };
+        fileSystems."/" = {
+          device = "/dev/disk/by-uuid/9a05b075-bdbd-4c5f-915a-2453b6d0b29d";
+          fsType = "ext4";
+        };
 
-        fileSystems."/boot" =
-          { device = "/dev/disk/by-uuid/2DEA-E195";
-            fsType = "vfat";
-            options = [ "fmask=0022" "dmask=0022" ];
-          };
+        fileSystems."/boot" = {
+          device = "/dev/disk/by-uuid/2DEA-E195";
+          fsType = "vfat";
+          options = [ "fmask=0022" "dmask=0022" ];
+        };
 
         swapDevices = [ ];
 

@@ -15,56 +15,68 @@
       # dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
     };
 
-    environment.systemPackages = with pkgs; [
-      # Web browsers
-      firefox
-      tor-browser
-      inputs.zen-browser.packages.x86_64-linux.default
+    environment.systemPackages = {
+      web-browsers = with unstable; [
+        firefox
+        tor-browser
+        inputs.zen-browser.packages.x86_64-linux.default
+      ];
 
-      # Needed for work
-      thunderbird
-      picoscope
+      boring-work-shit = with pkgs; [
+        thunderbird
+        picoscope
+      ];
 
-      # File explorers
-      thunar
-      pcmanfm
+      file-explorers = with unstable; [
+        thunar
+        pcmanfm
+      ];
 
-      simplescreenrecorder
-      # Libreoffice + libs
-      libreoffice-qt
-      hunspell
-      hunspellDicts.uk_UA
-      hunspellDicts.th_TH
+      libreoffice-and-libs = with pkgs; [
+        libreoffice-qt
+        hunspell
+        hunspellDicts.uk_UA
+        hunspellDicts.th_TH
+      ];
 
-      # Chat
-      element-desktop
-      discord
-      telegram-desktop
-      signal-desktop
-      zulip
-      zulip-term
+      chat = with pkgs; [
+        element-desktop
+        discord
+        telegram-desktop
+        signal-desktop
+        zulip
+        zulip-term
+      ];
 
-      # Music
-      spotify
-      ardour
+      music = with pkgs; [
+        spotify
+        ardour
+        musescore
+        muse-sounds-manager
+      ];
 
-      # Art / Graphic design
-      kdePackages.kdenlive
-      # unstable.musescore
-      # unstable.muse-sounds-manager
-      inkscape
-      unstable.blender
-      unstable.krita
-      unstable.gimp
+      art-and-graphic-design = with unstable; [
+        kdePackages.kdenlive
+        inkscape
+        blender
+        krita
+        gimp
+      ];
 
-      # Games / Steam related
-      protontricks  # For Steam proton
-      unstable.olympus  # Celeste mod installer
+      games-related = with unstable; [
+        protontricks  # For Steam proton
+        olympus  # Celeste mod installer
+      ];
 
-      # from the cmd-line but it’s a GUI so it counts
-      llpp
-      feh
-    ];
+      miscellaneous = with pkgs; [
+        llpp
+        feh
+        simplescreenrecorder
+      ];
+    }
+    |> builtins.attrValues
+    |> builtins.concatLists
+    ;
   };
 
   flake.homeModules.desktop-apps = { pkgs, lib, ... }: let
