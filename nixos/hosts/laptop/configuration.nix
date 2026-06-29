@@ -11,6 +11,7 @@
       self.nixosModules.nix-config
       self.nixosModules.low-level-jank
       self.nixosModules.desktop-apps
+      self.nixosModules.dev-environment
     ];
   };
 
@@ -20,39 +21,6 @@
     unstable   = import inputs.unstable { system = pkgs.stdenv.hostPlatform.system; config.allowUnfree = true; };
     dotFilesRoot = ../../..;
   in let global-system-packages = with pkgs; {
-      code-editors = [
-        unstable.neovim
-        unstable.lazygit
-      ];
-
-      lsp-servers = [
-        unstable.arduino-language-server
-        clang-tools
-        languagetool
-        ltex-ls-plus
-        ltex-ls
-        ty
-      ];
-
-      dev-tools = [
-        valgrind
-        gnumake
-        cmake
-        serie
-        act  # Build GitHub’s CI locally
-        # those should go in Ergo‑L’s repo
-        unstable.hugo
-        unstable.pandoc
-        nginx
-      ];
-
-      languages-and-compilers = [
-        unstable.cargo
-        scilab-bin
-        python3
-        clang
-      ];
-
       rice-and-cli-tools = [
         llpp
         onefetch
@@ -79,8 +47,6 @@
 
     };
   in {
-    networking.nftables.enable = true; # Needed by waydroid
-
     users.defaultUserShell = pkgs.fish;
     users.users.nuclear-squid = {
       isNormalUser = true;
@@ -140,56 +106,11 @@
         };
       };
 
-      nginx = {
-        enable = true;
-        recommendedGzipSettings  = true;
-        recommendedOptimisation  = true;
-        recommendedProxySettings = true;
-        recommendedTlsSettings   = true;
-
-        virtualHosts.localhost = {
-          # addSSL = true;
-          # enableACME = true;
-          # default = true;
-          root = "${config.users.users.nuclear-squid.home}/Code/www/";
-          # locations."/var/html/".proxyPass = "http://localhost:8000";
-        };
-        # appendHttpConfig = "listen 127.0.0.1:80";
-      };
-
-      # Upload programs to Mbed arduino boards
-      udev.extraRules = ''
-        SUBSYSTEMS=="usb", ATTRS{idVendor}=="2e8a", MODE:="0666"
-        SUBSYSTEMS=="usb", ATTRS{idVendor}=="2341", MODE:="0666"
-        SUBSYSTEMS=="usb", ATTRS{idVendor}=="1fc9", MODE:="0666"
-        SUBSYSTEMS=="usb", ATTRS{idVendor}=="0525", MODE:="0666"
-      '';
-
       # udev.packages = with pkgs; [ via ];
     };
 
-    programs = {
-      fish.enable = true;
-      # ssh.startAgent = true;
-    };
-
-    # Docker
-    virtualisation.docker.rootless = {
-      enable = true;
-      setSocketVariable = true;
-    };
-
-    virtualisation.waydroid.enable = true;
-
     environment = {
-      pathsToLink = [
-        "/libexec"    # Needed by i3
-        "/share/zsh"  # Needed by zsh
-      ];
-
       variables = {
-        EDITOR = "nvim";
-        EXA_COLORS = "di=01;35:uu=03;33:ur=33:uw=33:gw=33:gx=01;32:tw=33:tx=01;32:sn=35";
         # LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath global-system-packages.linked-libraries}:$LD_LIBRARY_PATH";
         # LD_LIBRARY_PATH = [ lib.getLib pkgs.libxi ];
       };
@@ -197,10 +118,6 @@
       systemPackages = builtins.concatLists (builtins.attrValues global-system-packages);
     };
 
-    fonts.packages = with pkgs.nerd-fonts; [
-      fantasque-sans-mono
-      monaspace
-    ];
     # fonts.packages = [ pkgs.nerdfonts ];
     # fonts.fontconfig.useEmbeddedBitmaps = true;
 

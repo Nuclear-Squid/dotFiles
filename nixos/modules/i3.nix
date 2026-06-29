@@ -31,6 +31,10 @@
     environment.systemPackages = with pkgs; [
         xfce4-screenshooter
     ];
+
+    environment.pathsToLink = [
+      "/libexec"
+    ];
   };
 
   flake.homeModules.i3 = { pkgs, lib, ... }: let
