@@ -23,7 +23,9 @@
 
     # Forgot why I even needed this library
     # environment.variables.LD_LIBRARY_PATH = [ (lib.makeLibraryPath pkgs.libxcursor) ];
+  };
 
+  flake.homeModules.niri = { pkgs, lib, ... }: {
     gtk = {
       enable = true;
       colorScheme = "dark";

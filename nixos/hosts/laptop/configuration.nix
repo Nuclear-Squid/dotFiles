@@ -42,23 +42,6 @@
       ];
     };
   in {
-    users.defaultUserShell = pkgs.fish;
-    users.users.nuclear-squid = {
-      isNormalUser = true;
-      description = "Nuclear Squid";
-      extraGroups = [
-        "networkmanager"
-        "wheel"  # Enable 'sudo' for the user.
-        "audio"
-        "dialout"  # Allow access to serial device (for Arduino dev)
-        "docker"  # Allow using docker without root access
-        "nginx"  # Allow using nginx in localhost
-      ];
-      packages = with pkgs; [];
-    };
-
-    home-manager.users.nuclear-squid = self.homeModules.nuclear-squid;
-
     specialisation = {
       powersave.configuration = {
         services.tlp = {
