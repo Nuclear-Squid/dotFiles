@@ -1,5 +1,5 @@
 { self, inputs, ... }: {
-  flake.nixosModules.dev-environment = { pkgs, ... }: let
+  flake.nixosModules.dev-environment = { pkgs, config, ... }: let
     unstable = import inputs.unstable { system = pkgs.stdenv.hostPlatform.system; };
   in {
     environment.systemPackages = {
@@ -42,7 +42,7 @@
     |> builtins.concatLists
     ;
 
-    environment.variable = {
+    environment.variables = {
       EDITOR = "nvim";
       EXA_COLORS = "di=01;35:uu=03;33:ur=33:uw=33:gw=33:gx=01;32:tw=33:tx=01;32:sn=35";
     };
@@ -90,7 +90,7 @@
 
   flake.homeModules.dev-environment = { pkgs, ... }: let
     unstable = import inputs.unstable { system = pkgs.stdenv.hostPlatform.system; };
-    dotFilesRoot = ../../..;
+    dotFilesRoot = ../..;
   in {
     programs.neovide = {
       enable = true;

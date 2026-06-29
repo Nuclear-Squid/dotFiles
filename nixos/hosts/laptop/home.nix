@@ -4,11 +4,7 @@
   # with the home-manager command
   flake.homeConfigurations.nuclear-squid = inputs.home-manager.lib.homeManagerConfiguration {
     pkgs = import inputs.nixpkgs { system = "x86_64-linux"; };
-    modules = [
-      self.homeModules.nuclear-squid
-      self.homeModules.i3
-      self.homeModules.dev-environment
-    ];
+    modules = [ self.homeModules.nuclear-squid ];
   };
 
   # This is your home.nix, your module where you configure home-manager
@@ -18,10 +14,14 @@
     homeDir = "/home/nuclear-squid";
     dotFilesRoot = ../../..;
   in {
+    imports = [
+      self.homeModules.i3
+      self.homeModules.dev-environment
+    ];
+
     home = {
       username = "nuclear-squid";
       homeDirectory = homeDir;
-      packages = [ pkgs.hello ];
       stateVersion = "24.11";
     };
 
