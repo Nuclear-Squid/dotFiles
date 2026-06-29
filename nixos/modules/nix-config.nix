@@ -27,7 +27,8 @@
       optimise.automatic = true; # Optimise storage space of NixOS
 
       settings = {
-        experimental-features = [ "nix-command" "flakes" ];
+        experimental-features = [ "nix-command" "flakes" "pipe-operators" ];
+        # extra-experimental-features = [];
         warn-dirty = false; # Please stop yelling at me everytime I run `nix develop`
       };
 
