@@ -1,5 +1,4 @@
 { self, inputs, ... }: {
-
   # This is your module that imports and configures home-manager
   flake.nixosModules.HomeManager = { pkgs, ... }: {
     imports = [
@@ -11,5 +10,4 @@
       useUserPackages = true;
     };
   };
-
 }

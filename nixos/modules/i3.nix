@@ -1,6 +1,6 @@
 { self, inputs, ... }: {
   flake.nixosModules.i3 = { pkgs, ... }: let
-    unstable = inputs.unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+    unstable = import inputs.unstable { system = pkgs.stdenv.hostPlatform.system; };
     dotFilesRoot = ../..;
   in {
     services.xserver = {

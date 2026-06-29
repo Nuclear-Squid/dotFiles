@@ -40,11 +40,6 @@
       linked-libraries = [
         # libxi
       ];
-
-      miscellaneous = [
-        home-manager
-      ];
-
     };
   in {
     users.defaultUserShell = pkgs.fish;

@@ -62,5 +62,21 @@
       unstable.olympus  # Celeste mod installer
     ];
   };
+
+  flake.homeModules.desktop-apps = { pkgs, lib, ... }: let
+    unstable = import inputs.unstable { system = pkgs.stdenv.hostPlatform.system; };
+  in {
+    programs.librewolf = {
+      enable = true;
+      # package = unstable.librewolf;
+      settings = {
+        "webgl.disabled" = false;
+        "identity.fxaccounts.enable" = true;
+        "privacy.resistFingerprinting" = true;
+        "privacy.clearOnShutdown.history" = true;
+        "privacy.clearOnShutdown.cookies" = true;
+      };
+    };
+  };
 }
 
