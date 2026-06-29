@@ -5,10 +5,23 @@
     environment.systemPackages = {
       code-editors = with unstable; [
         neovim
-        lazygit
       ];
 
-      lsp-servers = with unstable; [
+      languages-and-compilers = with unstable; [
+        cargo
+        scilab-bin
+        python3
+        clang
+      ];
+
+      cli-tools = with unstable; [
+        fd
+        ripgrep
+        lazygit
+        onefetch
+      ];
+
+      lsp-servers = with pkgs; [
         arduino-language-server
         clang-tools
         languagetool
@@ -29,13 +42,6 @@
       should-go-in-ergol-repo = with unstable; [
         hugo
         pandoc
-      ];
-
-      languages-and-compilers = with unstable; [
-        cargo
-        scilab-bin
-        python3
-        clang
       ];
     }
     |> builtins.attrValues
@@ -244,6 +250,16 @@
       fileWidgetOptions = [
         "--preview 'bat --color=always --style=plain -r :200 {}'"
       ];
+    };
+
+    programs.nh = {
+      enable = true;
+      flake = dotFilesRoot + /nixos;
+    };
+
+    programs.tealdeer = {
+      enable = true;
+      enableAutoUpdates = true;
     };
   };
 }

@@ -60,6 +60,10 @@
       # Games / Steam related
       protontricks  # For Steam proton
       unstable.olympus  # Celeste mod installer
+
+      # from the cmd-line but it’s a GUI so it counts
+      llpp
+      feh
     ];
   };
 

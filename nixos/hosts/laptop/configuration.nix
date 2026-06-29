@@ -12,6 +12,7 @@
       self.nixosModules.low-level-jank
       self.nixosModules.desktop-apps
       self.nixosModules.dev-environment
+      self.nixosModules.keyboards
     ];
   };
 
@@ -21,22 +22,6 @@
     unstable   = import inputs.unstable { system = pkgs.stdenv.hostPlatform.system; config.allowUnfree = true; };
     dotFilesRoot = ../../..;
   in let global-system-packages = with pkgs; {
-      rice-and-cli-tools = [
-        llpp
-        onefetch
-        tealdeer
-        ripgrep
-        feh
-        fd
-        nh
-      ];
-
-      keyboard-stuff = [
-        unstable.kanata
-        unstable.qmk
-        unstable.chrysalis
-      ];
-
       linked-libraries = [
         # libxi
       ];
@@ -68,33 +53,12 @@
       };
     };
 
-    services = {
-      kanata = {
-        enable = true;
-        package = unstable.kanata;
-        keyboards.laptop = {
-          devices = [ "/dev/input/event0" ];
-          config = builtins.readFile (dotFilesRoot + /kanata.kbd);
-          extraDefCfg = ''
-            sequence-input-mode hidden-delay-type
-            process-unmapped-keys yes
-            concurrent-tap-hold yes
-            chords-v2-min-idle 120
-          '';
-        };
-      };
-
       # udev.packages = with pkgs; [ via ];
     };
 
-    environment = {
-      variables = {
-        # LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath global-system-packages.linked-libraries}:$LD_LIBRARY_PATH";
-        # LD_LIBRARY_PATH = [ lib.getLib pkgs.libxi ];
-      };
+    # environment.variables.LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath global-system-packages.linked-libraries}:$LD_LIBRARY_PATH";
+    # environment.variables.LD_LIBRARY_PATH = [ lib.getLib pkgs.libxi ];
 
-      systemPackages = builtins.concatLists (builtins.attrValues global-system-packages);
-    };
 
     # fonts.packages = [ pkgs.nerdfonts ];
     # fonts.fontconfig.useEmbeddedBitmaps = true;
