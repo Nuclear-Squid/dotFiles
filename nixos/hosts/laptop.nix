@@ -1,7 +1,7 @@
 { self, inputs, ... }: {
   # This is your system configuration entry-point
   flake.nixosConfigurations.nixos = inputs.nixpkgs.lib.nixosSystem {
-    modules = self.nixosModules ++ [
+    modules = (builtins.attrValues self.nixosModules) ++ [
       ({ config, lib, pkgs, modulesPath, ... }: {
         imports =
           [ (modulesPath + "/installer/scan/not-detected.nix")
