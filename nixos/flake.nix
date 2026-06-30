@@ -25,7 +25,8 @@
     import-tree.url = "github:vic/import-tree";
 
     wrapper-modules = {
-      url = "github:BirdeeHub/nix-wrapper-modules";
+      # url = "github:BirdeeHub/nix-wrapper-modules";
+      url = "path:/home/nuclear-squid/Code/Forks/nix-wrapper-modules";
       inputs.nixpkgs.follows = "unstable";
     };
   };

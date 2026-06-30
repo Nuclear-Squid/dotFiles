@@ -195,17 +195,14 @@
         ]
       },
       "locked": {
-        "lastModified": 1782135443,
-        "narHash": "sha256-vAmbArdCyjqpVW+37aCy/PMBOLIqukUXLQuEKLwUhA4=",
-        "owner": "BirdeeHub",
-        "repo": "nix-wrapper-modules",
-        "rev": "6e7f66fa2cdf4d63162580b438f7fcf87c28a46f",
-        "type": "github"
+        "lastModified": 1782756888,
+        "narHash": "sha256-Ivc36XjIq9tnOzoI4cWO+VRrIliTWJfJ9kbFDjcEEDA=",
+        "path": "/home/nuclear-squid/Code/Forks/nix-wrapper-modules",
+        "type": "path"
       },
       "original": {
-        "owner": "BirdeeHub",
-        "repo": "nix-wrapper-modules",
-        "type": "github"
+        "path": "/home/nuclear-squid/Code/Forks/nix-wrapper-modules",
+        "type": "path"
       }
     },
     "zen-browser": {

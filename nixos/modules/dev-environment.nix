@@ -1,8 +1,11 @@
 { self, inputs, ... }: {
   perSystem = { config, pkgs, ... }: let
+    unstable = import inputs.unstable { system = pkgs.stdenv.hostPlatform.system; };
     wrappers = inputs.wrapper-modules.wrappers;
   in {
     packages.kitty = wrappers.kitty.wrap {
+      inherit pkgs;
+      package = unstable.kitty;
       font = {
         name = "FantasqueSansM Nerd Font Mono";
         # name = "Operator-caska";
@@ -38,6 +41,19 @@
         "shift+enter" = "send_text all \\x1b[13;2u";  # shift + enter
       };
     };
+
+    packages.neovide = wrappers.neovide.wrap {
+      inherit pkgs;
+      package = unstable.neovide;
+      settings.backtraces_path = "$HOME/.local/share/neovide";
+      settings.font = {
+        size = 16;
+        normal        = { family = "FantasqueSansM Nerd Font Mono"; style = "regular"; };
+        bold          = { family = "FantasqueSansM Nerd Font Mono"; style = "bold";    };
+        italic        = { family = "MonaspiceRn Nerd Font Mono";    style = "regular"; };
+        bold_italic   = { family = "MonaspiceRn Nerd Font Mono";    style = "italic";  };
+      };
+    };
   };
 
   flake.nixosModules.dev-environment = { pkgs, config, ... }: let
@@ -47,6 +63,7 @@
     environment.systemPackages = {
       code-editors = with unstable; [
         neovim
+        self-pkgs.neovide
         self-pkgs.kitty
       ];
 
@@ -141,18 +158,18 @@
     unstable = import inputs.unstable { system = pkgs.stdenv.hostPlatform.system; };
     dotFilesRoot = ../..;
   in {
-    programs.neovide = {
-      enable = true;
-      package = unstable.neovide;
-      settings.backtraces_path = "$HOME/.local/share/neovide";
-      settings.font = {
-        size = 16;
-        normal        = { family = "FantasqueSansM Nerd Font Mono"; style = "regular"; };
-        bold          = { family = "FantasqueSansM Nerd Font Mono"; style = "bold";    };
-        italic        = { family = "MonaspiceRn Nerd Font Mono";    style = "regular"; };
-        bold_italic   = { family = "MonaspiceRn Nerd Font Mono";    style = "italic";  };
-      };
-    };
+    # programs.neovide = {
+    #   enable = true;
+    #   package = unstable.neovide;
+    #   settings.backtraces_path = "$HOME/.local/share/neovide";
+    #   settings.font = {
+    #     size = 16;
+    #     normal        = { family = "FantasqueSansM Nerd Font Mono"; style = "regular"; };
+    #     bold          = { family = "FantasqueSansM Nerd Font Mono"; style = "bold";    };
+    #     italic        = { family = "MonaspiceRn Nerd Font Mono";    style = "regular"; };
+    #     bold_italic   = { family = "MonaspiceRn Nerd Font Mono";    style = "italic";  };
+    #   };
+    # };
 
     programs.git = {
       enable = true;
@@ -185,45 +202,6 @@
       enable = true;
       extensions = [ pkgs.gh-notify ];
     };
-
-    # programs.kitty = {
-    #   enable = true;
-    #   package = unstable.kitty;
-    #   font = {
-    #     name = "FantasqueSansM Nerd Font Mono";
-    #     # name = "Operator-caska";
-    #     size = 10;
-    #   };
-    #   settings = {
-    #     bell_path = "~/Code/dotFiles/Windows_XP_Error_sound_effect.wav";
-    #     cursor = "#666666";
-    #     background_opacity = "0.8";
-    #     foreground = "#f7dec7";
-    #     background = "#1a0c24";
-    #     color0  = "#373354";
-    #     color1  = "#c02030";
-    #     color2  = "#3bb846";
-    #     color3  = "#dd9046";
-    #     color4  = "#2a68c8";
-    #     color5  = "#b02cc0";
-    #     color6  = "#48d5aa";
-    #     color7  = "#9C9BBA";
-    #     color8  = "#4b4673";
-    #     color9  = "#e86671";
-    #     color10 = "#8ebd6b";
-    #     color11 = "#e5c07b";
-    #     color12 = "#5ab0f6";
-    #     color13 = "#c678dd";
-    #     color14 = "#48d5aa";
-    #     color15 = "#f5d9de";
-    #     transparent_background_colors = "#1b1127@0.85 #231e36@0.85 #2d2a45@0.85 #373354@0.85";
-    #   };
-    #   keybindings = {
-    #     "ctrl+c" = "copy_or_interrupt";
-    #     "ctrl+backspace" = "send_text all \\x17";     # ctrl  + backspace
-    #     "shift+enter" = "send_text all \\x1b[13;2u";  # shift + enter
-    #   };
-    # };
 
     programs.zoxide = {
       enable = true;
