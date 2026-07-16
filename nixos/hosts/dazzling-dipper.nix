@@ -1,5 +1,5 @@
 { self, inputs, ... }: {
-  flake.nixosConfigurations.nixos = inputs.nixpkgs.lib.nixosSystem {
+  flake.nixosConfigurations.dazzling-dipper = inputs.nixpkgs.lib.nixosSystem {
     modules = (builtins.attrValues self.nixosModules) ++ [
       ({ config, lib, pkgs, modulesPath, ... }: {
         imports = [
@@ -28,6 +28,8 @@
         };
 
         swapDevices = [ ];
+
+        networking.hostName = "dazzling-dipper";
 
         # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
         # (the default) this is the recommended approach. When using systemd-networkd it's
