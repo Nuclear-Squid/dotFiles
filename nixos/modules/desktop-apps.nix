@@ -5,6 +5,7 @@
       config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
         "steam"
         "steam-unwrapped"
+        "ltspice"
       ];
     };
   in{
@@ -25,6 +26,8 @@
       boring-work-shit = with pkgs; [
         thunderbird
         picoscope
+        unstable.ltspice
+        unstable.kicad
       ];
 
       file-explorers = with unstable; [
@@ -66,6 +69,7 @@
       games-related = with unstable; [
         protontricks  # For Steam proton
         olympus  # Celeste mod installer
+        inputs.prismlauncher.packages.${pkgs.stdenv.hostPlatform.system}.prismlauncher # Modded-Minecraft launcher
       ];
 
       miscellaneous = with pkgs; [
