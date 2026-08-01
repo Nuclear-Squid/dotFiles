@@ -35,8 +35,7 @@
       gvfs.enable    = true;
 
       pulseaudio.enable = true;
-      # pipewire.enable   = false;
-      # gnome reeds it enabled
+      pipewire.enable   = false;
 
       # flatpak.enable = true;
 

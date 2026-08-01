@@ -1,7 +1,11 @@
 { self, inputs, ... }: {
-  flake.nixosModules.niri = { pkgs, lib, ... }: {
+  flake.nixosModules.gnome = { pkgs, lib, ... }: {
     services.displayManager.gdm.enable = true;
     services.desktopManager.gnome.enable = true;
+
+    services.tlp.enable = lib.mkForce false;
+    # pulseaudio.enable = true;
+    # pipewire.enable   = false;
   };
 
   flake.homeModules.gnome = { pkgs, lib, ... }: {
