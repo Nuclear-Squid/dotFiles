@@ -13,6 +13,8 @@ input {
             // For more information, see xkeyboard-config(7).
 
             // For example:
+            // layout "fr"
+            // variant "oss"
             // layout "us"
             // variant "intl"
             // options "grp:win_space_toggle,compose:ralt,ctrl:nocaps"
@@ -106,7 +108,12 @@ output "eDP-1" {
     // so to put another output directly adjacent to it on the right, set its x to 1920.
     // If the position is unset or results in an overlap, the output is instead placed
     // automatically.
-    position x=1280 y=0
+    position x=0 y=0
+}
+
+output "HDMI-A-2" {
+    mode "1920x1080@120.030"
+    position x=0 y=-1080
 }
 
 // Settings that influence how windows are positioned and sized.
@@ -557,8 +564,23 @@ binds {
     Mod+Ctrl+T { move-workspace-up; }
     Mod+Ctrl+I { consume-or-expel-window-right; }
 
-    Mod+Alt+R { move-column-to-workspace-down; }
-    Mod+Alt+T { move-column-to-workspace-up; }
+    // Mod+Alt+R { move-column-to-workspace-down; }
+    // Mod+Alt+T { move-column-to-workspace-up; }
+
+    Mod+Alt+L { focus-monitor-left; }
+    Mod+Alt+R { focus-monitor-down; }
+    Mod+Alt+T { focus-monitor-up; }
+    Mod+Alt+I { focus-monitor-right; }
+
+    Mod+Ctrl+Alt+L { move-workspace-to-monitor-left; }
+    Mod+Ctrl+Alt+R { move-workspace-to-monitor-down; }
+    Mod+Ctrl+Alt+T { move-workspace-to-monitor-up; }
+    Mod+Ctrl+Alt+I { move-workspace-to-monitor-right; }
+
+    Mod+SHift+Alt+L { move-column-to-monitor-left; }
+    Mod+SHift+Alt+R { move-column-to-monitor-down; }
+    Mod+SHift+Alt+T { move-column-to-monitor-up; }
+    Mod+SHift+Alt+I { move-column-to-monitor-right; }
 
     Mod+U { focus-workspace-previous; }
 
@@ -568,26 +590,7 @@ binds {
     Mod+P { focus-workspace "dev (main)"; }
     Mod+W { focus-workspace 99; }  // Last workspace (always empty)
 
-    // Mod+Q      { focus-workspace 1; }
-    // Mod+C      { focus-workspace 2; }
-    // Mod+O      { focus-workspace 3; }
-    // Mod+P      { focus-workspace 4; }
-    // Mod+W      { focus-workspace 5; }
-    // Mod+Period { focus-workspace 6; }
-    // Mod+M      { focus-workspace 7; }
-    // Mod+D      { focus-workspace 8; }
     // Mod+ISO_Level5_Latch { focus-workspace 9; }
-    //
-    // Mod+Shift+Q { move-column-to-workspace 1; }
-    // Mod+Shift+C { move-column-to-workspace 2; }
-    // Mod+Shift+O { move-column-to-workspace 3; }
-    // Mod+Shift+P { move-column-to-workspace 4; }
-    // Mod+Shift+W { move-column-to-workspace 5; }
-    // Mod+Colon   { move-column-to-workspace 6; }
-    // Mod+Shift+M { move-column-to-workspace 7; }
-    // Mod+Shift+D { move-column-to-workspace 8; }
-    // Mod+Exclam  { move-column-to-workspace 9; }
-
 
     //  ─────────────────────────< Window Management >─────────────────────────
     Mod+A repeat=false { switch-preset-column-width-back; }
