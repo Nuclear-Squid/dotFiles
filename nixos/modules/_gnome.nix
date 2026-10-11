@@ -5,7 +5,7 @@
 
     services.tlp.enable = lib.mkForce false;
     # pulseaudio.enable = true;
-    # pipewire.enable   = false;
+    services.pipewire.enable = lib.mkForce false;
   };
 
   flake.homeModules.gnome = { pkgs, lib, ... }: {

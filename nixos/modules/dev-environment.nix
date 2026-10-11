@@ -63,6 +63,7 @@
     environment.systemPackages = {
       code-editors = with unstable; [
         neovim
+        helix
         self-pkgs.neovide
         self-pkgs.kitty
       ];
@@ -82,12 +83,14 @@
       ];
 
       lsp-servers = with pkgs; [
-        arduino-language-server
-        clang-tools
-        languagetool
-        ltex-ls-plus
-        ltex-ls
-        ty
+        arduino-language-server # Arduino
+        clang-tools   # C (clang / llvm backend)
+        languagetool  # forgot what that is
+        ltex-ls       # Latex / typos
+        ltex-ls-plus  # Latex / typos / again ?
+        ty            # Python
+        zls           # Zig
+        rust-analyzer # Rust
       ];
 
       dev-tools = with pkgs; [
@@ -145,9 +148,12 @@
 
     programs.fish.enable = true;
 
-    virtualisation.docker.rootless = {
+    virtualisation.docker = {
       enable = true;
-      setSocketVariable = true;
+      rootless = {
+        enable = true;
+        setSocketVariable = true;
+      };
     };
 
     virtualisation.waydroid.enable = true;
