@@ -5,7 +5,7 @@
       config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
         "steam"
         "steam-unwrapped"
-        "ltspice"
+        # "ltspice"
       ];
     };
   in{
@@ -26,7 +26,7 @@
       boring-work-shit = with pkgs; [
         thunderbird
         picoscope
-        unstable.ltspice
+        # unstable.ltspice
         unstable.kicad
       ];
 
