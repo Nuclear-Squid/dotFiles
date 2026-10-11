@@ -34,8 +34,10 @@
       devmon.enable  = true;
       gvfs.enable    = true;
 
-      pulseaudio.enable = true;
-      pipewire.enable   = false;
+      # pulseaudio.enable = true;
+      # pipewire.enable   = false;
+      pulseaudio.enable = false;
+      pipewire.enable   = true;
 
       # flatpak.enable = true;
 
