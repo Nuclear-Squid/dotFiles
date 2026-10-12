@@ -29,18 +29,27 @@ return {
       preset = 'none',
       ['<tab>']   = { 'select_next', 'fallback' },
       ['<s-tab>'] = { 'select_prev', 'fallback' },
-      ['<cr>']    = { 'accept', 'snippet_forward', 'fallback' },
+      ['<CR>']    = { 'snippet_forward', 'fallback' },
+      ['<S-CR>']  = { 'snippet_backward', 'select_and_accept', 'fallback' },
     },
 
     appearance = {
       -- 'mono' (default) for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
       -- Adjusts spacing to ensure icons are aligned
-      nerd_font_variant = 'mono'
+      nerd_font_variant = 'mono',
+      use_nvim_cmp_as_default = true,
+      kind_icons = {
+        Function = '󰊕un',
+      },
     },
 
     -- (Default) Only show the documentation popup when manually triggered
     completion = {
-      preselect = false,  -- Don’t automatically select first element in completion list
+      list = {
+        selection = {
+          preselect = false,  -- Don’t automatically select first element in completion list
+        },
+      },
       documentation = { auto_show = true }
     },
 

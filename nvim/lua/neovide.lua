@@ -28,6 +28,8 @@ if vim.g.neovide then
   vim.g.neovide_cursor_vfx_particle_phase = 4
   vim.g.neovide_cursor_vfx_particle_curl = 2
 
+  vim.g.neovide_progress_bar_enabled = false
+
   nmap '<C-+>' (function() vim.g.neovide_scale_factor = vim.g.neovide_scale_factor + 0.1 end)
   nmap '<C-->' (function() vim.g.neovide_scale_factor = vim.g.neovide_scale_factor - 0.1 end)
 end
